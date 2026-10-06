@@ -4,6 +4,8 @@ rule_files:
   - ../rules/40-storage-backups.yml
   - ../rules/10-hosts.yml
   - ../rules/60-disk-health.yml
+  - ../rules/50-pbx-nas-gateway.yml
+  - ../rules/30-services.yml
 evaluation_interval: 1m
 
 tests:
@@ -99,3 +101,31 @@ tests:
             exp_annotations:
               summary: "pve0: LVM thin pool hdd/hdd is filling up (80%)"
               description: "A thin pool that runs out of data OR metadata space freezes/corrupts every guest on it. Free space or extend it."
+
+  # PBX: the HomeAssistant registration is ignored; a carrier trunk that stays down alerts.
+  - interval: 1m
+    input_series:
+      - {series: 'rl_asterisk_registration_up{trunk="HomeAssistant", status="Rejected"}', values: '0x60'}
+      - {series: 'rl_asterisk_registration_up{trunk="BulkVS", status="Rejected"}', values: '0x60'}
+      - {series: 'rl_asterisk_registration_up{trunk="voipms", status="Registered"}', values: '1x60'}
+    alert_rule_test:
+      - eval_time: 20m
+        alertname: PbxTrunkDown
+        exp_alerts:
+          - exp_labels: {severity: warning, host: vps-bos, site: bos, trunk: BulkVS, status: Rejected}
+            exp_annotations:
+              summary: "PBX trunk BulkVS is not registered (Rejected)"
+              description: "Check credentials/IP allow-list for this trunk (pjsip show registrations)."
+
+  # Home Assistant voice satellite unavailable for 10m -> alert; available -> quiet.
+  - interval: 1m
+    input_series:
+      - {series: 'homeassistant_entity_available{entity="assist_satellite.72_61_72_237"}', values: '0x30'}
+    alert_rule_test:
+      - eval_time: 20m
+        alertname: HaVoipSatelliteUnavailable
+        exp_alerts:
+          - exp_labels: {severity: warning, host: homeassistant, site: pdx, entity: assist_satellite.72_61_72_237}
+            exp_annotations:
+              summary: "Home Assistant's VoIP voice assistant (PBX2) is unavailable"
+              description: "Voice commands over the phone system will not work. Check the VoIP integration in Home Assistant."

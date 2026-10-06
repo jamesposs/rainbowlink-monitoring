@@ -734,7 +734,7 @@
   {
    "id": 11,
    "type": "table",
-   "title": "Trunks",
+   "title": "Carrier trunks",
    "description": "",
    "gridPos": {
     "x": 16,
@@ -752,7 +752,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "rl_asterisk_registration_up",
+     "expr": "rl_asterisk_registration_up{trunk!=\"HomeAssistant\"}",
      "refId": "A",
      "instant": true,
      "range": false,
@@ -1145,6 +1145,162 @@
   },
   {
    "id": 17,
+   "type": "stat",
+   "title": "HA voice (VoIP)",
+   "description": "Home Assistant's VoIP voice assistant, which answers calls from the PBX for voice commands.",
+   "gridPos": {
+    "x": 0,
+    "y": 41,
+    "w": 4,
+    "h": 4
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "homeassistant_entity_available{entity=\"assist_satellite.72_61_72_237\"}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "none",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "red",
+        "value": null
+       },
+       {
+        "color": "green",
+        "value": 1
+       }
+      ]
+     },
+     "mappings": [
+      {
+       "type": "value",
+       "options": {
+        "1": {
+         "text": "ready",
+         "color": "green"
+        },
+        "0": {
+         "text": "UNAVAILABLE",
+         "color": "red"
+        }
+       }
+      }
+     ],
+     "color": {
+      "mode": "thresholds"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   }
+  },
+  {
+   "id": 18,
+   "type": "stat",
+   "title": "HA accepts calls",
+   "description": "",
+   "gridPos": {
+    "x": 4,
+    "y": 41,
+    "w": 4,
+    "h": 4
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "homeassistant_switch_state{entity=\"switch.72_61_72_237_allow_calls\"}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "none",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "red",
+        "value": null
+       },
+       {
+        "color": "green",
+        "value": 1
+       }
+      ]
+     },
+     "mappings": [
+      {
+       "type": "value",
+       "options": {
+        "1": {
+         "text": "on",
+         "color": "green"
+        },
+        "0": {
+         "text": "OFF",
+         "color": "red"
+        }
+       }
+      }
+     ],
+     "color": {
+      "mode": "thresholds"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   }
+  },
+  {
+   "id": 19,
    "type": "table",
    "title": "Docker containers",
    "description": "",

@@ -9,8 +9,11 @@ groups:
         annotations:
           summary: "PBX is not answering SIP"
           description: "Asterisk on vps-bos did not answer a SIP OPTIONS probe for 3+ minutes: phones and trunks are affected."
+      # Carrier trunks only. The "HomeAssistant" entry is excluded on purpose: Home Assistant's VoIP integration is
+      # called BY the PBX and has no registrar, so a registration attempt to it always shows Rejected. The real
+      # function is checked by HaVoipSatelliteUnavailable (30-services.yml).
       - alert: PbxTrunkDown
-        expr: rl_asterisk_registration_up == 0
+        expr: rl_asterisk_registration_up{trunk!="HomeAssistant"} == 0
         for: 10m
         labels: {severity: warning, host: vps-bos, site: bos}
         annotations:
