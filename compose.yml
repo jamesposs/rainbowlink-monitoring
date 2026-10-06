@@ -12,7 +12,7 @@ services:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus
       - --storage.tsdb.retention.time=180d
-      - --storage.tsdb.retention.size=30GB
+      - --storage.tsdb.retention.size=20GB
       - --web.enable-lifecycle               # reload without restart (localhost only)
     volumes:
       - ./prometheus:/etc/prometheus:ro

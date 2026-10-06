@@ -30,6 +30,11 @@ scrape_configs:
       - {source_labels: [ts_ip], regex: "", action: drop}            # no tailnet address -> no agent
       - {source_labels: [agent], regex: none, action: drop}          # appliances (nas, gateway, ha)
       - {source_labels: [ts_ip], target_label: __address__, replacement: "$1:9100"}
+    metric_relabel_configs:               # keep storage small: drop series no alert/dashboard uses
+      - {source_labels: [__name__, state], regex: "node_systemd_unit_state;(active|activating|deactivating|inactive)", action: drop}
+      - {source_labels: [__name__], regex: "node_systemd_(socket_.*|service_restart_total|timer_.*|unit_start_time_seconds|system_running|version|units)", action: drop}
+      - {source_labels: [__name__, kind], regex: "node_cpu_seconds_total;lxc", action: drop}   # LXC shows the hypervisor's CPU
+      - {source_labels: [__name__, device], regex: "node_network_.*;(veth.*|br-.*|docker0|lo|tailscale0)", action: drop}
 
   # --- reachability of every host (ICMP, LAN address at home / tailnet remote)
   - job_name: icmp-hosts
@@ -121,9 +126,12 @@ scrape_configs:
 
   # --- Home Assistant (its built-in Prometheus endpoint) --------------------
   - job_name: homeassistant
+    scrape_interval: 60s
     scheme: https
     metrics_path: /api/prometheus
     authorization: {type: Bearer, credentials_file: /run/secrets/ha_token}
     tls_config: {insecure_skip_verify: true}     # reached by IP; cert is for ha.rainbowlink.org
+    metric_relabel_configs:               # HA exports ~11k series; keep availability + the sensor/switch states
+      - {source_labels: [__name__], regex: "homeassistant_(state_change_.*|last_updated_time_seconds|entity_info)", action: drop}
     static_configs:
       - {targets: ["172.20.1.13:443"], labels: {host: homeassistant, site: pdx, kind: vm, parent: pve0, role: home-automation}}
