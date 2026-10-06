@@ -1,0 +1,65 @@
+# Disk health: the precursors of failure, not the failure itself. All warnings (next-day digest).
+#  - "pending/uncorrectable sectors" should always be 0, so any non-zero value alerts.
+#  - "reallocated sectors / CRC errors" can sit at a stable non-zero value for years, so only GROWTH over 7 days alerts.
+groups:
+  - name: disk_health_nas
+    rules:
+      - alert: NasDiskSmartErrors
+        expr: |
+          (diskSMARTAttrRaw{job="snmp-nas"}
+            * on(diskSMARTInfoIndex) group_left(diskSMARTAttrName) diskSMARTAttrName{job="snmp-nas", diskSMARTAttrName=~"Current_Pending_Sector|Offline_Uncorrectable"}
+            * on(diskSMARTInfoIndex) group_left(diskSMARTInfoDevName) diskSMARTInfoDevName{job="snmp-nas"}) > 0
+        for: 1h
+        labels: {severity: warning, host: nas, site: pdx}
+        annotations:
+          summary: "NAS disk {{ $labels.diskSMARTInfoDevName }}: {{ $labels.diskSMARTAttrName }} is {{ $value }} (should be 0)"
+          description: "Unreadable sectors are the usual early warning of a failing drive. Check Storage Manager > HDD/SSD and plan a replacement."
+      - alert: NasDiskSmartGrowing
+        expr: |
+          (increase(diskSMARTAttrRaw{job="snmp-nas"}[7d])
+            * on(diskSMARTInfoIndex) group_left(diskSMARTAttrName) diskSMARTAttrName{job="snmp-nas", diskSMARTAttrName=~"Reallocated_Sector_Ct|Reallocated_Event_Count|UDMA_CRC_Error_Count"}
+            * on(diskSMARTInfoIndex) group_left(diskSMARTInfoDevName) diskSMARTInfoDevName{job="snmp-nas"}) > 0
+        labels: {severity: warning, host: nas, site: pdx}
+        annotations:
+          summary: "NAS disk {{ $labels.diskSMARTInfoDevName }}: {{ $labels.diskSMARTAttrName }} grew by {{ $value }} this week"
+          description: "Reallocated sectors rising means the drive is remapping bad areas. UDMA CRC errors usually mean a bad cable or bay."
+
+  - name: disk_health_pve
+    rules:
+      - alert: PveDiskSmartErrors
+        expr: (smartmon_current_pending_sector_raw_value + on(host, disk) smartmon_offline_uncorrectable_raw_value) > 0
+        for: 1h
+        labels: {severity: warning}
+        annotations: {summary: "{{ $labels.host }}: disk {{ $labels.disk }} has {{ $value }} unreadable/uncorrectable sectors (should be 0)"}
+      - alert: PveDiskSmartGrowing
+        expr: increase(smartmon_reallocated_sector_ct_raw_value[7d]) > 0 or increase(smartmon_udma_crc_error_count_raw_value[7d]) > 0
+        labels: {severity: warning}
+        annotations: {summary: "{{ $labels.host }}: disk {{ $labels.disk }} is accumulating reallocated sectors / CRC errors ({{ $value }} this week)"}
+      - alert: NvmeCriticalWarning
+        expr: nvme_critical_warning != 0
+        labels: {severity: warning}
+        annotations: {summary: "{{ $labels.host }}: NVMe {{ $labels.device }} reports a critical warning flag ({{ $value }})", description: "Spare capacity, temperature, reliability or read-only mode. Run nvme smart-log."}
+      - alert: NvmeMediaErrors
+        expr: increase(nvme_media_errors_total[7d]) > 0
+        labels: {severity: warning}
+        annotations: {summary: "{{ $labels.host }}: NVMe {{ $labels.device }} logged {{ $value }} new media/data-integrity errors this week"}
+      - alert: NvmeWearHigh
+        expr: nvme_percentage_used_ratio > 0.8
+        labels: {severity: warning}
+        annotations: {summary: "{{ $labels.host }}: NVMe {{ $labels.device }} is {{ $value | humanizePercentage }} worn out", description: "Plan a replacement before 100%."}
+      - alert: NvmeSpareLow
+        expr: nvme_available_spare_ratio < 0.2
+        labels: {severity: warning}
+        annotations: {summary: "{{ $labels.host }}: NVMe {{ $labels.device }} spare capacity is down to {{ $value | humanizePercentage }}"}
+      - alert: DiskHot
+        expr: smartmon_temperature_celsius_raw_value{kind=~"host|rpi"} > 55 or nvme_temperature_celsius > 70
+        for: 30m
+        labels: {severity: warning}
+        annotations: {summary: "{{ $labels.host }}: disk {{ $labels.disk }}{{ $labels.device }} is at {{ $value }} C"}
+      - alert: LvmThinPoolFull
+        expr: rl_lvm_thinpool_data_ratio > 0.85 or rl_lvm_thinpool_metadata_ratio > 0.75
+        for: 30m
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.host }}: LVM thin pool {{ $labels.vg }}/{{ $labels.lv }} is filling up ({{ $value | humanizePercentage }})"
+          description: "A thin pool that runs out of data OR metadata space freezes/corrupts every guest on it. Free space or extend it."

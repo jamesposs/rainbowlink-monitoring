@@ -3,6 +3,7 @@
 rule_files:
   - ../rules/40-storage-backups.yml
   - ../rules/10-hosts.yml
+  - ../rules/60-disk-health.yml
 evaluation_interval: 1m
 
 tests:
@@ -49,3 +50,52 @@ tests:
             exp_annotations:
               summary: "Hyper Backup nas_hq_set2 has been running for over 12 hours"
               description: "A run normally takes minutes. It may be hung or the repository locked."
+
+
+  # NAS disk with 2 pending sectors -> alert after 1h; a clean disk (0) stays quiet.
+  - interval: 1m
+    input_series:
+      - {series: 'diskSMARTAttrRaw{job="snmp-nas", diskSMARTInfoIndex="3"}', values: '2x200'}
+      - {series: 'diskSMARTAttrName{job="snmp-nas", diskSMARTInfoIndex="3", diskSMARTAttrName="Current_Pending_Sector"}', values: '1x200'}
+      - {series: 'diskSMARTInfoDevName{job="snmp-nas", diskSMARTInfoIndex="3", diskSMARTInfoDevName="/dev/sdb"}', values: '1x200'}
+      - {series: 'diskSMARTAttrRaw{job="snmp-nas", diskSMARTInfoIndex="20"}', values: '0x200'}
+      - {series: 'diskSMARTAttrName{job="snmp-nas", diskSMARTInfoIndex="20", diskSMARTAttrName="Current_Pending_Sector"}', values: '1x200'}
+      - {series: 'diskSMARTInfoDevName{job="snmp-nas", diskSMARTInfoIndex="20", diskSMARTInfoDevName="/dev/sdd"}', values: '1x200'}
+    alert_rule_test:
+      - eval_time: 90m
+        alertname: NasDiskSmartErrors
+        exp_alerts:
+          - exp_labels: {severity: warning, host: nas, site: pdx, job: snmp-nas, diskSMARTInfoIndex: "3", diskSMARTAttrName: Current_Pending_Sector, diskSMARTInfoDevName: /dev/sdb}
+            exp_annotations:
+              summary: "NAS disk /dev/sdb: Current_Pending_Sector is 2 (should be 0)"
+              description: "Unreadable sectors are the usual early warning of a failing drive. Check Storage Manager > HDD/SSD and plan a replacement."
+
+  # NVMe at 85% wear alerts; at 4% does not.
+  - interval: 1m
+    input_series:
+      - {series: 'nvme_percentage_used_ratio{host="pve0", device="nvme0n1"}', values: '0.85x10'}
+      - {series: 'nvme_percentage_used_ratio{host="pve1", device="nvme0n1"}', values: '0.04x10'}
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: NvmeWearHigh
+        exp_alerts:
+          - exp_labels: {severity: warning, host: pve0, device: nvme0n1}
+            exp_annotations:
+              summary: "pve0: NVMe nvme0n1 is 85% worn out"
+              description: "Plan a replacement before 100%."
+
+  # Thin pool metadata at 80% alerts after 30m; healthy pool is quiet.
+  - interval: 1m
+    input_series:
+      - {series: 'rl_lvm_thinpool_metadata_ratio{host="pve0", vg="hdd", lv="hdd"}', values: '0.8x100'}
+      - {series: 'rl_lvm_thinpool_data_ratio{host="pve0", vg="hdd", lv="hdd"}', values: '0.5x100'}
+      - {series: 'rl_lvm_thinpool_data_ratio{host="pve0", vg="pve", lv="data"}', values: '0.4x100'}
+      - {series: 'rl_lvm_thinpool_metadata_ratio{host="pve0", vg="pve", lv="data"}', values: '0.02x100'}
+    alert_rule_test:
+      - eval_time: 45m
+        alertname: LvmThinPoolFull
+        exp_alerts:
+          - exp_labels: {severity: warning, host: pve0, vg: hdd, lv: hdd}
+            exp_annotations:
+              summary: "pve0: LVM thin pool hdd/hdd is filling up (80%)"
+              description: "A thin pool that runs out of data OR metadata space freezes/corrupts every guest on it. Free space or extend it."
