@@ -37,6 +37,14 @@ Causes silence their symptoms (`alertmanager/alertmanager.yml`, `inhibit_rules`)
 site; home internet down → all remote/public alerts; gateway down → everything at home; pve0 down → all guests;
 host down → its own services; tailnet trouble → agent-down alerts.
 
+## Backups covered
+* **Proxmox guests** (nightly to the NAS, 1st/15th to pi-pcb): freshness per guest per target, expected set derived from the backup jobs.
+* **NAS Hyper Backup** (`nas_hq_set2`, daily ~09:35 PT, destination = pi-pcb over rsync): read from the *destination* on pi-pcb, so the
+  NAS needs no credentials or SSH. Each committed backup writes `Config/version_info.db.<N>`; the newest N and its mtime are exported by
+  `rl-hyperbackup-metrics.sh`. `HyperBackupStale` fires after 28 h without a new version, `HyperBackupStuck` after 12 h of continuous running.
+  Other Hyper Backup tasks that write elsewhere (USB, cloud, another host) are NOT visible this way.
+* Alert rule unit tests live in `prometheus/tests/` and run on every `apply.sh`.
+
 ## Add a Linux host (2 steps)
 1. Install the agent (from the Ansible host, or `ansible-playbook playbooks/monitoring.yml -l <host>`).
    It installs unprivileged `prometheus-node-exporter` on the tailnet address only.
