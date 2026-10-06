@@ -117,6 +117,8 @@ scrape_configs:
   - job_name: unifi
     static_configs:
       - {targets: ["unpoller:9130"], labels: {host: gateway, site: pdx}}
+    metric_relabel_configs:               # per-client series (75 clients x ~30) are not used; keep one family to count clients
+      - {source_labels: [__name__], regex: "unpoller_client_(?:[^u]|u[^p]).*", action: drop}
 
   # --- Proxmox (read-only API token) ----------------------------------------
   - job_name: pve

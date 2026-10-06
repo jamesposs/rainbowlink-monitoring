@@ -70,14 +70,28 @@ groups:
 
   - name: gateway
     rules:
-      # eth4 is the gateway's WAN port (the only 2.5G port; the four LAN ports add up to switch0).
-      - alert: GatewayWanPortDown
-        expr: ifOperStatus{job="snmp-gateway", ifDescr="eth4"} != 1
-        for: 2m
+      # Failover: Xfinity is the primary WAN, T-Mobile (U5G) the standby. UniFi reports an interface
+      # state of 1 when that WAN is carrying/able to carry traffic, 0 for a standby or failed link.
+      - alert: WanOnBackupLink
+        expr: unpoller_wan_interface_state{wan_networkgroup="WAN2"} == 1
+        for: 5m
         labels: {severity: warning, host: gateway, site: pdx}
         annotations:
-          summary: "Gateway WAN port (eth4) link is down"
-          description: "Primary internet link lost. If the cellular backup took over, internet may still work."
+          summary: "Internet is running on the T-Mobile backup (the primary Xfinity link is down)"
+          description: "Failover is active. Everything still works but at backup quality; check the Xfinity modem/line."
+      - alert: WanPrimaryDown
+        expr: unpoller_wan_interface_state{wan_networkgroup="WAN"} == 0
+        for: 5m
+        labels: {severity: warning, host: gateway, site: pdx}
+        annotations: {summary: "Primary WAN ({{ $labels.wan_interface }}) is down"}
+      - alert: UnifiDeviceMissing
+        expr: last_over_time(unpoller_device_info[1d]) unless on(name) (unpoller_device_info)
+        for: 10m
+        labels: {severity: warning, host: gateway, site: pdx}
+        annotations:
+          summary: "UniFi device {{ $labels.name }} ({{ $labels.type }}) has disappeared from the controller"
+          description: "Offline for 10+ minutes. (If you removed it on purpose, this clears itself after a day.)"
+
       - alert: GatewayMemoryHigh
         expr: (1 - memAvailReal{job="snmp-gateway"} / memTotalReal{job="snmp-gateway"}) > 0.92
         for: 30m

@@ -13,7 +13,7 @@ groups:
         annotations: {summary: "Monitoring pipeline alive (always firing by design)"}
 
       - alert: MonitoringTargetDown
-        expr: up{job=~"self|snmp-.*|pve|homeassistant"} == 0
+        expr: up{job=~"self|snmp-.*|pve|homeassistant|unifi"} == 0
         for: 10m
         labels: {severity: warning}
         annotations:
