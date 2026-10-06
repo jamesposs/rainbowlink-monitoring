@@ -55,7 +55,7 @@
   {
    "id": 2,
    "type": "stat",
-   "title": "Internet reachable",
+   "title": "Internet",
    "description": "",
    "gridPos": {
     "x": 0,
@@ -123,8 +123,8 @@
   {
    "id": 3,
    "type": "stat",
-   "title": "Primary WAN (Xfinity)",
-   "description": "",
+   "title": "Primary WAN",
+   "description": "Xfinity",
    "gridPos": {
     "x": 3,
     "y": 1,
@@ -201,8 +201,8 @@
   {
    "id": 4,
    "type": "stat",
-   "title": "Backup (T-Mobile)",
-   "description": "Standby is normal. IN USE means the primary link failed and internet is running over cellular.",
+   "title": "Backup WAN",
+   "description": "T-Mobile cellular backup. Standby is normal. IN USE means the primary link failed and internet is running over cellular.",
    "gridPos": {
     "x": 6,
     "y": 1,
@@ -279,7 +279,7 @@
   {
    "id": 5,
    "type": "stat",
-   "title": "Avg internet RTT",
+   "title": "Latency",
    "description": "",
    "gridPos": {
     "x": 9,
@@ -347,7 +347,7 @@
   {
    "id": 6,
    "type": "stat",
-   "title": "Packet loss (1 h)",
+   "title": "Loss (1 h)",
    "description": "",
    "gridPos": {
     "x": 12,
@@ -1248,7 +1248,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "probe_success{job=\"icmp-hosts\"}",
+     "expr": "max by (host, site, kind, role) (probe_success{job=\"icmp-hosts\"})",
      "refId": "A",
      "instant": true,
      "range": false,
@@ -1259,7 +1259,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "probe_duration_seconds{job=\"icmp-hosts\"}",
+     "expr": "max by (host) (probe_duration_seconds{job=\"icmp-hosts\"})",
      "refId": "B",
      "instant": true,
      "range": false,
@@ -1289,7 +1289,7 @@
          "mode": "absolute",
          "steps": [
           {
-           "color": "red",
+           "color": "#6b7280",
            "value": null
           },
           {
@@ -1360,8 +1360,11 @@
    },
    "transformations": [
     {
-     "id": "merge",
-     "options": {}
+     "id": "joinByField",
+     "options": {
+      "byField": "host",
+      "mode": "outer"
+     }
     },
     {
      "id": "organize",
@@ -1562,7 +1565,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "unpoller_device_uptime_seconds",
+     "expr": "max by (name, type, version) (unpoller_device_info)",
      "refId": "A",
      "instant": true,
      "range": false,
@@ -1573,7 +1576,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "unpoller_device_cpu_utilization_ratio",
+     "expr": "max by (name) (unpoller_device_uptime_seconds)",
      "refId": "B",
      "instant": true,
      "range": false,
@@ -1584,7 +1587,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "unpoller_device_memory_utilization_ratio",
+     "expr": "max by (name) (unpoller_device_cpu_utilization_ratio)",
      "refId": "C",
      "instant": true,
      "range": false,
@@ -1595,7 +1598,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "unpoller_device_upgradable",
+     "expr": "max by (name) (unpoller_device_memory_utilization_ratio)",
      "refId": "D",
      "instant": true,
      "range": false,
@@ -1606,7 +1609,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "unpoller_device_info",
+     "expr": "max by (name) (unpoller_device_upgradable)",
      "refId": "E",
      "instant": true,
      "range": false,
@@ -1786,8 +1789,11 @@
    },
    "transformations": [
     {
-     "id": "merge",
-     "options": {}
+     "id": "joinByField",
+     "options": {
+      "byField": "name",
+      "mode": "outer"
+     }
     },
     {
      "id": "organize",
@@ -1802,29 +1808,25 @@
        "site_name": true,
        "source": true,
        "subsystem": true,
-       "Value #E": true,
-       "ip": true,
-       "mac": true,
-       "serial": true,
-       "model": true
+       "Value #A": true
       },
       "renameByName": {
        "name": "Device",
        "type": "Type",
        "version": "Firmware",
-       "Value #A": "Uptime",
-       "Value #B": "CPU",
-       "Value #C": "Memory",
-       "Value #D": "Update?"
+       "Value #B": "Uptime",
+       "Value #C": "CPU",
+       "Value #D": "Memory",
+       "Value #E": "Update?"
       },
       "indexByName": {
        "name": 0,
        "type": 1,
-       "Value #A": 2,
-       "Value #B": 3,
-       "Value #C": 4,
+       "Value #B": 2,
+       "Value #C": 3,
+       "Value #D": 4,
        "version": 5,
-       "Value #D": 6
+       "Value #E": 6
       }
      }
     }

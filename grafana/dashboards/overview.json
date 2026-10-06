@@ -264,7 +264,7 @@
   {
    "id": 4,
    "type": "stat",
-   "title": "Checks failing",
+   "title": "Failing",
    "description": "Service checks (HTTP, TCP, DNS, public) that currently fail. See Services.",
    "gridPos": {
     "x": 9,
@@ -406,7 +406,7 @@
   {
    "id": 6,
    "type": "stat",
-   "title": "Lossy site links",
+   "title": "Lossy links",
    "description": "Site-to-site links dropping more than 5% of packets. See Network.",
    "gridPos": {
     "x": 15,
@@ -480,8 +480,8 @@
   {
    "id": 7,
    "type": "stat",
-   "title": "Stale backups",
-   "description": "Guests whose newest backup is older than allowed.",
+   "title": "Backups",
+   "description": "Guests whose newest backup is older than allowed (stale count).",
    "gridPos": {
     "x": 18,
     "y": 0,
@@ -525,7 +525,7 @@
        "type": "value",
        "options": {
         "0": {
-         "text": "None",
+         "text": "All fresh",
          "color": "green"
         }
        }
@@ -554,7 +554,7 @@
   {
    "id": 8,
    "type": "stat",
-   "title": "Next cert expiry",
+   "title": "Cert expiry",
    "description": "Soonest TLS certificate expiry across monitored services.",
    "gridPos": {
     "x": 21,
@@ -1447,8 +1447,8 @@
   {
    "id": 21,
    "type": "timeseries",
-   "title": "Round-trip between sites (average)",
-   "description": "Latency each site measures to each other site over the tailnet.",
+   "title": "Latency from home to each site",
+   "description": "Round trip from the monitoring server to every other site over the tailnet. All site pairs are on the Network dashboard.",
    "gridPos": {
     "x": 0,
     "y": 18,
@@ -1465,11 +1465,11 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "rl_mesh_rtt_seconds{stat=\"avg\", path=\"overlay\"}",
+     "expr": "rl_mesh_rtt_seconds{host=\"grafana\", stat=\"avg\", path=\"overlay\"}",
      "refId": "A",
      "instant": false,
      "range": true,
-     "legendFormat": "{{host}} -> {{to}}"
+     "legendFormat": "to {{to}}"
     }
    ],
    "fieldConfig": {
@@ -1732,7 +1732,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "pve_disk_usage_bytes{id=~\"storage/.*\"} / pve_disk_size_bytes{id=~\"storage/.*\"} * 100 or label_replace(max(1 - raidFreeSize{job=\"snmp-nas\"} / raidTotalSize{job=\"snmp-nas\"}) * 100, \"id\", \"NAS volume\", \"\", \"\")",
+     "expr": "label_replace(pve_disk_usage_bytes{id=~\"storage/.*\"} / pve_disk_size_bytes{id=~\"storage/.*\"} * 100, \"id\", \"$1\", \"id\", \"storage/pve0/(.*)\") or label_replace(max(1 - raidFreeSize{job=\"snmp-nas\"} / raidTotalSize{job=\"snmp-nas\"}) * 100, \"id\", \"NAS volume\", \"\", \"\")",
      "refId": "A",
      "instant": true,
      "range": false,

@@ -73,7 +73,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "probe_success{job=~\"http|tcp|http-public\"}",
+     "expr": "label_join(max by (job, instance, service, host, site) (probe_success{job=~\"http|tcp|http-public\"}), \"key\", \"|\", \"job\", \"instance\")",
      "refId": "A",
      "instant": true,
      "range": false,
@@ -84,7 +84,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "probe_duration_seconds{job=~\"http|tcp|http-public\"}",
+     "expr": "label_join(max by (job, instance) (probe_duration_seconds{job=~\"http|tcp|http-public\"}), \"key\", \"|\", \"job\", \"instance\")",
      "refId": "B",
      "instant": true,
      "range": false,
@@ -95,7 +95,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "probe_http_status_code{job=~\"http|http-public\"}",
+     "expr": "label_join(max by (job, instance) (probe_http_status_code{job=~\"http|http-public\"}), \"key\", \"|\", \"job\", \"instance\")",
      "refId": "C",
      "instant": true,
      "range": false,
@@ -106,7 +106,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "(probe_ssl_earliest_cert_expiry{job=~\"http|http-public\"} - time())",
+     "expr": "label_join(max by (job, instance) (probe_ssl_earliest_cert_expiry{job=~\"http|http-public\"} - time()), \"key\", \"|\", \"job\", \"instance\")",
      "refId": "D",
      "instant": true,
      "range": false,
@@ -136,7 +136,7 @@
          "mode": "absolute",
          "steps": [
           {
-           "color": "red",
+           "color": "#6b7280",
            "value": null
           },
           {
@@ -174,6 +174,37 @@
        {
         "id": "custom.width",
         "value": 80
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Probed from"
+      },
+      "properties": [
+       {
+        "id": "mappings",
+        "value": [
+         {
+          "type": "value",
+          "options": {
+           "http": {
+            "text": "inside"
+           },
+           "tcp": {
+            "text": "inside"
+           },
+           "http-public": {
+            "text": "internet"
+           }
+          }
+         }
+        ]
+       },
+       {
+        "id": "custom.width",
+        "value": 90
        }
       ]
      },
@@ -221,8 +252,12 @@
          "mode": "absolute",
          "steps": [
           {
-           "color": "red",
+           "color": "#6b7280",
            "value": null
+          },
+          {
+           "color": "red",
+           "value": 0
           },
           {
            "color": "orange",
@@ -258,23 +293,31 @@
    },
    "transformations": [
     {
-     "id": "merge",
-     "options": {}
+     "id": "joinByField",
+     "options": {
+      "byField": "key",
+      "mode": "outer"
+     }
     },
     {
      "id": "organize",
      "options": {
       "excludeByName": {
        "Time": true,
-       "__name__": true,
+       "key": true,
        "instance": true,
-       "module": true,
-       "job": true
+       "job 1": true,
+       "job 2": true,
+       "job 3": true,
+       "instance 1": true,
+       "instance 2": true,
+       "instance 3": true
       },
       "renameByName": {
        "service": "Service",
        "host": "Runs on",
        "site": "Site",
+       "job": "Probed from",
        "Value #A": "Status",
        "Value #B": "Time",
        "Value #C": "HTTP",
@@ -282,12 +325,13 @@
       },
       "indexByName": {
        "service": 0,
-       "host": 1,
-       "site": 2,
-       "Value #A": 3,
-       "Value #C": 4,
-       "Value #B": 5,
-       "Value #D": 6
+       "job": 1,
+       "host": 2,
+       "site": 3,
+       "Value #A": 4,
+       "Value #C": 5,
+       "Value #B": 6,
+       "Value #D": 7
       }
      }
     }

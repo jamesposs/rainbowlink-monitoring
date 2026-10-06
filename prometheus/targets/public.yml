@@ -6,7 +6,7 @@
 - {targets: ['https://hs.rainbowlink.org/admin/'],            labels: {module: http_2xx, host: vps-sjc, site: sjc, service: Headplane admin}}
 - {targets: ['104.62.14.93:443'],                             labels: {module: tcp_connect, host: pi-pcb, site: pcb, service: DERP relay (pcb)}}
 # Cloudflare tunnel services (found via the Cloudflare API). Not listed on purpose:
-#   rainbowlink.org (apex) and pb.rainbowlink.org -> 502 (origins 172.20.2.21 / .35 down?)  [ask James]
+#   rainbowlink.org (apex) and pb.rainbowlink.org -> retired (James, 2026-10-06); they still 502 from Cloudflare
 #   concierge*, tinymail-staging -> dead/staging
 - {targets: ['https://ha.rainbowlink.org/'],            labels: {module: http_2xx, host: homeassistant, site: pdx, service: ha.rainbowlink.org}}
 - {targets: ['https://jamesposs.com/'],                 labels: {module: http_2xx, host: cloudflare-dmz, site: pdx, service: jamesposs.com}}
