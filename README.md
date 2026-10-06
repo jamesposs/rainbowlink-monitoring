@@ -45,6 +45,11 @@ host down → its own services; tailnet trouble → agent-down alerts.
   Other Hyper Backup tasks that write elsewhere (USB, cloud, another host) are NOT visible this way.
 * Alert rule unit tests live in `prometheus/tests/` and run on every `apply.sh`.
 
+## Disk health
+* **Servers & storage → Disk health:** NAS drives (SMART over SNMP: health, temperature, age, reallocated/pending/uncorrectable sectors, CRC errors), `pve0` drives (SATA SMART, NVMe wear/spare/media errors), LVM thin-pool data+metadata.
+* Alerts are early warnings (next-day digest): any pending/uncorrectable sector, *growth* of reallocated sectors/CRC errors over 7 days, NVMe critical flag / media errors / wear > 80% / spare < 20%, drive temperature, thin pool data > 85% or metadata > 75%.
+* Unit tests for these rules: `prometheus/tests/alerts_test.yml`.
+
 ## Add a Linux host (2 steps)
 1. Install the agent (from the Ansible host, or `ansible-playbook playbooks/monitoring.yml -l <host>`).
    It installs unprivileged `prometheus-node-exporter` on the tailnet address only.
