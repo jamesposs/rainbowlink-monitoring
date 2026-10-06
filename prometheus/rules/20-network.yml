@@ -27,15 +27,29 @@ groups:
       - alert: SiteDown
         expr: |
           label_replace(
-            (count by (to) (rl_mesh_loss_ratio{path="overlay"} >= 1)
-              == count by (to) (rl_mesh_loss_ratio{path="overlay"}))
-            and count by (to) (rl_mesh_loss_ratio{path="overlay"}) >= 2,
+            (count by (to) (rl_mesh_loss_ratio{path="overlay", to!="bos"} >= 1)
+              == count by (to) (rl_mesh_loss_ratio{path="overlay", to!="bos"}))
+            and count by (to) (rl_mesh_loss_ratio{path="overlay", to!="bos"}) >= 2,
           "site", "$1", "to", "(.*)")
         for: 3m
         labels: {severity: warning}
         annotations:
           summary: "Site {{ $labels.to }} is unreachable from every other site"
           description: "All vantage points report 100% loss to {{ $labels.to }}. Alerts for hosts at that site are suppressed."
+
+      # Boston hosts the PBX: if the whole site is unreachable, that is a phone-system outage.
+      - alert: SiteDown
+        expr: |
+          label_replace(
+            (count by (to) (rl_mesh_loss_ratio{path="overlay", to="bos"} >= 1)
+              == count by (to) (rl_mesh_loss_ratio{path="overlay", to="bos"}))
+            and count by (to) (rl_mesh_loss_ratio{path="overlay", to="bos"}) >= 2,
+          "site", "$1", "to", "(.*)")
+        for: 3m
+        labels: {severity: critical}
+        annotations:
+          summary: "PBX SITE DOWN: Boston (vps-bos) is unreachable from every other site"
+          description: "Phone system is offline. All other Boston alerts are suppressed."
 
       - alert: SiteLinkLossy
         expr: rl_mesh_loss_ratio{path="overlay"} > 0.1
