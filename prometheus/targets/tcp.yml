@@ -1,0 +1,7 @@
+# Raw TCP checks for things without a useful HTTP endpoint.
+- {targets: ['172.20.2.16:32400'],  labels: {module: tcp_connect, host: plex, site: pdx, service: Plex}}
+- {targets: ['172.20.2.195:636'],   labels: {module: tcp_connect, host: authentik, site: pdx, service: LDAPS (Authentik)}}
+- {targets: ['172.20.1.10:2049'],   labels: {module: tcp_connect, host: nas, site: pdx, service: NAS NFS}}
+- {targets: ['172.20.1.10:445'],    labels: {module: tcp_connect, host: nas, site: pdx, service: NAS SMB}}
+- {targets: ['172.20.1.13:1883'],   labels: {module: tcp_connect, host: homeassistant, site: pdx, service: MQTT broker}}
+- {targets: ['100.64.0.11:2049'],   labels: {module: tcp_connect, host: pi-pcb, site: pcb, service: Backup NFS (pcb)}}

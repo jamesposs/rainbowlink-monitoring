@@ -1,0 +1,5 @@
+# Internet reachability from home. Three independent anchors so one provider's
+# outage doesn't look like ours. Alert fires only when ALL are unreachable.
+- {targets: ['1.1.1.1'], labels: {wan_target: cloudflare}}
+- {targets: ['8.8.8.8'], labels: {wan_target: google}}
+- {targets: ['9.9.9.9'], labels: {wan_target: quad9}}

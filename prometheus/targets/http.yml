@@ -1,0 +1,23 @@
+# Internal service checks (probed from the monitoring server).
+#   module: http_2xx | http_2xx_insecure (self-signed) | http_responds (any live answer)
+#   host:   which host runs it (alerts about that host silence this one)
+#   service: name shown in alerts and dashboards
+- {targets: ['https://login.rainbowlink.org/-/health/live/'], labels: {module: http_2xx, host: authentik, site: pdx, service: Authentik SSO}}
+- {targets: ['https://paperless.rainbowlink.org/'],           labels: {module: http_2xx, host: paperless, site: pdx, service: Paperless}}
+- {targets: ['https://speed.rainbowlink.org/'],               labels: {module: http_2xx, host: speed, site: pdx, service: Speed test}}
+- {targets: ['https://welcome.rainbowlink.org/'],             labels: {module: http_2xx, host: links, site: pdx, service: Guest welcome}}
+- {targets: ['https://advlog.rainbowlink.org/'],              labels: {module: http_2xx, host: adventurelog, site: pdx, service: AdventureLog}}
+- {targets: ['https://web.rainbowlink.org/'],                 labels: {module: http_2xx_insecure, host: web, site: pdx, service: Web host}}
+- {targets: ['https://ha.rainbowlink.org/'],                  labels: {module: http_2xx, host: homeassistant, site: pdx, service: Home Assistant}}
+- {targets: ['https://pve0.rainbowlink.org:8006/'],           labels: {module: http_2xx_insecure, host: pve0, site: pdx, service: Proxmox UI}}
+- {targets: ['https://nas.rainbowlink.org:5001/'],            labels: {module: http_responds, host: nas, site: pdx, service: NAS DSM}}
+- {targets: ['https://unifi.rainbowlink.org/'],               labels: {module: http_2xx_insecure, host: gateway, site: pdx, service: UniFi gateway UI}}
+- {targets: ['https://dns1.rainbowlink.org:53443/'],          labels: {module: http_2xx, host: dns1, site: pdx, service: DNS admin UI}}
+- {targets: ['https://dns2.rainbowlink.org:53443/'],          labels: {module: http_2xx, host: dns2, site: pdx, service: DNS admin UI}}
+- {targets: ['https://pbx2.rainbowlink.org/'],                labels: {module: http_2xx, host: vps-bos, site: bos, service: PBX admin UI}}
+- {targets: ['http://172.20.1.12:8089/'],                     labels: {module: http_2xx, host: channels, site: pdx, service: Channels DVR}}
+- {targets: ['http://172.20.2.231:8181/status'],              labels: {module: http_2xx, host: tautulli, site: pdx, service: Tautulli}}
+- {targets: ['http://172.20.2.144:3000/'],                    labels: {module: http_2xx, host: homepage, site: pdx, service: Homepage}}
+- {targets: ['http://172.20.2.197:9999/'],                    labels: {module: http_2xx, host: stash, site: pdx, service: Stash}}
+- {targets: ['http://172.20.1.35:631/'],                      labels: {module: http_2xx, host: printersvc, site: pdx, service: CUPS}}
+- {targets: ['http://172.20.2.230:8088/'],                    labels: {module: http_responds, host: sms, site: pdx, service: SMS gateway}}

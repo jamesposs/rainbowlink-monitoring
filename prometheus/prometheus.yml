@@ -1,0 +1,129 @@
+# Prometheus main config. Hosts/services to monitor live in targets/*.yml
+# (re-read automatically, no restart needed). Alert logic lives in rules/*.yml.
+global:
+  scrape_interval: 30s
+  scrape_timeout: 15s
+  evaluation_interval: 30s
+  external_labels: {monitor: rainbowlink}
+
+rule_files: [/etc/prometheus/rules/*.yml]
+
+alerting:
+  alertmanagers:
+    - static_configs: [{targets: ["alertmanager:9093"]}]
+
+scrape_configs:
+  # --- the monitoring stack itself ------------------------------------------
+  - job_name: self
+    static_configs:
+      - {targets: ["localhost:9090"], labels: {host: grafana, site: pdx, component: prometheus}}
+      - {targets: ["alertmanager:9093"], labels: {host: grafana, site: pdx, component: alertmanager}}
+      - {targets: ["blackbox:9115"], labels: {host: grafana, site: pdx, component: blackbox}}
+      - {targets: ["grafana:3000"], labels: {host: grafana, site: pdx, component: grafana}}
+
+  # --- host metrics (node_exporter on every Linux host; tailnet address) ----
+  - job_name: node
+    file_sd_configs: [{files: [/etc/prometheus/targets/hosts.yml]}]
+    relabel_configs:
+      - {source_labels: [__address__], target_label: host}
+      - {source_labels: [host], target_label: instance}
+      - {source_labels: [ts_ip], regex: "", action: drop}            # no tailnet address -> no agent
+      - {source_labels: [agent], regex: none, action: drop}          # appliances (nas, gateway, ha)
+      - {source_labels: [ts_ip], target_label: __address__, replacement: "$1:9100"}
+
+  # --- reachability of every host (ICMP, LAN address at home / tailnet remote)
+  - job_name: icmp-hosts
+    metrics_path: /probe
+    params: {module: [icmp]}
+    file_sd_configs: [{files: [/etc/prometheus/targets/hosts.yml]}]
+    relabel_configs:
+      - {source_labels: [__address__], target_label: host}
+      - {source_labels: [host], target_label: instance}
+      - {source_labels: [addr], target_label: __param_target}
+      - {target_label: __address__, replacement: "blackbox:9115"}
+
+  # (site-to-site mesh needs no job: every vantage host publishes rl_mesh_* through
+  #  its node_exporter, see the monitoring_agent role in /opt/ansible)
+
+  # --- internet / WAN (from home) -------------------------------------------
+  - job_name: wan
+    metrics_path: /probe
+    params: {module: [icmp]}
+    file_sd_configs: [{files: [/etc/prometheus/targets/wan.yml]}]
+    relabel_configs:
+      - {source_labels: [__address__], target_label: __param_target}
+      - {source_labels: [__address__], target_label: instance}
+      - {target_label: __address__, replacement: "blackbox:9115"}
+
+  # --- services: HTTP(S) with expected status / content, and cert expiry ----
+  - job_name: http
+    metrics_path: /probe
+    file_sd_configs: [{files: [/etc/prometheus/targets/http.yml]}]
+    relabel_configs: &probe_relabel
+      - {source_labels: [__address__], target_label: __param_target}
+      - {source_labels: [module], target_label: __param_module}
+      - {source_labels: [__address__], target_label: instance}
+      - {target_label: __address__, replacement: "blackbox:9115"}
+
+  # --- the same kind of check but from OUTSIDE (public internet view) -------
+  - job_name: http-public
+    metrics_path: /probe
+    file_sd_configs: [{files: [/etc/prometheus/targets/public.yml]}]
+    relabel_configs:
+      - {source_labels: [__address__], target_label: __param_target}
+      - {source_labels: [module], target_label: __param_module}
+      - {source_labels: [__address__], target_label: instance}
+      - {target_label: __address__, replacement: "100.64.0.1:9115"}   # vps-sjc vantage point
+
+  # --- DNS: real queries against every resolver -----------------------------
+  - job_name: dns
+    metrics_path: /probe
+    file_sd_configs: [{files: [/etc/prometheus/targets/dns.yml]}]
+    relabel_configs: *probe_relabel
+
+  # --- raw TCP service checks (ldap, nfs, smb, ...) -------------------------
+  - job_name: tcp
+    metrics_path: /probe
+    file_sd_configs: [{files: [/etc/prometheus/targets/tcp.yml]}]
+    relabel_configs: *probe_relabel
+
+  # --- SNMP appliances ------------------------------------------------------
+  - job_name: snmp-nas
+    metrics_path: /snmp
+    scrape_interval: 60s
+    scrape_timeout: 45s
+    params: {auth: [rainbowlink], module: [synology, if_mib]}
+    static_configs:
+      - {targets: ["172.20.1.10"], labels: {host: nas, site: pdx, kind: appliance, role: storage}}
+    relabel_configs: &snmp_relabel
+      - {source_labels: [__address__], target_label: __param_target}
+      - {source_labels: [host], target_label: instance}
+      - {target_label: __address__, replacement: "snmp:9116"}
+  - job_name: snmp-gateway
+    metrics_path: /snmp
+    scrape_interval: 60s
+    scrape_timeout: 45s
+    params: {auth: [rainbowlink], module: [if_mib, ucd_system_stats, ucd_memory]}
+    static_configs:
+      - {targets: ["172.20.1.1"], labels: {host: gateway, site: pdx, kind: appliance, role: network}}
+    relabel_configs: *snmp_relabel
+
+  # --- Proxmox (read-only API token) ----------------------------------------
+  - job_name: pve
+    metrics_path: /pve
+    params: {module: [default], cluster: ["1"], node: ["1"]}
+    static_configs:
+      - {targets: ["100.64.0.14"], labels: {host: pve0, site: pdx, kind: host}}
+    relabel_configs:
+      - {source_labels: [__address__], target_label: __param_target}
+      - {source_labels: [host], target_label: instance}
+      - {target_label: __address__, replacement: "pve-exporter:9221"}
+
+  # --- Home Assistant (its built-in Prometheus endpoint) --------------------
+  - job_name: homeassistant
+    scheme: https
+    metrics_path: /api/prometheus
+    authorization: {type: Bearer, credentials_file: /run/secrets/ha_token}
+    tls_config: {insecure_skip_verify: true}     # reached by IP; cert is for ha.rainbowlink.org
+    static_configs:
+      - {targets: ["172.20.1.13:443"], labels: {host: homeassistant, site: pdx, kind: vm, parent: pve0, role: home-automation}}

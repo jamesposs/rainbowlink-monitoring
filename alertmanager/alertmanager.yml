@@ -1,0 +1,112 @@
+# How alerts reach you.
+#   critical  -> Pushover EMERGENCY (repeats until you acknowledge in the app)   [wakes you]
+#   warning   -> ONE Pushover message each morning (08:00-09:00), normal priority [next day]
+#   Watchdog  -> external dead-man's switch (healthchecks.io) every 2 minutes
+# Secrets are files under /opt/monitoring/secrets (never in git).
+global:
+  resolve_timeout: 5m
+
+templates: ["/etc/alertmanager/templates/*.tmpl"]
+
+time_intervals:
+  - name: morning
+    time_intervals:
+      - times: [{start_time: "08:00", end_time: "09:00"}]
+        location: America/Los_Angeles
+
+route:
+  receiver: morning-digest
+  group_by: []
+  group_wait: 1m
+  group_interval: 30m
+  repeat_interval: 24h
+  routes:
+    - matchers: [alertname="Watchdog"]
+      receiver: deadmans-switch
+      group_by: [alertname]
+      group_wait: 0s
+      group_interval: 1m
+      repeat_interval: 2m
+      continue: false
+
+    - matchers: [severity="critical"]
+      receiver: pager
+      group_by: [alertname, host]
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 4h
+
+    - matchers: [severity="warning"]
+      receiver: morning-digest
+      group_by: []
+      group_wait: 1m
+      group_interval: 30m
+      repeat_interval: 24h
+      active_time_intervals: [morning]
+
+    - matchers: [severity="none"]
+      receiver: "null"
+
+receivers:
+  - name: "null"
+
+  - name: pager
+    pushover_configs:
+      - user_key_file: /run/secrets/pushover_user
+        token_file: /run/secrets/pushover_token
+        priority: '{{ if eq .Status "firing" }}2{{ else }}0{{ end }}'
+        retry: 300s          # re-alert every 5 min until acknowledged ...
+        expire: 1h           # ... for at most 1 hour
+        sound: siren
+        title: '{{ template "rl.title" . }}'
+        message: '{{ template "rl.message" . }}'
+        html: true
+        send_resolved: true
+
+  - name: morning-digest
+    pushover_configs:
+      - user_key_file: /run/secrets/pushover_user
+        token_file: /run/secrets/pushover_token
+        priority: '0'
+        title: '{{ template "rl.digest.title" . }}'
+        message: '{{ template "rl.message" . }}'
+        html: true
+        send_resolved: false
+
+  - name: deadmans-switch
+    webhook_configs:
+      - url_file: /run/secrets/healthchecks_url
+        send_resolved: false
+        max_alerts: 1
+
+# Dependencies: when the cause is firing, the symptoms stay quiet.
+inhibit_rules:
+  # A remote site that is down hides everything about hosts/services at that site.
+  - source_matchers: [alertname="SiteDown"]
+    target_matchers: [alertname!="SiteDown"]
+    equal: [site]
+  # No internet at home hides every remote-site and public-service alert.
+  - source_matchers: [alertname="WanDown"]
+    target_matchers: ['site=~"pcb|sjc|bos"']
+  - source_matchers: [alertname="WanDown"]
+    target_matchers: [alertname=~"PublicServiceDown|SiteLink.*|SiteDown|MeshProbeStale|DnsResolverFailing"]
+  # Home gateway down hides everything at home.
+  - source_matchers: [alertname=~"HostDown.*", host="gateway"]
+    target_matchers: ['site="pdx"', 'host!="gateway"']
+  # Proxmox host down hides every guest and the services running on them (but not the NAS/gateway).
+  - source_matchers: [alertname=~"HostDown.*", host="pve0"]
+    target_matchers: ['site="pdx"', 'host!~"pve0|nas|gateway"']
+  # A host that is down hides its own services, agent and disk/etc. alerts.
+  - source_matchers: [alertname=~"HostDown.*"]
+    target_matchers: [alertname!~"HostDown.*"]
+    equal: [host]
+  # Tailnet trouble explains a bunch of ExporterDown alerts.
+  - source_matchers: [alertname="TailnetDegraded"]
+    target_matchers: [alertname="ExporterDown"]
+  # DNS outage hides the per-resolver alert.
+  - source_matchers: [alertname="DnsOutage"]
+    target_matchers: [alertname="DnsResolverFailing"]
+  # A host that is down or exporter-less cannot produce meaningful host metrics alerts.
+  - source_matchers: [alertname="ExporterDown"]
+    target_matchers: [alertname=~"HostMetricsCollectorStale|MeshProbeStale"]
+    equal: [host]

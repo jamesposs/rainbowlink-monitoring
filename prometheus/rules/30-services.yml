@@ -1,0 +1,55 @@
+groups:
+  - name: services
+    rules:
+      - alert: ServiceDown
+        expr: probe_success{job=~"http|tcp"} == 0
+        for: 5m
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.service }} is not working ({{ $labels.host }})"
+          description: "Check {{ $labels.instance }} has failed for 5+ minutes."
+
+      - alert: PublicServiceDown
+        expr: probe_success{job="http-public"} == 0
+        for: 5m
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.service }} is unreachable from the internet"
+          description: "Probed from outside (vps-sjc). If the internal check is fine, the problem is the WAN, tunnel or DNS."
+
+      - alert: DnsResolverFailing
+        expr: probe_success{job="dns"} == 0
+        for: 3m
+        labels: {severity: warning}
+        annotations:
+          summary: "DNS resolver {{ $labels.host }} failed a real query ({{ $labels.module }})"
+          description: "{{ $labels.instance }} did not return a valid answer."
+
+      # Both home resolvers failing means nothing on the LAN resolves names.
+      - alert: DnsOutage
+        expr: sum(probe_success{job="dns", critical_group="dns"}) == 0
+        for: 2m
+        labels: {severity: critical, site: pdx}
+        annotations:
+          summary: "DNS OUTAGE: neither dns1 nor dns2 is answering"
+          description: "Nothing on the home network can resolve names."
+
+      - alert: CertExpiresSoon
+        expr: (probe_ssl_earliest_cert_expiry{job=~"http|http-public"} - time()) < 21 * 86400
+        for: 30m
+        labels: {severity: warning}
+        annotations:
+          summary: "Certificate for {{ $labels.service }} expires in {{ $value | humanizeDuration }}"
+          description: "{{ $labels.instance }}. Check the renewal job (certbot/Cloudflare/Authentik) for this host."
+
+      - alert: HttpSlow
+        expr: probe_duration_seconds{job=~"http|http-public"} > 8
+        for: 30m
+        labels: {severity: warning}
+        annotations: {summary: "{{ $labels.service }} is very slow ({{ printf \"%.1f\" $value }} s)"}
+
+      - alert: HomeAssistantUnavailable
+        expr: up{job="homeassistant"} == 0
+        for: 5m
+        labels: {severity: warning}
+        annotations: {summary: "Home Assistant is not exposing metrics"}

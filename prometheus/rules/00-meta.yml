@@ -1,0 +1,42 @@
+# Severity policy (deliberately only two levels):
+#   critical = would wake you: the thing is crippled and waiting makes it worse. Pushover emergency.
+#   warning  = investigate tomorrow. Collected into ONE morning notification.
+# Dependencies/noise reduction live in alertmanager/alertmanager.yml (inhibit_rules).
+groups:
+  - name: meta
+    rules:
+      # Always firing. Alertmanager forwards it to the external dead-man's switch every
+      # couple of minutes; if the pings STOP, the external service pages you.
+      - alert: Watchdog
+        expr: vector(1)
+        labels: {severity: none}
+        annotations: {summary: "Monitoring pipeline alive (always firing by design)"}
+
+      - alert: MonitoringTargetDown
+        expr: up{job=~"self|snmp-.*|pve|homeassistant"} == 0
+        for: 10m
+        labels: {severity: warning}
+        annotations:
+          summary: "Monitoring cannot collect from {{ $labels.host }} ({{ $labels.job }})"
+          description: "{{ $labels.job }} scrape has failed for 10 minutes; dashboards for it are stale."
+
+      - alert: AlertDeliveryFailing
+        expr: sum(increase(alertmanager_notifications_failed_total[15m])) > 0
+        for: 5m
+        labels: {severity: warning}
+        annotations:
+          summary: "Alertmanager is failing to deliver notifications"
+          description: "Check Pushover credentials/connectivity. Alerts may not be reaching you."
+
+      - alert: RuleEvaluationFailing
+        expr: increase(prometheus_rule_evaluation_failures_total[15m]) > 0
+        for: 5m
+        labels: {severity: warning}
+        annotations: {summary: "Prometheus rule evaluation is failing (an alert rule is broken)"}
+
+      - alert: HostMetricsCollectorStale
+        expr: time() - rl_host_metrics_last_run_timestamp_seconds > 1800
+        for: 10m
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.host }}: host-metrics timer stopped (apt/Docker data stale)"

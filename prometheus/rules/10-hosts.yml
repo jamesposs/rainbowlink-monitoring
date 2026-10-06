@@ -1,0 +1,110 @@
+groups:
+  - name: hosts
+    rules:
+      - alert: HostDown
+        expr: probe_success{job="icmp-hosts", critical!="true"} == 0
+        for: 3m
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.host }} is not answering ping"
+          description: "{{ $labels.host }} ({{ $labels.role }}, {{ $labels.site }}) has been unreachable for 3+ minutes."
+
+      - alert: HostDownCritical          # only hosts flagged critical: "true" in targets/hosts.yml
+        expr: probe_success{job="icmp-hosts", critical="true"} == 0
+        for: 3m
+        labels: {severity: critical, alertname_family: HostDown}
+        annotations:
+          summary: "{{ $labels.host }} is DOWN ({{ $labels.role }})"
+          description: "{{ $labels.host }} has not answered ping for 3+ minutes."
+
+      # Ping works but the agent doesn't: agent/tailnet problem, not a host outage.
+      - alert: ExporterDown
+        expr: up{job="node"} == 0 unless on(host) (probe_success{job="icmp-hosts"} == 0)
+        for: 10m
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.host }}: monitoring agent unreachable (host answers ping)"
+          description: "node_exporter on {{ $labels.host }} ({{ $labels.instance }}) is not responding. Check prometheus-node-exporter and tailscale on the host."
+
+      - alert: DiskAlmostFull
+        expr: |
+          (node_filesystem_avail_bytes{fstype!~"tmpfs|overlay|squashfs|ramfs|devtmpfs|nfs.*|cifs|fuse.*|autofs"}
+            / node_filesystem_size_bytes) < 0.15
+          and node_filesystem_size_bytes > 1e9
+        for: 15m
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.host }}: {{ $labels.mountpoint }} has only {{ $value | humanizePercentage }} free"
+          description: "Less than 15% free on {{ $labels.mountpoint }} ({{ $labels.fstype }})."
+
+      - alert: DiskFillingUp
+        expr: |
+          predict_linear(node_filesystem_avail_bytes{fstype!~"tmpfs|overlay|squashfs|ramfs|devtmpfs|nfs.*|cifs|fuse.*|autofs"}[6h], 24*3600) < 0
+          and (node_filesystem_avail_bytes / node_filesystem_size_bytes) < 0.35
+          and node_filesystem_size_bytes > 1e9
+        for: 1h
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.host }}: {{ $labels.mountpoint }} will fill within 24h at the current rate"
+
+      - alert: FilesystemReadOnly
+        expr: node_filesystem_readonly{fstype!~"tmpfs|overlay|squashfs|ramfs|devtmpfs|iso9660|nfs.*|cifs|fuse.*|autofs"} == 1
+        for: 5m
+        labels: {severity: warning}
+        annotations: {summary: "{{ $labels.host }}: {{ $labels.mountpoint }} went read-only"}
+
+      - alert: MemoryLow
+        expr: (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) < 0.08
+        for: 15m
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.host }}: only {{ $value | humanizePercentage }} of memory available"
+
+      - alert: OomKill
+        expr: increase(node_vmstat_oom_kill[15m]) > 0
+        labels: {severity: warning}
+        annotations: {summary: "{{ $labels.host }}: the kernel killed a process (out of memory)"}
+
+      - alert: CpuSaturated
+        # LXC guests are excluded: inside a container /proc/stat shows the whole hypervisor.
+        # Guests are covered by GuestCpuSaturated (Proxmox's own per-guest figure) instead.
+        expr: (1 - avg by (host) (rate(node_cpu_seconds_total{mode="idle", kind!="lxc"}[5m]))) > 0.92
+        for: 30m
+        labels: {severity: warning}
+        annotations: {summary: "{{ $labels.host }}: CPU above 92% for 30 minutes"}
+
+      - alert: GuestCpuSaturated
+        expr: (pve_cpu_usage_ratio{id=~"lxc/.*|qemu/.*"} * on(id) group_left(name) pve_guest_info) > 0.9
+        for: 1h
+        labels: {severity: warning, site: pdx, host: pve0}
+        annotations: {summary: "Guest {{ $labels.name }} has used over 90% of its CPU allocation for an hour"}
+
+      - alert: SystemdUnitFailed
+        # Known-benign failures excluded (James: fix or keep excluded): speed sssd-*.socket,
+        # printersvc cups-browsed, man-db timers.
+        expr: node_systemd_unit_state{state="failed", name!~"sssd-.*|cups-browsed.*|man-db.*"} == 1
+        for: 10m
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.host }}: service {{ $labels.name }} has failed"
+
+      - alert: DockerContainerDown
+        expr: docker_container_up == 0
+        for: 5m
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.host }}: container {{ $labels.name }} is {{ $labels.state }}"
+          description: "A Docker container is not running. If it was stopped on purpose, remove it (docker rm) so this stops alerting."
+
+      - alert: DockerContainerUnhealthy
+        expr: docker_container_unhealthy == 1
+        for: 10m
+        labels: {severity: warning}
+        annotations: {summary: "{{ $labels.host }}: container {{ $labels.name }} reports unhealthy"}
+
+      - alert: DiskSmartFailing
+        # Virtual disks (VPS/LXC) can't report SMART: only physical hosts count.
+        expr: smartmon_device_smart_healthy{kind=~"host|rpi"} == 0
+        for: 5m
+        labels: {severity: warning}
+        annotations: {summary: "{{ $labels.host }}: SMART reports disk {{ $labels.disk }} is failing"}

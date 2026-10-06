@@ -1,0 +1,19 @@
+apiVersion: 1
+deleteDatasources:          # one-time migration: replaces the old UI-created entry (no dashboards depended on it)
+  - {name: Prometheus, orgId: 1}
+datasources:
+  - name: Prometheus
+    uid: prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: false
+    jsonData: {timeInterval: 30s}
+  - name: Alertmanager
+    uid: alertmanager
+    type: alertmanager
+    access: proxy
+    url: http://alertmanager:9093
+    editable: false
+    jsonData: {implementation: prometheus}

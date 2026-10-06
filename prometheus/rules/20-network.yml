@@ -1,0 +1,70 @@
+groups:
+  - name: network
+    rules:
+      # Internet is judged by three independent anchors; only "all three gone" counts.
+      - alert: WanDown
+        expr: sum(probe_success{job="wan"}) == 0
+        for: 3m
+        labels: {severity: warning, site: pdx}
+        annotations:
+          summary: "Home internet is unreachable (all anchors failing)"
+          description: "If this lasts, the external dead-man's switch will page you (this alert cannot, the internet is down)."
+
+      - alert: WanDegraded
+        expr: (sum(avg_over_time(probe_success{job="wan"}[10m])) / count(probe_success{job="wan"})) < 0.9
+        for: 10m
+        labels: {severity: warning, site: pdx}
+        annotations: {summary: "Home internet is dropping packets (only {{ $value | humanizePercentage }} of probes succeeded over 10m)"}
+
+      - alert: WanLatencyHigh
+        expr: avg(avg_over_time(probe_icmp_duration_seconds{job="wan", phase="rtt"}[15m])) > 0.15
+        for: 15m
+        labels: {severity: warning, site: pdx}
+        annotations: {summary: "Home internet latency is high ({{ $value | humanizeDuration }} average)"}
+
+      # A remote site is down when EVERY vantage point that can see it fails to reach it.
+      # (If only home fails to reach everything, that is a home-internet problem, not 3 sites.)
+      - alert: SiteDown
+        expr: |
+          label_replace(
+            (count by (to) (rl_mesh_loss_ratio{path="overlay"} >= 1)
+              == count by (to) (rl_mesh_loss_ratio{path="overlay"}))
+            and count by (to) (rl_mesh_loss_ratio{path="overlay"}) >= 2,
+          "site", "$1", "to", "(.*)")
+        for: 3m
+        labels: {severity: warning}
+        annotations:
+          summary: "Site {{ $labels.to }} is unreachable from every other site"
+          description: "All vantage points report 100% loss to {{ $labels.to }}. Alerts for hosts at that site are suppressed."
+
+      - alert: SiteLinkLossy
+        expr: rl_mesh_loss_ratio{path="overlay"} > 0.1
+        for: 15m
+        labels: {severity: warning}
+        annotations:
+          summary: "Packet loss {{ $labels.host }} -> {{ $labels.to }}: {{ $value | humanizePercentage }}"
+          description: "Sustained over the {{ $labels.path }} path (tailnet). Check the dashboard to see whether it is one link or many."
+
+      - alert: SiteLinkSlow
+        expr: |
+          rl_mesh_rtt_seconds{stat="avg", path="overlay"} > 0.05
+          and rl_mesh_rtt_seconds{stat="avg", path="overlay"}
+              > 2.5 * avg_over_time(rl_mesh_rtt_seconds{stat="avg", path="overlay"}[1d] offset 15m)
+        for: 20m
+        labels: {severity: warning}
+        annotations:
+          summary: "Latency {{ $labels.host }} -> {{ $labels.to }} is {{ $value | humanizeDuration }}, far above its normal"
+
+      - alert: MeshProbeStale
+        expr: time() - rl_mesh_last_run_timestamp_seconds > 600
+        for: 5m
+        labels: {severity: warning}
+        annotations: {summary: "{{ $labels.host }}: site-to-site probe stopped reporting"}
+
+      - alert: TailnetDegraded
+        expr: count(up{job="node"} == 0 and on(host) (probe_success{job="icmp-hosts"} == 1)) > 3
+        for: 5m
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $value }} hosts answer ping but their agents are unreachable: tailnet problem?"
+          description: "Individual ExporterDown alerts are suppressed. Check Headscale (vps-sjc) and the tailscale subnet router."

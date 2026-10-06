@@ -1,0 +1,58 @@
+# Probe modules used by Prometheus (targets pick one via their `module` label).
+modules:
+  icmp:
+    prober: icmp
+    timeout: 5s
+    icmp: {preferred_ip_protocol: ip4, ip_protocol_fallback: false}
+
+  http_2xx:                      # HTTPS/HTTP must answer 2xx (redirects followed), cert verified
+    prober: http
+    timeout: 10s
+    http: {preferred_ip_protocol: ip4, ip_protocol_fallback: false, follow_redirects: true}
+
+  http_2xx_insecure:             # self-signed internal UIs (Proxmox, UniFi, DSM): still reports cert expiry
+    prober: http
+    timeout: 10s
+    http:
+      preferred_ip_protocol: ip4
+      ip_protocol_fallback: false
+      follow_redirects: true
+      tls_config: {insecure_skip_verify: true}
+
+  http_responds:                 # "the service answers HTTP at all" (404/401/403 count as alive)
+    prober: http
+    timeout: 10s
+    http:
+      preferred_ip_protocol: ip4
+      ip_protocol_fallback: false
+      valid_status_codes: [200, 204, 301, 302, 401, 403, 404]
+      tls_config: {insecure_skip_verify: true}
+
+  tcp_connect:
+    prober: tcp
+    timeout: 5s
+    tcp: {preferred_ip_protocol: ip4, ip_protocol_fallback: false}
+
+  dns_internal:                  # a name only OUR zone answers: proves the resolver serves our data
+    prober: dns
+    timeout: 5s
+    dns:
+      preferred_ip_protocol: ip4
+      ip_protocol_fallback: false
+      query_name: ha.rainbowlink.org
+      query_type: A
+      valid_rcodes: [NOERROR]
+      validate_answer_rrs:
+        fail_if_not_matches_regexp: ['ha\.rainbowlink\.org\.\s+\d+\s+IN\s+A\s+172\.20\.1\.13']
+
+  dns_recursive:                 # a public name: proves forwarding/upstream works
+    prober: dns
+    timeout: 5s
+    dns:
+      preferred_ip_protocol: ip4
+      ip_protocol_fallback: false
+      query_name: cloudflare.com
+      query_type: A
+      valid_rcodes: [NOERROR]
+      validate_answer_rrs:
+        fail_if_none_matches_regexp: ['IN\s+A\s+\d+\.\d+\.\d+\.\d+']

@@ -1,0 +1,101 @@
+# Monitoring stack for Rainbowlink. Config-as-code: edit files here, run ./scripts/apply.sh.
+# Images are pinned on purpose; see README "Upgrading".
+name: monitoring
+
+services:
+  prometheus:
+    image: prom/prometheus:v3.15.0
+    container_name: prometheus
+    restart: unless-stopped
+    ports: ["127.0.0.1:9090:9090"]          # not exposed; Grafana reaches it on the compose network
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=180d
+      - --storage.tsdb.retention.size=30GB
+      - --web.enable-lifecycle               # reload without restart (localhost only)
+    volumes:
+      - ./prometheus:/etc/prometheus:ro
+      - ./secrets:/run/secrets:ro
+      - prometheus_data:/prometheus
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9090/-/ready"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  alertmanager:
+    image: prom/alertmanager:v0.34.1
+    container_name: alertmanager
+    restart: unless-stopped
+    ports: ["127.0.0.1:9093:9093"]
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --storage.path=/alertmanager
+      - --data.retention=240h
+    volumes:
+      - ./alertmanager:/etc/alertmanager:ro
+      - ./secrets:/run/secrets:ro
+      - alertmanager_data:/alertmanager
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9093/-/ready"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  blackbox:
+    image: prom/blackbox-exporter:v0.28.0
+    container_name: blackbox
+    restart: unless-stopped
+    cap_add: [NET_RAW]                       # ICMP
+    command: ["--config.file=/etc/blackbox/blackbox.yml"]
+    volumes:
+      - ./blackbox:/etc/blackbox:ro
+
+  snmp:
+    image: prom/snmp-exporter:v0.30.1
+    container_name: snmp
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/snmp_exporter/snmp.yml    # bundled modules (synology, if_mib, ...)
+      - --config.file=/etc/snmp/auth.yml             # our community (secret, not in git)
+    volumes:
+      - ./secrets/snmp-auth.yml:/etc/snmp/auth.yml:ro
+
+  pve-exporter:
+    image: prompve/prometheus-pve-exporter:3.10.1
+    container_name: pve-exporter
+    restart: unless-stopped
+    user: "65534:65534"                      # same uid as the other secret readers
+    volumes:
+      - ./secrets/pve.yml:/etc/prometheus/pve.yml:ro
+
+  grafana:
+    image: grafana/grafana:12.4.1
+    container_name: grafana
+    restart: unless-stopped
+    ports: ["3000:3000"]                     # existing: reached via Cloudflare tunnel + Authentik SSO
+    env_file: .env                           # GF_SECURITY_ADMIN_PASSWORD lives here (not in git)
+    environment:
+      - GF_AUTH_GENERIC_OAUTH_ENABLED=true
+      - GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP=true
+      - GF_AUTH_GENERIC_OAUTH_AUTO_LOGIN=false
+      - GF_AUTH_GENERIC_OAUTH_SCOPES=openid profile email
+      - GF_AUTH_GENERIC_OAUTH_LOGIN_ATTRIBUTE_PATH=preferred_username
+      - GF_AUTH_GENERIC_OAUTH_NAME_ATTRIBUTE_PATH=name
+      - GF_AUTH_GENERIC_OAUTH_EMAIL_ATTRIBUTE_PATH=email
+      - GF_SERVER_DOMAIN=grafana.rainbowlink.org
+      - GF_SERVER_ROOT_URL=https://grafana.rainbowlink.org
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/overview.json
+      - GF_ANALYTICS_REPORTING_ENABLED=false
+      - GF_ANALYTICS_CHECK_FOR_UPDATES=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on: [prometheus]
+
+volumes:
+  prometheus_data:
+  alertmanager_data:
+  grafana_data:
