@@ -1,0 +1,51 @@
+# Unit tests for alert rules: `promtool test rules` runs these on every ./scripts/apply.sh.
+# Add a case when you add or change a rule you care about.
+rule_files:
+  - ../rules/40-storage-backups.yml
+  - ../rules/10-hosts.yml
+evaluation_interval: 1m
+
+tests:
+  # Hyper Backup: daily ~09:35; alert only after 28h + 30m grace.
+  - interval: 1m
+    input_series:
+      - series: 'rl_hyperbackup_last_commit_timestamp_seconds{repo="nas_hq_set2", host="pi-pcb"}'
+        values: '0+0x6000'                      # last commit at t=0 and never again
+    alert_rule_test:
+      - eval_time: 27h
+        alertname: HyperBackupStale
+        exp_alerts: []                          # 27h old: still within the daily window + grace
+      - eval_time: 28h20m
+        alertname: HyperBackupStale
+        exp_alerts: []                          # over 28h but inside the 30 min "for"
+      - eval_time: 29h
+        alertname: HyperBackupStale
+        exp_alerts:
+          - exp_labels: {severity: warning, site: pcb, repo: nas_hq_set2, host: pi-pcb}
+            exp_annotations:
+              summary: "No NAS Hyper Backup (nas_hq_set2) has completed for 1d 5h 0m 0s"
+              description: "Expected daily around 09:35. Check Hyper Backup on the NAS (task log) and the rsync link to pi-pcb."
+
+  # Fresh backups never alert.
+  - interval: 1m
+    input_series:
+      - series: 'rl_hyperbackup_last_commit_timestamp_seconds{repo="nas_hq_set2", host="pi-pcb"}'
+        values: '0+60x6000'                     # timestamp advances with time = always fresh
+    alert_rule_test:
+      - eval_time: 40h
+        alertname: HyperBackupStale
+        exp_alerts: []
+
+  # A stuck run (lock files kept alive for 12h+).
+  - interval: 1m
+    input_series:
+      - series: 'rl_hyperbackup_running{repo="nas_hq_set2", host="pi-pcb"}'
+        values: '1x1000'
+    alert_rule_test:
+      - eval_time: 13h
+        alertname: HyperBackupStuck
+        exp_alerts:
+          - exp_labels: {severity: warning, site: pcb, repo: nas_hq_set2, host: pi-pcb}
+            exp_annotations:
+              summary: "Hyper Backup nas_hq_set2 has been running for over 12 hours"
+              description: "A run normally takes minutes. It may be hung or the repository locked."

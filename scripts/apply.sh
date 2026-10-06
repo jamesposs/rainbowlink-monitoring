@@ -8,6 +8,7 @@ cd "$(dirname "$0")/.."
 echo "== validating"
 docker exec prometheus promtool check config /etc/prometheus/prometheus.yml | grep -E "FAILED|error" && exit 1 || true
 docker exec alertmanager amtool check-config /etc/alertmanager/alertmanager.yml | grep -E "FAILED|error" && exit 1 || true
+docker exec prometheus sh -c "promtool test rules /etc/prometheus/tests/*.yml" | grep -E "FAILED|error|SUCCESS" || { echo "alert rule tests failed"; exit 1; }
 docker compose config -q
 
 echo "== installing collector timers (systemd/)"
