@@ -73,7 +73,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_join(max by (job, instance, service, host, site) (probe_success{job=~\"http|tcp|http-public\"}), \"key\", \"|\", \"job\", \"instance\")",
+     "expr": "max by (key, service, host, site, probed_from) (label_replace(label_replace(label_join(probe_success{job=~\"http|tcp|http-public\"}, \"key\", \"|\", \"job\", \"instance\"), \"probed_from\", \"internet\", \"job\", \"http-public\"), \"probed_from\", \"inside\", \"job\", \"http|tcp\"))",
      "refId": "A",
      "instant": true,
      "range": false,
@@ -84,7 +84,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_join(max by (job, instance) (probe_duration_seconds{job=~\"http|tcp|http-public\"}), \"key\", \"|\", \"job\", \"instance\")",
+     "expr": "max by (key) (label_join(probe_duration_seconds{job=~\"http|tcp|http-public\"}, \"key\", \"|\", \"job\", \"instance\"))",
      "refId": "B",
      "instant": true,
      "range": false,
@@ -95,7 +95,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_join(max by (job, instance) (probe_http_status_code{job=~\"http|http-public\"}), \"key\", \"|\", \"job\", \"instance\")",
+     "expr": "max by (key) (label_join(probe_http_status_code{job=~\"http|http-public\"}, \"key\", \"|\", \"job\", \"instance\"))",
      "refId": "C",
      "instant": true,
      "range": false,
@@ -106,7 +106,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_join(max by (job, instance) (probe_ssl_earliest_cert_expiry{job=~\"http|http-public\"} - time()), \"key\", \"|\", \"job\", \"instance\")",
+     "expr": "max by (key) (label_join(probe_ssl_earliest_cert_expiry{job=~\"http|http-public\"} - time(), \"key\", \"|\", \"job\", \"instance\"))",
      "refId": "D",
      "instant": true,
      "range": false,
@@ -173,38 +173,19 @@
        },
        {
         "id": "custom.width",
-        "value": 80
+        "value": 100
        }
       ]
      },
      {
       "matcher": {
        "id": "byName",
-       "options": "Probed from"
+       "options": "Checked from"
       },
       "properties": [
        {
-        "id": "mappings",
-        "value": [
-         {
-          "type": "value",
-          "options": {
-           "http": {
-            "text": "inside"
-           },
-           "tcp": {
-            "text": "inside"
-           },
-           "http-public": {
-            "text": "internet"
-           }
-          }
-         }
-        ]
-       },
-       {
         "id": "custom.width",
-        "value": 90
+        "value": 110
        }
       ]
      },
@@ -304,20 +285,13 @@
      "options": {
       "excludeByName": {
        "Time": true,
-       "key": true,
-       "instance": true,
-       "job 1": true,
-       "job 2": true,
-       "job 3": true,
-       "instance 1": true,
-       "instance 2": true,
-       "instance 3": true
+       "key": true
       },
       "renameByName": {
        "service": "Service",
        "host": "Runs on",
        "site": "Site",
-       "job": "Probed from",
+       "probed_from": "Checked from",
        "Value #A": "Status",
        "Value #B": "Time",
        "Value #C": "HTTP",
@@ -325,7 +299,7 @@
       },
       "indexByName": {
        "service": 0,
-       "job": 1,
+       "probed_from": 1,
        "host": 2,
        "site": 3,
        "Value #A": 4,
