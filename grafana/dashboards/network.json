@@ -124,7 +124,7 @@
    "id": 3,
    "type": "stat",
    "title": "Primary WAN",
-   "description": "Xfinity",
+   "description": "",
    "gridPos": {
     "x": 3,
     "y": 1,
@@ -202,7 +202,7 @@
    "id": 4,
    "type": "stat",
    "title": "Backup WAN",
-   "description": "T-Mobile cellular backup. Standby is normal. IN USE means the primary link failed and internet is running over cellular.",
+   "description": "",
    "gridPos": {
     "x": 6,
     "y": 1,

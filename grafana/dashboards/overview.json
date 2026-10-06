@@ -43,7 +43,7 @@
    "id": 1,
    "type": "stat",
    "title": "Critical",
-   "description": "Things that should wake you up. Normal state: None.",
+   "description": "",
    "gridPos": {
     "x": 0,
     "y": 0,
@@ -117,7 +117,7 @@
    "id": 2,
    "type": "stat",
    "title": "Warnings",
-   "description": "Things to look at today (also sent as ONE morning notification).",
+   "description": "",
    "gridPos": {
     "x": 3,
     "y": 0,
@@ -191,7 +191,7 @@
    "id": 3,
    "type": "stat",
    "title": "Hosts down",
-   "description": "Hosts that do not answer ping. See Servers & storage.",
+   "description": "",
    "gridPos": {
     "x": 6,
     "y": 0,
@@ -265,7 +265,7 @@
    "id": 4,
    "type": "stat",
    "title": "Failing",
-   "description": "Service checks (HTTP, TCP, DNS, public) that currently fail. See Services.",
+   "description": "",
    "gridPos": {
     "x": 9,
     "y": 0,
@@ -339,7 +339,7 @@
    "id": 5,
    "type": "stat",
    "title": "Internet",
-   "description": "Share of the 3 internet anchors (Cloudflare, Google, Quad9) reachable from home.",
+   "description": "",
    "gridPos": {
     "x": 12,
     "y": 0,
@@ -407,7 +407,7 @@
    "id": 6,
    "type": "stat",
    "title": "Lossy links",
-   "description": "Site-to-site links dropping more than 5% of packets. See Network.",
+   "description": "",
    "gridPos": {
     "x": 15,
     "y": 0,
@@ -481,7 +481,7 @@
    "id": 7,
    "type": "stat",
    "title": "Backups",
-   "description": "Guests whose newest backup is older than allowed (stale count).",
+   "description": "",
    "gridPos": {
     "x": 18,
     "y": 0,
@@ -555,7 +555,7 @@
    "id": 8,
    "type": "stat",
    "title": "Cert expiry",
-   "description": "Soonest TLS certificate expiry across monitored services.",
+   "description": "",
    "gridPos": {
     "x": 21,
     "y": 0,
