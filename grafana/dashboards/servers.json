@@ -161,6 +161,54 @@
      {
       "matcher": {
        "id": "byName",
+       "options": "Site"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 55
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Host"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 120
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Kind"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 60
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Role"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 130
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
        "options": "Agent"
       },
       "properties": [
@@ -932,11 +980,11 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "pve_disk_usage_bytes{id=~\"storage/.*\"} / pve_disk_size_bytes{id=~\"storage/.*\"} * 100",
+     "expr": "label_replace(pve_disk_usage_bytes{id=~\"storage/.*\"} / pve_disk_size_bytes{id=~\"storage/.*\"} * 100, \"id\", \"$1\", \"id\", \"storage/pve0/(.*)\")",
      "refId": "A",
      "instant": true,
      "range": false,
-     "legendFormat": "{{storage}} ({{id}})"
+     "legendFormat": "{{id}}"
     }
    ],
    "fieldConfig": {
@@ -1644,6 +1692,30 @@
      {
       "matcher": {
        "id": "byName",
+       "options": "Drive"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 80
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Model"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 170
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
        "options": "Health"
       },
       "properties": [
@@ -1933,7 +2005,7 @@
    "id": 16,
    "type": "table",
    "title": "Proxmox host drives (pve0)",
-   "description": "SATA drive via SMART attributes; NVMe via its health log (wear, spare, media errors). Wear % is life consumed.",
+   "description": "SATA drive via SMART attributes; NVMe via its health log. Wear = life consumed. Errors = reallocated sectors (SATA) or media errors (NVMe); Unreadable = pending + uncorrectable sectors. Alerts on growth/any non-zero.",
    "gridPos": {
     "x": 0,
     "y": 49,
@@ -1950,7 +2022,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "max by (disk, device_model, type) (smartmon_device_info{host=\"pve0\"})",
+     "expr": "max by (disk, device_model, type) (label_replace(smartmon_device_info{host=\"pve0\"}, \"device_model\", \"NVMe SSD (1 TB)\", \"type\", \"nvme\"))",
      "refId": "A",
      "instant": true,
      "range": false,
@@ -2189,7 +2261,7 @@
      {
       "matcher": {
        "id": "byName",
-       "options": "Bad sectors / media errors"
+       "options": "Errors"
       },
       "properties": [
        {
@@ -2220,7 +2292,7 @@
      {
       "matcher": {
        "id": "byName",
-       "options": "Pending + uncorrectable"
+       "options": "Unreadable"
       },
       "properties": [
        {
@@ -2245,6 +2317,42 @@
          "type": "color-background",
          "mode": "basic"
         }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Drive"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 90
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Model"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 150
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Type"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 60
        }
       ]
      }
@@ -2276,8 +2384,8 @@
        "Value #C": "Temp",
        "Value #D": "Age (power-on)",
        "Value #E": "Wear (NVMe)",
-       "Value #F": "Bad sectors / media errors",
-       "Value #G": "Pending + uncorrectable"
+       "Value #F": "Errors",
+       "Value #G": "Unreadable"
       },
       "indexByName": {
        "disk": 0,
