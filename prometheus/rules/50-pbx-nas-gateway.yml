@@ -95,8 +95,10 @@ groups:
           summary: "UniFi device {{ $labels.name }} ({{ $labels.type }}) has disappeared from the controller"
           description: "Offline for 10+ minutes. (If you removed it on purpose, this clears itself after a day.)"
 
-      - alert: GatewayMemoryHigh
-        expr: (1 - memAvailReal{job="snmp-gateway"} / memTotalReal{job="snmp-gateway"}) > 0.92
+      # Uses UniFi's own utilisation figure (cache excluded) for every UniFi device. The SNMP "free/total"
+      # formula counts disk cache as used and falsely reads ~94% on a gateway that is really at ~60-70%.
+      - alert: UnifiDeviceMemoryHigh
+        expr: unpoller_device_memory_utilization_ratio > 0.92
         for: 30m
         labels: {severity: warning, host: gateway, site: pdx}
-        annotations: {summary: "UniFi gateway memory is above 92%"}
+        annotations: {summary: "UniFi device {{ $labels.name }} memory is at {{ $value | humanizePercentage }}"}

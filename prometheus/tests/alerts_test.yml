@@ -129,3 +129,16 @@ tests:
             exp_annotations:
               summary: "Home Assistant's VoIP voice assistant (PBX2) is unavailable"
               description: "Voice commands over the phone system will not work. Check the VoIP integration in Home Assistant."
+
+  # UniFi memory: 73% (a healthy gateway) stays quiet; 95% for 30m+ alerts.
+  - interval: 1m
+    input_series:
+      - {series: 'unpoller_device_memory_utilization_ratio{name="Humboldt", type="udm"}', values: '0.73x60'}
+      - {series: 'unpoller_device_memory_utilization_ratio{name="Office AP", type="uap"}', values: '0.95x60'}
+    alert_rule_test:
+      - eval_time: 45m
+        alertname: UnifiDeviceMemoryHigh
+        exp_alerts:
+          - exp_labels: {severity: warning, host: gateway, site: pdx, name: Office AP, type: uap}
+            exp_annotations:
+              summary: "UniFi device Office AP memory is at 95%"
