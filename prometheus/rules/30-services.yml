@@ -53,3 +53,18 @@ groups:
         for: 5m
         labels: {severity: warning}
         annotations: {summary: "Home Assistant is not exposing metrics"}
+
+  - name: cloudflare
+    rules:
+      - alert: CloudflareTunnelUnhealthy
+        expr: rl_cloudflare_tunnel_healthy == 0
+        for: 10m
+        labels: {severity: warning, site: pdx}
+        annotations:
+          summary: "Cloudflare tunnel {{ $labels.tunnel }} is {{ $labels.status }}"
+          description: "Every public hostname behind this tunnel is unreachable from the internet. Check cloudflared on cloudflare-int / cloudflare-dmz / Home Assistant."
+      - alert: CloudflareTunnelCollectorStale
+        expr: time() - rl_cloudflare_last_run_timestamp_seconds > 900
+        for: 10m
+        labels: {severity: warning}
+        annotations: {summary: "Cloudflare tunnel health check stopped reporting"}

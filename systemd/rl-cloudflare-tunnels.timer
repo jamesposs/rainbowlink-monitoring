@@ -1,0 +1,7 @@
+[Unit]
+Description=Cloudflare tunnel health every 2 minutes
+[Timer]
+OnBootSec=90
+OnUnitActiveSec=120
+[Install]
+WantedBy=timers.target

@@ -113,6 +113,11 @@ scrape_configs:
       - {targets: ["172.20.1.1"], labels: {host: gateway, site: pdx, kind: appliance, role: network}}
     relabel_configs: *snmp_relabel
 
+  # --- UniFi (unpoller: devices, WAN/failover, clients) ----------------------
+  - job_name: unifi
+    static_configs:
+      - {targets: ["unpoller:9130"], labels: {host: gateway, site: pdx}}
+
   # --- Proxmox (read-only API token) ----------------------------------------
   - job_name: pve
     metrics_path: /pve

@@ -1,0 +1,12 @@
+[Unit]
+Description=Cloudflare tunnel health metrics
+After=network-online.target
+[Service]
+Type=oneshot
+User=prometheus
+LoadCredential=cloudflare_token:/opt/monitoring/secrets/cloudflare_token
+ExecStart=/usr/bin/python3 /opt/monitoring/scripts/cloudflare-tunnel-metrics.py
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/prometheus/node-exporter
+PrivateTmp=true
