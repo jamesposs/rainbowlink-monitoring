@@ -1,0 +1,85 @@
+groups:
+  - name: pbx
+    rules:
+      # A real SIP OPTIONS request is answered by Asterisk (401 counts: it proves the stack is alive).
+      - alert: PbxSipDown
+        expr: rl_sip_options_up == 0
+        for: 3m
+        labels: {severity: critical, host: vps-bos, site: bos}
+        annotations:
+          summary: "PBX is not answering SIP"
+          description: "Asterisk on vps-bos did not answer a SIP OPTIONS probe for 3+ minutes: phones and trunks are affected."
+      - alert: PbxTrunkDown
+        expr: rl_asterisk_registration_up == 0
+        for: 10m
+        labels: {severity: warning, host: vps-bos, site: bos}
+        annotations:
+          summary: "PBX trunk {{ $labels.trunk }} is not registered ({{ $labels.status }})"
+          description: "Check credentials/IP allow-list for this trunk (pjsip show registrations)."
+      - alert: PbxAllCarrierTrunksDown
+        expr: sum(rl_asterisk_registration_up{trunk=~"BulkVS|voipms"}) == 0
+        for: 5m
+        labels: {severity: critical, host: vps-bos, site: bos}
+        annotations:
+          summary: "PBX has NO carrier trunk registered (BulkVS and voip.ms both down)"
+          description: "No inbound or outbound external calls are possible."
+      - alert: PbxCollectorStale
+        expr: time() - rl_asterisk_metrics_last_run_timestamp_seconds > 600 or time() - rl_sip_probe_last_run_timestamp_seconds > 600
+        for: 5m
+        labels: {severity: warning}
+        annotations: {summary: "PBX check scripts stopped reporting (PBX alerts are blind)"}
+
+  - name: nas
+    rules:
+      - alert: NasDiskProblem
+        expr: (diskStatus{job="snmp-nas"} != 1) or (diskHealthStatus{job="snmp-nas"} != 1)
+        for: 5m
+        labels: {severity: warning, host: nas, site: pdx}
+        annotations:
+          summary: "NAS disk {{ $labels.diskID }} is not healthy"
+          description: "Synology reports a disk status/health other than Normal. Check Storage Manager."
+      - alert: NasRaidDegraded
+        expr: raidStatus{job="snmp-nas"} == 11
+        for: 5m
+        labels: {severity: warning, host: nas, site: pdx}
+        annotations: {summary: "NAS RAID is degraded (a disk has failed): rebuild/replace needed"}
+      - alert: NasRaidCrashed
+        expr: raidStatus{job="snmp-nas"} == 12
+        for: 2m
+        labels: {severity: critical, host: nas, site: pdx}
+        annotations: {summary: "NAS RAID volume has CRASHED", description: "Data on the NAS is at risk or unavailable."}
+      - alert: NasSystemFault
+        expr: (systemStatus{job="snmp-nas"} != 1) or (powerStatus{job="snmp-nas"} != 1) or (systemFanStatus{job="snmp-nas"} != 1) or (cpuFanStatus{job="snmp-nas"} != 1)
+        for: 10m
+        labels: {severity: warning, host: nas, site: pdx}
+        annotations: {summary: "NAS reports a system, power or fan fault"}
+      - alert: NasVolumeFull
+        expr: (1 - raidFreeSize{job="snmp-nas"} / raidTotalSize{job="snmp-nas"}) > 0.85
+        for: 1h
+        labels: {severity: warning, host: nas, site: pdx}
+        annotations: {summary: "NAS {{ $labels.raidName }} is {{ $value | humanizePercentage }} full"}
+      - alert: NasHot
+        expr: temperature{job="snmp-nas"} > 60 or diskTemperature{job="snmp-nas"} > 55
+        for: 30m
+        labels: {severity: warning, host: nas, site: pdx}
+        annotations: {summary: "NAS is running hot ({{ $value }} C)"}
+      - alert: NasDiskBadSectors
+        expr: increase(diskBadSector{job="snmp-nas"}[1d]) > 0
+        labels: {severity: warning, host: nas, site: pdx}
+        annotations: {summary: "NAS disk {{ $labels.diskID }} is developing bad sectors"}
+
+  - name: gateway
+    rules:
+      # eth4 is the gateway's WAN port (the only 2.5G port; the four LAN ports add up to switch0).
+      - alert: GatewayWanPortDown
+        expr: ifOperStatus{job="snmp-gateway", ifDescr="eth4"} != 1
+        for: 2m
+        labels: {severity: warning, host: gateway, site: pdx}
+        annotations:
+          summary: "Gateway WAN port (eth4) link is down"
+          description: "Primary internet link lost. If the cellular backup took over, internet may still work."
+      - alert: GatewayMemoryHigh
+        expr: (1 - memAvailReal{job="snmp-gateway"} / memTotalReal{job="snmp-gateway"}) > 0.92
+        for: 30m
+        labels: {severity: warning, host: gateway, site: pdx}
+        annotations: {summary: "UniFi gateway memory is above 92%"}

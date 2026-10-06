@@ -10,6 +10,11 @@ docker exec prometheus promtool check config /etc/prometheus/prometheus.yml | gr
 docker exec alertmanager amtool check-config /etc/alertmanager/alertmanager.yml | grep -E "FAILED|error" && exit 1 || true
 docker compose config -q
 
+echo "== installing collector timers (systemd/)"
+for u in systemd/*.service systemd/*.timer; do install -m 644 "$u" /etc/systemd/system/; done
+systemctl daemon-reload
+for t in systemd/*.timer; do systemctl enable --now "$(basename "$t")" >/dev/null 2>&1; done
+
 echo "== applying"
 docker compose up -d --remove-orphans
 docker exec prometheus wget -qO- --post-data= http://localhost:9090/-/reload >/dev/null && echo "prometheus reloaded"

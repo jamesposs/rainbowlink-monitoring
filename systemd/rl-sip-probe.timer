@@ -1,0 +1,7 @@
+[Unit]
+Description=SIP probe every minute
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=60s
+[Install]
+WantedBy=timers.target
