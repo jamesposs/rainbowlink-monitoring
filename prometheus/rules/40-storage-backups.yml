@@ -39,3 +39,26 @@ groups:
         for: 10m
         labels: {severity: warning, site: pdx}
         annotations: {summary: "{{ $labels.id }} is stopped but is set to start on boot"}
+
+  - name: hyperbackup
+    rules:
+      # NAS -> pi-pcb Hyper Backup runs once a day (~09:35 PT). 28h = one day plus 4h grace.
+      # A failed/skipped run commits no new version, so staleness is the right signal.
+      - alert: HyperBackupStale
+        expr: (time() - rl_hyperbackup_last_commit_timestamp_seconds) > 28 * 3600
+        for: 30m
+        labels: {severity: warning, site: pcb}
+        annotations:
+          summary: "No NAS Hyper Backup ({{ $labels.repo }}) has completed for {{ $value | humanizeDuration }}"
+          description: "Expected daily around 09:35. Check Hyper Backup on the NAS (task log) and the rsync link to pi-pcb."
+      - alert: HyperBackupStuck
+        expr: min_over_time(rl_hyperbackup_running[12h]) == 1
+        labels: {severity: warning, site: pcb}
+        annotations:
+          summary: "Hyper Backup {{ $labels.repo }} has been running for over 12 hours"
+          description: "A run normally takes minutes. It may be hung or the repository locked."
+      - alert: HyperBackupCollectorStale
+        expr: time() - rl_hyperbackup_last_run_timestamp_seconds > 1200
+        for: 10m
+        labels: {severity: warning}
+        annotations: {summary: "Hyper Backup freshness check on {{ $labels.host }} stopped reporting (that alert is blind)"}
