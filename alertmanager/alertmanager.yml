@@ -61,6 +61,8 @@ receivers:
         title: '{{ template "rl.title" . }}'
         message: '{{ template "rl.message" . }}'
         html: true
+        url: https://grafana.rainbowlink.org/d/rl-overview
+        url_title: Open the Overview dashboard
         send_resolved: true
 
   - name: morning-digest
@@ -71,6 +73,8 @@ receivers:
         title: '{{ template "rl.digest.title" . }}'
         message: '{{ template "rl.message" . }}'
         html: true
+        url: https://grafana.rainbowlink.org/d/rl-overview
+        url_title: Open the Overview dashboard
         send_resolved: false
 
   - name: deadmans-switch
