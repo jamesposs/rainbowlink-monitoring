@@ -161,3 +161,20 @@ tests:
             exp_annotations:
               summary: "DNS servers disagree on zone rainbowlink.org (some are serving an older copy)"
               description: "Compare the serials on the Network dashboard (Zone sync). A resolver with a stale zone returns old answers. Check Technitium zone transfer/cluster sync on the lagging server."
+
+  # Split-horizon: tailnet view returning the wrong address for 10m+ alerts; a good resolver stays quiet.
+  - interval: 1m
+    input_series:
+      - {series: 'probe_success{job="dns-split", host="dns2", instance="100.64.0.18", site="pdx", service="dns-split"}', values: '1x5 0x30'}
+      - {series: 'probe_success{job="dns-split", host="dns1", instance="100.64.0.26", site="pdx", service="dns-split"}', values: '1x35'}
+    alert_rule_test:
+      - eval_time: 8m
+        alertname: DnsSplitHorizonBroken
+        exp_alerts: []
+      - eval_time: 25m
+        alertname: DnsSplitHorizonBroken
+        exp_alerts:
+          - exp_labels: {severity: warning, job: dns-split, host: dns2, instance: 100.64.0.18, site: pdx, service: dns-split}
+            exp_annotations:
+              summary: "Resolver dns2 is not giving tailnet clients tailnet addresses"
+              description: "A tailnet-only host (vps-sjc) asked 100.64.0.18 for ha.rainbowlink.org and did not get 100.64.0.27. Check the Split Horizon app (enabled, config present) on that Technitium node. Home clients are unaffected."

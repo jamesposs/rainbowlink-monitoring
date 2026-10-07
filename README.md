@@ -51,6 +51,19 @@ record resolves, not that the zone is current). Zones marked `sync: all` (today:
 `DnsZoneOutOfSync` after 15 minutes of disagreement, `DnsZoneMissing` if a server stops serving it. All four resolvers serve every zone (Technitium cluster: dns1 is primary, the rest are secondaries via `cluster-catalog.rainbowlink.org`). A NEW primary zone on dns1 must be given that catalog under zone Options, or it stays dns1-only; add it to ZONES here so drift alerts.
 Add a resolver to `SERVERS` (and `targets/dns.yml`); add a zone to `ZONES`; set `all` once it should be everywhere.
 
+## Split-horizon DNS (tailnet vs home LAN)
+Technitium **Split Horizon app, Address Translation mode**, on all four resolvers (config below; app settings are per node, set on each).
+The zone stores the **home LAN address** of every host. A query from a **tailnet** source (100.64.0.0/10, fd7a:115c:a1e0::/48) gets
+that address rewritten to the host's **tailnet** address; anything else (home LAN, guest VLAN) is untouched. Home servers that also run
+Tailscale (their 100.64.x address is listed in group `lan`) are deliberately kept on LAN addresses. So: remote sites and roaming devices
+-> tailnet IPs; anything at home -> LAN IPs. Names with no LAN twin (pbx2, dns-pcb, hs, sjc, pcb, ...) are never touched.
+- **Why not APP records:** `rainbowlink.org` is DNSSEC-signed on Technitium and signed zones cannot hold APP records.
+- **Add a host:** give it a normal A record with its LAN IP, then add `LAN-ip: tailnet-ip` (and the host's tailnet v4/v6 to group `lan`) in
+  Technitium > Apps > Split Horizon > Config, on **each** node. `/opt/monitoring/dns/split-horizon.config.json` is the reference copy (no secrets).
+- **Check:** `DnsSplitHorizonBroken` (probe from vps-sjc must see `ha` = 100.64.0.27); the LAN view is covered by `dns_internal` (`ha` = 172.20.1.13).
+- **Roaming laptops** get the answer for where they are *now*; split names use a 300 s TTL so a move is picked up within 5 minutes.
+- **Undo:** set `enableAddressTranslation` to false on each node (instant); records need no change except `dns1` (had an extra tailnet A/AAAA) and `channels`/`claudeproxy` (were tailnet-only): the pre-change backup is `/root/dns-zones-pre-split-20261007.tgz` on dns1.
+
 ## Disk health
 * **Servers & storage → Disk health:** NAS drives (SMART over SNMP: health, temperature, age, reallocated/pending/uncorrectable sectors, CRC errors), `pve0` drives (SATA SMART, NVMe wear/spare/media errors), LVM thin-pool data+metadata.
 * Alerts are early warnings (next-day digest): any pending/uncorrectable sector, *growth* of reallocated sectors/CRC errors over 7 days, NVMe critical flag / media errors / wear > 80% / spare < 20%, drive temperature, thin pool data > 85% or metadata > 75%.

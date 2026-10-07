@@ -86,6 +86,16 @@ scrape_configs:
     file_sd_configs: [{files: [/etc/prometheus/targets/dns.yml]}]
     relabel_configs: *probe_relabel
 
+  # --- split-horizon DNS as seen by a tailnet client (vps-sjc vantage point) -
+  - job_name: dns-split
+    metrics_path: /probe
+    file_sd_configs: [{files: [/etc/prometheus/targets/dns-split.yml]}]
+    relabel_configs:
+      - {source_labels: [__address__], target_label: __param_target}
+      - {source_labels: [module], target_label: __param_module}
+      - {source_labels: [__address__], target_label: instance}
+      - {target_label: __address__, replacement: "100.64.0.1:9115"}   # vps-sjc vantage point
+
   # --- raw TCP service checks (ldap, nfs, smb, ...) -------------------------
   - job_name: tcp
     metrics_path: /probe

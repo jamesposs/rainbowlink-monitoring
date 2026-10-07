@@ -25,6 +25,16 @@ groups:
           summary: "DNS resolver {{ $labels.host }} failed a real query ({{ $labels.module }})"
           description: "{{ $labels.instance }} did not return a valid answer."
 
+      # Split-horizon: a tailnet-only host must be handed tailnet addresses. Fails if the Split Horizon app stopped,
+      # lost its config, or a resolver is serving without it (tailnet clients would then get LAN IPs).
+      - alert: DnsSplitHorizonBroken
+        expr: probe_success{job="dns-split"} == 0
+        for: 10m
+        labels: {severity: warning}
+        annotations:
+          summary: "Resolver {{ $labels.host }} is not giving tailnet clients tailnet addresses"
+          description: "A tailnet-only host (vps-sjc) asked {{ $labels.instance }} for ha.rainbowlink.org and did not get 100.64.0.27. Check the Split Horizon app (enabled, config present) on that Technitium node. Home clients are unaffected."
+
       # Both home resolvers failing means nothing on the LAN resolves names.
       - alert: DnsOutage
         expr: sum(probe_success{job="dns", critical_group="dns"}) == 0

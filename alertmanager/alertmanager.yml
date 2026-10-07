@@ -93,7 +93,7 @@ inhibit_rules:
   - source_matchers: [alertname="WanDown"]
     target_matchers: ['site=~"pcb|sjc|bos"']
   - source_matchers: [alertname="WanDown"]
-    target_matchers: [alertname=~"PublicServiceDown|SiteLink.*|SiteDown|MeshProbeStale|DnsResolverFailing"]
+    target_matchers: [alertname=~"PublicServiceDown|SiteLink.*|SiteDown|MeshProbeStale|DnsResolverFailing|DnsSplitHorizonBroken"]
   # Home gateway down hides everything at home.
   - source_matchers: [alertname=~"HostDown.*", host="gateway"]
     target_matchers: ['site="pdx"', 'host!="gateway"']
