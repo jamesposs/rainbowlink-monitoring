@@ -82,3 +82,27 @@ groups:
         for: 10m
         labels: {severity: warning}
         annotations: {summary: "Cloudflare tunnel health check stopped reporting"}
+
+  - name: dns_sync
+    rules:
+      # Zones marked sync="all" must carry the SAME serial on every resolver. A short lag after an edit is normal,
+      # so only a mismatch that persists for 15 minutes alerts.
+      - alert: DnsZoneOutOfSync
+        expr: (max by (zone) (rl_dns_zone_serial{sync="all"}) != min by (zone) (rl_dns_zone_serial{sync="all"}))
+        for: 15m
+        labels: {severity: warning, site: pdx}
+        annotations:
+          summary: "DNS servers disagree on zone {{ $labels.zone }} (some are serving an older copy)"
+          description: "Compare the serials on the Network dashboard (Zone sync). A resolver with a stale zone returns old answers. Check Technitium zone transfer/cluster sync on the lagging server."
+      - alert: DnsZoneMissing
+        expr: rl_dns_zone_present{sync="all"} == 0
+        for: 10m
+        labels: {severity: warning, site: pdx}
+        annotations:
+          summary: "DNS server {{ $labels.server }} is not serving our zone {{ $labels.zone }}"
+          description: "It answers without our SOA (or not at all). Queries sent to it for internal names will fail or leak upstream."
+      - alert: DnsSyncCheckStale
+        expr: time() - rl_dns_sync_last_run_timestamp_seconds > 900
+        for: 10m
+        labels: {severity: warning}
+        annotations: {summary: "DNS zone sync check stopped reporting (replication drift would go unnoticed)"}

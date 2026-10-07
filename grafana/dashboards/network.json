@@ -1102,9 +1102,9 @@
   },
   {
    "id": 16,
-   "type": "timeseries",
-   "title": "DNS answer time",
-   "description": "",
+   "type": "table",
+   "title": "Zone sync (does every resolver serve the same zone version?)",
+   "description": "SOA serial each server reports (only changes when the zone changes). For 'every server' zones all four numbers must match; blank = that server does not serve our copy. The 'dns1 only' zones are informational: dns2/pi-pcb/vps-sjc do not carry them.",
    "gridPos": {
     "x": 12,
     "y": 27,
@@ -1121,41 +1121,256 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "probe_duration_seconds{job=\"dns\"}",
+     "expr": "max by (zone, sync) (rl_dns_zone_present{server=\"dns1\"})",
      "refId": "A",
-     "instant": false,
-     "range": true,
-     "legendFormat": "{{host}} {{module}}"
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "max by (zone) (rl_dns_zone_serial{server=\"dns1\"})",
+     "refId": "B",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "max by (zone) (rl_dns_zone_serial{server=\"dns2\"})",
+     "refId": "C",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "max by (zone) (rl_dns_zone_serial{server=\"pi-pcb\"})",
+     "refId": "D",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "max by (zone) (rl_dns_zone_serial{server=\"vps-sjc\"})",
+     "refId": "E",
+     "instant": true,
+     "range": false,
+     "format": "table"
     }
    ],
    "fieldConfig": {
     "defaults": {
-     "unit": "s",
      "custom": {
-      "lineWidth": 1,
-      "fillOpacity": 10,
-      "showPoints": "never",
-      "stacking": {
-       "mode": "none"
+      "align": "auto",
+      "cellOptions": {
+       "type": "auto"
       },
-      "thresholdsStyle": {
-       "mode": "off"
-      }
+      "filterable": true
      }
     },
-    "overrides": []
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Zone"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 170
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Expected on"
+      },
+      "properties": [
+       {
+        "id": "mappings",
+        "value": [
+         {
+          "type": "value",
+          "options": {
+           "all": {
+            "text": "every server"
+           },
+           "primary": {
+            "text": "dns1 only"
+           }
+          }
+         }
+        ]
+       },
+       {
+        "id": "custom.width",
+        "value": 95
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "dns1"
+      },
+      "properties": [
+       {
+        "id": "thresholds",
+        "value": {
+         "mode": "absolute",
+         "steps": [
+          {
+           "color": "#6b7280",
+           "value": null
+          }
+         ]
+        }
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-background",
+         "mode": "basic"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "dns2"
+      },
+      "properties": [
+       {
+        "id": "thresholds",
+        "value": {
+         "mode": "absolute",
+         "steps": [
+          {
+           "color": "#6b7280",
+           "value": null
+          }
+         ]
+        }
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-background",
+         "mode": "basic"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "pi-pcb"
+      },
+      "properties": [
+       {
+        "id": "thresholds",
+        "value": {
+         "mode": "absolute",
+         "steps": [
+          {
+           "color": "#6b7280",
+           "value": null
+          }
+         ]
+        }
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-background",
+         "mode": "basic"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "vps-sjc"
+      },
+      "properties": [
+       {
+        "id": "thresholds",
+        "value": {
+         "mode": "absolute",
+         "steps": [
+          {
+           "color": "#6b7280",
+           "value": null
+          }
+         ]
+        }
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-background",
+         "mode": "basic"
+        }
+       }
+      ]
+     }
+    ]
    },
    "options": {
-    "legend": {
-     "displayMode": "list",
-     "placement": "bottom",
-     "showLegend": true
+    "showHeader": true,
+    "cellHeight": "sm"
+   },
+   "transformations": [
+    {
+     "id": "joinByField",
+     "options": {
+      "byField": "zone",
+      "mode": "outer"
+     }
     },
-    "tooltip": {
-     "mode": "multi",
-     "sort": "desc"
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {
+       "Time": true,
+       "Value #A": true
+      },
+      "renameByName": {
+       "zone": "Zone",
+       "sync": "Expected on",
+       "Value #B": "dns1",
+       "Value #C": "dns2",
+       "Value #D": "pi-pcb",
+       "Value #E": "vps-sjc"
+      },
+      "indexByName": {
+       "zone": 0,
+       "sync": 1,
+       "Value #B": 2,
+       "Value #C": 3,
+       "Value #D": 4,
+       "Value #E": 5
+      }
+     }
     }
-   }
+   ]
   },
   {
    "id": 17,

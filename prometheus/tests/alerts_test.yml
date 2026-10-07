@@ -142,3 +142,22 @@ tests:
           - exp_labels: {severity: warning, host: gateway, site: pdx, name: Office AP, type: uap}
             exp_annotations:
               summary: "UniFi device Office AP memory is at 95%"
+
+  # DNS sync: one server lagging behind for 15m+ alerts; identical serials stay quiet.
+  - interval: 1m
+    input_series:
+      - {series: 'rl_dns_zone_serial{zone="rainbowlink.org", server="dns1", sync="all"}', values: '1156x40'}
+      - {series: 'rl_dns_zone_serial{zone="rainbowlink.org", server="dns2", sync="all"}', values: '1156x40'}
+      - {series: 'rl_dns_zone_serial{zone="rainbowlink.org", server="pi-pcb", sync="all"}', values: '1155x40'}
+      - {series: 'rl_dns_zone_serial{zone="dns.rainbowlink.org", server="dns1", sync="primary"}', values: '65x40'}
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: DnsZoneOutOfSync
+        exp_alerts: []                       # still inside the 15 minute allowance for replication lag
+      - eval_time: 25m
+        alertname: DnsZoneOutOfSync
+        exp_alerts:
+          - exp_labels: {severity: warning, site: pdx, zone: rainbowlink.org}
+            exp_annotations:
+              summary: "DNS servers disagree on zone rainbowlink.org (some are serving an older copy)"
+              description: "Compare the serials on the Network dashboard (Zone sync). A resolver with a stale zone returns old answers. Check Technitium zone transfer/cluster sync on the lagging server."

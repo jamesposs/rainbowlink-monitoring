@@ -1,0 +1,11 @@
+[Unit]
+Description=DNS zone replication check across all resolvers
+After=network-online.target tailscaled.service
+[Service]
+Type=oneshot
+User=prometheus
+ExecStart=/usr/bin/python3 /opt/monitoring/scripts/dns-sync-metrics.py
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/prometheus/node-exporter
+PrivateTmp=true
