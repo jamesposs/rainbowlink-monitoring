@@ -52,18 +52,21 @@ record resolves, not that the zone is current). Zones marked `sync: all` (today:
 Add a resolver to `SERVERS` (and `targets/dns.yml`); add a zone to `ZONES`; set `all` once it should be everywhere.
 
 ## Split-horizon DNS (tailnet vs home LAN)
-Technitium **Split Horizon app, Address Translation mode**, on all four resolvers (config below; app settings are per node, set on each).
-The zone stores the **home LAN address** of every host. A query from a **tailnet** source (100.64.0.0/10, fd7a:115c:a1e0::/48) gets
-that address rewritten to the host's **tailnet** address; anything else (home LAN, guest VLAN) is untouched. Home servers that also run
-Tailscale, plus James's MacBook and iPhone (their 100.64.x/fd7a addresses are listed in group `lan`), are deliberately kept on LAN addresses, because a device
-at home that uses Tailscale DNS looks like a tailnet client and the server cannot tell where it is. So: remote sites -> tailnet IPs; everything
-of James's (at home or away) -> LAN IPs (away, via the subnet routes: keep "Use Tailscale subnets" on). The short MagicDNS names (ha, ha.ts.rainbowlink.org) always give tailnet IPs. Names with no LAN twin (pbx2, dns-pcb, hs, sjc, pcb, ...) are never touched.
+The rule is only the **source address of the query**: from the tailnet (100.64.0.0/10, fd7a:115c:a1e0::/48) -> tailnet addresses; from anywhere else
+(home LAN, guest VLAN) -> LAN addresses. Technitium **Split Horizon app, Address Translation mode**, on all four resolvers. The zone stores the
+home LAN address of every host; for tailnet sources the app rewrites each LAN address to that host's tailnet address (29 pairs). Names with no
+LAN twin (pbx2, dns-pcb, hs, sjc, pcb, ...) are never touched.
+- **Consequence:** a device at home that uses Tailscale DNS (laptop, phone, any server with Tailscale DNS) is a tailnet source and gets tailnet
+  addresses; one using the LAN resolvers gets LAN addresses. The short MagicDNS names (`ha`, `ha.ts.rainbowlink.org`) are Tailscale's own and always tailnet.
+- **Monitoring:** the monitor host uses Tailscale DNS, so its blackbox container is pinned to the home resolvers (`dns:` in compose.yml) and keeps
+  testing LAN paths. `dns_internal` (via LAN) expects `ha` = 172.20.1.13; `dns_internal_tailnet` (pi-pcb, vps-sjc, asked over the tailnet) expects 100.64.0.27;
+  `DnsSplitHorizonBroken` probes from vps-sjc. A resolver that lost the app would trip one of these within 10 minutes.
 - **Why not APP records:** `rainbowlink.org` is DNSSEC-signed on Technitium and signed zones cannot hold APP records.
-- **Add a host:** give it a normal A record with its LAN IP, then add `LAN-ip: tailnet-ip` (and the host's tailnet v4/v6 to group `lan`) in
-  Technitium > Apps > Split Horizon > Config, on **each** node. `/opt/monitoring/dns/split-horizon.config.json` is the reference copy (no secrets).
-- **Check:** `DnsSplitHorizonBroken` (probe from vps-sjc must see `ha` = 100.64.0.27); the LAN view is covered by `dns_internal` (`ha` = 172.20.1.13).
-- **Roaming laptops** get the answer for where they are *now*; split names use a 300 s TTL so a move is picked up within 5 minutes.
-- **Undo:** set `enableAddressTranslation` to false on each node (instant); records need no change except `dns1` (had an extra tailnet A/AAAA) and `channels`/`claudeproxy` (were tailnet-only): the pre-change backup is `/root/dns-zones-pre-split-20261007.tgz` on dns1.
+- **Add a host:** give it a normal A record with its LAN IP, then add `LAN-ip: tailnet-ip` under Technitium > Apps > Split Horizon > Config on **each** node
+  (config does not replicate; the app install does). `/opt/monitoring/dns/split-horizon.config.json` is the reference copy (no secrets).
+- **Roaming devices** get the answer for the resolver they use; split names have a 300 s TTL so a change of network is picked up within 5 minutes.
+- **Undo:** set `enableAddressTranslation` to false on each node (instant). Records changed: `dns1` (had extra tailnet A/AAAA), `channels` and `claudeproxy`
+  (were tailnet-only, now LAN + translation). Pre-change zone backup: `/root/dns-zones-pre-split-20261007.tgz` on dns1.
 
 ## Disk health
 * **Servers & storage → Disk health:** NAS drives (SMART over SNMP: health, temperature, age, reallocated/pending/uncorrectable sectors, CRC errors), `pve0` drives (SATA SMART, NVMe wear/spare/media errors), LVM thin-pool data+metadata.
