@@ -45,6 +45,13 @@ host down → its own services; tailnet trouble → agent-down alerts.
   Other Hyper Backup tasks that write elsewhere (USB, cloud, another host) are NOT visible this way.
 * Alert rule unit tests live in `prometheus/tests/` and run on every `apply.sh`.
 
+## DNS replication
+`scripts/dns-sync-metrics.py` asks every resolver for each zone's SOA serial every 2 minutes (the existing `dns_internal` probe only proves one
+record resolves, not that the zone is current). Zones marked `sync: all` (today: `rainbowlink.org`) must have the same serial everywhere:
+`DnsZoneOutOfSync` after 15 minutes of disagreement, `DnsZoneMissing` if a server stops serving it. Zones marked `primary` are shown on the
+Network dashboard (Zone sync) but not alerted: `dns.rainbowlink.org`, `207.249.173.in-addr.arpa` and the IPv6 reverse zone currently exist on dns1 only.
+Add a resolver to `SERVERS` (and `targets/dns.yml`); add a zone to `ZONES`; set `all` once it should be everywhere.
+
 ## Disk health
 * **Servers & storage → Disk health:** NAS drives (SMART over SNMP: health, temperature, age, reallocated/pending/uncorrectable sectors, CRC errors), `pve0` drives (SATA SMART, NVMe wear/spare/media errors), LVM thin-pool data+metadata.
 * Alerts are early warnings (next-day digest): any pending/uncorrectable sector, *growth* of reallocated sectors/CRC errors over 7 days, NVMe critical flag / media errors / wear > 80% / spare < 20%, drive temperature, thin pool data > 85% or metadata > 75%.
