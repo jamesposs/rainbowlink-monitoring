@@ -49,6 +49,7 @@ services:
     restart: unless-stopped
     cap_add: [NET_RAW]                       # ICMP
     command: ["--config.file=/etc/blackbox/blackbox.yml"]
+    dns: [172.20.2.221, 172.20.2.222]        # home resolvers directly: checks must test what home users get (LAN IPs), not the tailnet answers Tailscale DNS would give
     volumes:
       - ./blackbox:/etc/blackbox:ro
 

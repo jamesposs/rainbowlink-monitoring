@@ -65,6 +65,18 @@ modules:
       validate_answer_rrs:
         fail_if_not_matches_regexp: ['ha\.rainbowlink\.org\.\s+\d+\s+IN\s+A\s+172\.20\.1\.13']
 
+  dns_internal_tailnet:          # same, but asked OVER THE TAILNET (source = tailnet address), so split-horizon answers with the tailnet IP
+    prober: dns
+    timeout: 5s
+    dns:
+      preferred_ip_protocol: ip4
+      ip_protocol_fallback: false
+      query_name: ha.rainbowlink.org
+      query_type: A
+      valid_rcodes: [NOERROR]
+      validate_answer_rrs:
+        fail_if_not_matches_regexp: ['ha\.rainbowlink\.org\.\s+\d+\s+IN\s+A\s+100\.64\.0\.27']
+
   dns_recursive:                 # a public name: proves forwarding/upstream works
     prober: dns
     timeout: 5s
