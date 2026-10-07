@@ -28,6 +28,26 @@ modules:
       valid_status_codes: [200, 204, 301, 302, 401, 403, 404]
       tls_config: {insecure_skip_verify: true}
 
+  http_health_ok:                # app health endpoint must answer 200 with {"status":"OK"} (no redirects, no login involved)
+    prober: http
+    timeout: 10s
+    http:
+      preferred_ip_protocol: ip4
+      ip_protocol_fallback: false
+      valid_status_codes: [200]
+      fail_if_body_not_matches_regexp: ['"status"\s*:\s*"OK"']
+
+  http_redirect_sso:             # must answer 302 to our SSO (NOT followed): proves the app's SSO wiring, independent of the SSO server being up
+    prober: http
+    timeout: 10s
+    http:
+      preferred_ip_protocol: ip4
+      ip_protocol_fallback: false
+      follow_redirects: false
+      valid_status_codes: [302]
+      fail_if_header_not_matches:
+        - {header: Location, regexp: '^https://login\.rainbowlink\.org/application/o/authorize/'}
+
   tcp_connect:
     prober: tcp
     timeout: 5s

@@ -3,7 +3,10 @@
 - {targets: ['https://login.rainbowlink.org/-/health/live/'], labels: {module: http_2xx, host: authentik, site: pdx, service: login.rainbowlink.org}}
 - {targets: ['https://paperless.rainbowlink.org/'],           labels: {module: http_2xx, host: paperless, site: pdx, service: paperless.rainbowlink.org}}
 - {targets: ['https://hs.rainbowlink.org/health'],            labels: {module: http_2xx, host: vps-sjc, site: sjc, service: Headscale (hs.rainbowlink.org)}}
-- {targets: ['https://hs.rainbowlink.org/admin/'],            labels: {module: http_2xx, host: vps-sjc, site: sjc, service: Headplane admin}}
+# Headplane is checked in two parts that each test one thing. (A plain "follow redirects" check of /admin/ ends on
+# Authentik's login page, so it mostly tested Authentik.)
+- {targets: ['https://hs.rainbowlink.org/admin/healthz'],        labels: {module: http_health_ok, host: vps-sjc, site: sjc, service: Headplane admin (app health)}}
+- {targets: ['https://hs.rainbowlink.org/admin/oidc/start'],     labels: {module: http_redirect_sso, host: vps-sjc, site: sjc, service: Headplane SSO hand-off}}
 - {targets: ['104.62.14.93:443'],                             labels: {module: tcp_connect, host: pi-pcb, site: pcb, service: DERP relay (pcb)}}
 # Cloudflare tunnel services (found via the Cloudflare API). Not listed on purpose:
 #   rainbowlink.org (apex) and pb.rainbowlink.org -> retired (James, 2026-10-06); they still 502 from Cloudflare

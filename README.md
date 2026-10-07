@@ -68,7 +68,9 @@ outside, go in `public.yml`.
 - {targets: ['https://app.rainbowlink.org/'], labels: {module: http_2xx, host: web, site: pdx, service: My app}}
 ```
 Modules: `http_2xx` (answers 2xx, certificate verified), `http_2xx_insecure` (self-signed), `http_responds`
-(any live answer), `tcp_connect`, `dns_internal`, `dns_recursive`. Certificate expiry alerts come for free on HTTPS.
+(any live answer), `http_health_ok` (health endpoint must return `{"status":"OK"}`), `http_redirect_sso` (must 302 to our SSO, not followed),
+`tcp_connect`, `dns_internal`, `dns_recursive`. Prefer a health endpoint over a page behind a login redirect: a followed redirect ends on the SSO
+server's page and tests the SSO server, not your app. Public checks run on vps-sjc, whose modules come from the Ansible role (`blackbox.yml.j2`). Certificate expiry alerts come for free on HTTPS.
 `host:` matters: if that host is down its checks stay silent.
 
 ## Change thresholds / what is critical
