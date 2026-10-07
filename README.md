@@ -48,8 +48,7 @@ host down → its own services; tailnet trouble → agent-down alerts.
 ## DNS replication
 `scripts/dns-sync-metrics.py` asks every resolver for each zone's SOA serial every 2 minutes (the existing `dns_internal` probe only proves one
 record resolves, not that the zone is current). Zones marked `sync: all` (today: `rainbowlink.org`) must have the same serial everywhere:
-`DnsZoneOutOfSync` after 15 minutes of disagreement, `DnsZoneMissing` if a server stops serving it. Zones marked `primary` are shown on the
-Network dashboard (Zone sync) but not alerted: `dns.rainbowlink.org`, `207.249.173.in-addr.arpa` and the IPv6 reverse zone currently exist on dns1 only.
+`DnsZoneOutOfSync` after 15 minutes of disagreement, `DnsZoneMissing` if a server stops serving it. All four resolvers serve every zone (Technitium cluster: dns1 is primary, the rest are secondaries via `cluster-catalog.rainbowlink.org`). A NEW primary zone on dns1 must be given that catalog under zone Options, or it stays dns1-only; add it to ZONES here so drift alerts.
 Add a resolver to `SERVERS` (and `targets/dns.yml`); add a zone to `ZONES`; set `all` once it should be everywhere.
 
 ## Disk health

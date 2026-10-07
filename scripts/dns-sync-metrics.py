@@ -17,9 +17,9 @@ PRIMARY_NAME = "dns1.rainbowlink.org"          # SOA MNAME of our zones; anythin
 SERVERS = {"dns1": "172.20.2.221", "dns2": "172.20.2.222", "pi-pcb": "100.64.0.11", "vps-sjc": "100.64.0.1"}
 ZONES = {
     "rainbowlink.org": "all",
-    "dns.rainbowlink.org": "primary",
-    "207.249.173.in-addr.arpa": "primary",
-    "e.f.3.5.0.0.8.0.0.0.0.9.7.0.6.2.ip6.arpa": "primary",
+    "dns.rainbowlink.org": "all",
+    "207.249.173.in-addr.arpa": "all",
+    "e.f.3.5.0.0.8.0.0.0.0.9.7.0.6.2.ip6.arpa": "all",
 }
 
 
