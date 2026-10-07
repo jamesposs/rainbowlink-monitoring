@@ -55,8 +55,9 @@ Add a resolver to `SERVERS` (and `targets/dns.yml`); add a zone to `ZONES`; set 
 Technitium **Split Horizon app, Address Translation mode**, on all four resolvers (config below; app settings are per node, set on each).
 The zone stores the **home LAN address** of every host. A query from a **tailnet** source (100.64.0.0/10, fd7a:115c:a1e0::/48) gets
 that address rewritten to the host's **tailnet** address; anything else (home LAN, guest VLAN) is untouched. Home servers that also run
-Tailscale (their 100.64.x address is listed in group `lan`) are deliberately kept on LAN addresses. So: remote sites and roaming devices
--> tailnet IPs; anything at home -> LAN IPs. Names with no LAN twin (pbx2, dns-pcb, hs, sjc, pcb, ...) are never touched.
+Tailscale, plus James's MacBook and iPhone (their 100.64.x/fd7a addresses are listed in group `lan`), are deliberately kept on LAN addresses, because a device
+at home that uses Tailscale DNS looks like a tailnet client and the server cannot tell where it is. So: remote sites -> tailnet IPs; everything
+of James's (at home or away) -> LAN IPs (away, via the subnet routes: keep "Use Tailscale subnets" on). The short MagicDNS names (ha, ha.ts.rainbowlink.org) always give tailnet IPs. Names with no LAN twin (pbx2, dns-pcb, hs, sjc, pcb, ...) are never touched.
 - **Why not APP records:** `rainbowlink.org` is DNSSEC-signed on Technitium and signed zones cannot hold APP records.
 - **Add a host:** give it a normal A record with its LAN IP, then add `LAN-ip: tailnet-ip` (and the host's tailnet v4/v6 to group `lan`) in
   Technitium > Apps > Split Horizon > Config, on **each** node. `/opt/monitoring/dns/split-horizon.config.json` is the reference copy (no secrets).
