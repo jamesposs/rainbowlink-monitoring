@@ -104,17 +104,17 @@ def label_targets():
                   f'or avg_over_time(rl_mesh_rtt_seconds{{site="{b}", to="{a}", stat="avg"{OV}}}[5m])) * 1000)')
         t = traffic_exprs()[i - 1]
         lat_parts.append(lab(rtt_ms, link=f"{a.upper()} - {b.upper()}", lat=la, lon=lo))
-        trf_parts.append(lab(f'(round(({t["fwd"]} + {t["rev"]}) / 100) / 10)', link=f"{a.upper()} - {b.upper()}", lat=la, lon=lo))
+        trf_parts.append(lab(f'({t["fwd"]} + {t["rev"]})', link=f"{a.upper()} - {b.upper()}", lat=la, lon=lo))
     return [tgt(" or ".join(lat_parts), "ML"), tgt(" or ".join(trf_parts), "MT")]
 
 
-def label_layer(name, ref, color, dy):
+def label_layer(name, ref, color, dy, field):
     return {"type": "markers", "name": name, "tooltip": True, "filterData": {"id": "byRefId", "options": ref},
             "location": {"mode": "coords", "latitude": "lat", "longitude": "lon"},
             "config": {"showLegend": False, "style": {
                 "size": {"fixed": 3, "min": 2, "max": 15}, "color": {"fixed": color}, "opacity": 1,
                 "symbol": {"mode": "fixed", "fixed": "img/icons/marker/circle.svg"},
-                "text": {"mode": "field", "field": "label", "fixed": ""},
+                "text": {"mode": "field", "field": field, "fixed": ""},
                 "textConfig": {"fontSize": 12, "offsetX": 0, "offsetY": dy, "textAlign": "center", "textBaseline": "middle"},
                 "rotation": {"fixed": 0, "min": -360, "max": 360, "mode": "mod"}}}}
 
@@ -194,11 +194,11 @@ def states_layer():
 
 
 OVERRIDE_UNITS = ([(f"{CLASS_PREFIX[k]}{i}", u) for k, u in (("good", "ms"), ("degraded", "ms"), ("bad", "percent")) for i in range(1, len(PAIRS) + 1)]
-                  + [(f"t{bid}{i}", "bps") for bid, *_ in TRAFFIC_BANDS for i in range(1, len(PAIRS) + 1)] + [("ML", "ms"), ("MT", "none"), ("S", "none")])
+                  + [(f"t{bid}{i}", "bps") for bid, *_ in TRAFFIC_BANDS for i in range(1, len(PAIRS) + 1)] + [("ML", "ms"), ("MT", "bps"), ("S", "none")])
 
 
 def value_names():
-    """Give each query's number field a readable name, then build the text labels for the midpoint markers.
+    """Give each query's number field a readable name (also what the midpoint labels read).
     Grafana names a query's number field "Value #<refId>" when the panel has several queries, so that is what we rename."""
     names = {}
     for k, n in (("good", "Latency"), ("degraded", "Latency"), ("bad", "Packet loss")):
@@ -209,10 +209,7 @@ def value_names():
             names[f"t{bid}{i}"] = "Traffic (both directions)"
     names.update({"ML": "Latency", "MT": "Traffic", "S": "Open issues"})
     renames = [{"id": "organize", "filter": {"id": "byRefId", "options": ref}, "options": {"renameByName": {f"Value #{ref}": n, "Value": n}}} for ref, n in names.items()]
-    labels = [{"id": "calculateField", "filter": {"id": "byRefId", "options": ref},
-               "options": {"mode": "template", "alias": "label", "replaceFields": False, "template": {"expression": expr}}}
-              for ref, expr in (("ML", "${Latency} ms"), ("MT", "${Traffic} kb/s"))]
-    return renames + labels
+    return renames
 
 
 def geomap():
@@ -220,8 +217,8 @@ def geomap():
         states_layer(),
         *ribbon_layers(),
         *link_layers(),
-        label_layer("Latency labels", "ML", "#F8FAFC", -13),
-        label_layer("Traffic labels", "MT", "#93C5FD", 13),
+        label_layer("Latency labels", "ML", "#F8FAFC", -13, "Latency"),
+        label_layer("Traffic labels", "MT", "#93C5FD", 13, "Traffic"),
         {"type": "markers", "name": "Sites", "tooltip": True, "filterData": {"id": "byRefId", "options": "S"},
          "location": {"mode": "coords", "latitude": "lat", "longitude": "lon"},
          "config": {"showLegend": False, "style": {

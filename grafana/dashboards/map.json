@@ -474,7 +474,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace((round(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8)) / 100) / 10), \"link\", \"PDX - SJC\", \"\", \"\"), \"lat\", \"41.43\", \"\", \"\"), \"lon\", \"-122.285\", \"\", \"\") or label_replace(label_replace(label_replace((round(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8)) / 100) / 10), \"link\", \"PDX - BOS\", \"\", \"\"), \"lat\", \"43.94\", \"\", \"\"), \"lon\", \"-96.87\", \"\", \"\") or label_replace(label_replace(label_replace((round(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8)) / 100) / 10), \"link\", \"PDX - PCB\", \"\", \"\"), \"lat\", \"37.85\", \"\", \"\"), \"lon\", \"-104.24\", \"\", \"\") or label_replace(label_replace(label_replace((round(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8)) / 100) / 10), \"link\", \"SJC - BOS\", \"\", \"\"), \"lat\", \"39.85\", \"\", \"\"), \"lon\", \"-96.475\", \"\", \"\") or label_replace(label_replace(label_replace((round(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8)) / 100) / 10), \"link\", \"SJC - PCB\", \"\", \"\"), \"lat\", \"33.76\", \"\", \"\"), \"lon\", \"-103.845\", \"\", \"\") or label_replace(label_replace(label_replace((round(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8)) / 100) / 10), \"link\", \"BOS - PCB\", \"\", \"\"), \"lat\", \"36.27\", \"\", \"\"), \"lon\", \"-78.43\", \"\", \"\")",
+     "expr": "label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - SJC\", \"\", \"\"), \"lat\", \"41.43\", \"\", \"\"), \"lon\", \"-122.285\", \"\", \"\") or label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - BOS\", \"\", \"\"), \"lat\", \"43.94\", \"\", \"\"), \"lon\", \"-96.87\", \"\", \"\") or label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - PCB\", \"\", \"\"), \"lat\", \"37.85\", \"\", \"\"), \"lon\", \"-104.24\", \"\", \"\") or label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8)), \"link\", \"SJC - BOS\", \"\", \"\"), \"lat\", \"39.85\", \"\", \"\"), \"lon\", \"-96.475\", \"\", \"\") or label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8)), \"link\", \"SJC - PCB\", \"\", \"\"), \"lat\", \"33.76\", \"\", \"\"), \"lon\", \"-103.845\", \"\", \"\") or label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8)), \"link\", \"BOS - PCB\", \"\", \"\"), \"lat\", \"36.27\", \"\", \"\"), \"lon\", \"-78.43\", \"\", \"\")",
      "refId": "MT",
      "instant": true,
      "range": false,
@@ -997,36 +997,6 @@
       "renameByName": {
        "Value #S": "Open issues",
        "Value": "Open issues"
-      }
-     }
-    },
-    {
-     "id": "calculateField",
-     "filter": {
-      "id": "byRefId",
-      "options": "ML"
-     },
-     "options": {
-      "mode": "template",
-      "alias": "label",
-      "replaceFields": false,
-      "template": {
-       "expression": "${Latency} ms"
-      }
-     }
-    },
-    {
-     "id": "calculateField",
-     "filter": {
-      "id": "byRefId",
-      "options": "MT"
-     },
-     "options": {
-      "mode": "template",
-      "alias": "label",
-      "replaceFields": false,
-      "template": {
-       "expression": "${Traffic} kb/s"
       }
      }
     },
@@ -1751,7 +1721,7 @@
       "properties": [
        {
         "id": "unit",
-        "value": "none"
+        "value": "bps"
        },
        {
         "id": "decimals",
@@ -3120,7 +3090,7 @@
         },
         "text": {
          "mode": "field",
-         "field": "label",
+         "field": "Latency",
          "fixed": ""
         },
         "textConfig": {
@@ -3170,7 +3140,7 @@
         },
         "text": {
          "mode": "field",
-         "field": "label",
+         "field": "Traffic",
          "fixed": ""
         },
         "textConfig": {
