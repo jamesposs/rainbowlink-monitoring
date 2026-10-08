@@ -73,7 +73,11 @@ LAN twin (pbx2, dns-pcb, hs, sjc, pcb, ...) are never touched.
 1-day norm; red loss >10%/down; 5-minute averages) over Grafana's bundled US outline, so it needs no tile server or API key (Carto's free
 tiles now require a key). Below it: link detail, traffic per link, and the busiest hosts. Traffic comes from `rl-tailnet-metrics.py`
 (Ansible role, remote-site hosts): Tailscale's per-peer byte counters, summed per site; it covers tailnet traffic only, not internet traffic.
-Edit sites/links in `tools/gen_map.py`; add the new node's tailnet IP to `monitoring_tailnet_site_of` in the role.
+On the map: line colour = link health; the blue ribbon under a line = traffic band (quiet < 5 kbit/s, moderate 5-25, busy > 25; change
+`TRAFFIC_BANDS`); at each link's midpoint: latency (white) and traffic (blue). Edit sites/links in `tools/gen_map.py`; add the new node's tailnet IP
+to `monitoring_tailnet_site_of` in the role.
+Grafana Geomap quirks (so you do not rediscover them): route layers take ONE query each and show no tooltip; number fields are named `Value #<refId>`
+when a panel has several queries; a `displayName` override renames every field of the frame; click (not hover) opens marker popups.
 
 ## Disk health
 * **Servers & storage → Disk health:** NAS drives (SMART over SNMP: health, temperature, age, reallocated/pending/uncorrectable sectors, CRC errors), `pve0` drives (SATA SMART, NVMe wear/spare/media errors), LVM thin-pool data+metadata.
