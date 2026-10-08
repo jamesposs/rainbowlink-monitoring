@@ -70,30 +70,36 @@ def link_targets():
     return out
 
 
-TRAFFIC_MAX_BPS = 50_000             # ribbon is widest at/above 50 kbit/s (typical load here is 2-25 kbit/s; a backup burst just saturates). Raise it if the links get busier.
+# Traffic bands (bits/s, both directions, 5-minute average). Each link lands in exactly one band and is drawn as a translucent blue ribbon of that
+# width under its health line. (Grafana's route layer does not scale line width from a data field, so bands are separate fixed-width layers.)
+# Typical load here is 2-25 kbit/s; a backup burst lands in "busy". Adjust the limits and widths if the links get busier.
+TRAFFIC_BANDS = [("q", "quiet", None, 5_000, 6), ("m", "moderate", 5_000, 25_000, 12), ("b", "busy", 25_000, None, 20)]   # (id, name, over, up to, width px)
 RIBBON = "#3B82F6"
 
 
 def traffic_targets():
-    """One instant query per link: both end points, value = traffic in both directions (bits/s) over the last 5 minutes."""
+    """One instant query per (band, link): both end points, value = traffic in bits/s; empty when the link is not in that band."""
     out = []
     for i, (a, b) in enumerate(PAIRS, 1):
         t = traffic_exprs()[i - 1]
         both = f'({t["fwd"]} + {t["rev"]})'
-        parts = [lab(both, link=f"{a.upper()} - {b.upper()}", end=end, lat=SITES[x]["lat"], lon=SITES[x]["lon"]) for end, x in (("a", a), ("b", b))]
-        out.append(tgt(" or ".join(parts), f"t{i}"))
+        for bid, _, lo, hi, _w in TRAFFIC_BANDS:
+            conds = ([f'({both} > {lo})'] if lo is not None else []) + ([f'({both} <= {hi})'] if hi is not None else [])
+            core = " and ".join(conds) if conds else both
+            parts = [lab(core, link=f"{a.upper()} - {b.upper()}", end=end, lat=SITES[x]["lat"], lon=SITES[x]["lon"]) for end, x in (("a", a), ("b", b))]
+            out.append(tgt(" or ".join(parts), f"t{bid}{i}"))
     return out
 
 
 def ribbon_layers():
-    """Widths follow traffic (field Value, domain 0..TRAFFIC_MAX_BPS set in fieldConfig); drawn under the health lines."""
     out = []
-    for i, (a, b) in enumerate(PAIRS, 1):
-        out.append({"type": "route", "name": f"Traffic: {a.upper()} - {b.upper()}", "tooltip": True, "filterData": {"id": "byRefId", "options": f"t{i}"},
-                    "location": {"mode": "coords", "latitude": "lat", "longitude": "lon"},
-                    "config": {"style": {"color": {"fixed": RIBBON}, "opacity": 0.35, "lineWidth": 4,
-                                         "size": {"field": "Value", "fixed": 5, "min": 5, "max": 26},
-                                         "rotation": {"fixed": 0, "min": -360, "max": 360, "mode": "mod"}}, "arrow": 0}})
+    for bid, name, _lo, _hi, width in TRAFFIC_BANDS:
+        for i, (a, b) in enumerate(PAIRS, 1):
+            out.append({"type": "route", "name": f"Traffic ({name}): {a.upper()} - {b.upper()}", "tooltip": True, "filterData": {"id": "byRefId", "options": f"t{bid}{i}"},
+                        "location": {"mode": "coords", "latitude": "lat", "longitude": "lon"},
+                        "config": {"style": {"color": {"fixed": RIBBON}, "opacity": 0.35, "lineWidth": width,
+                                             "size": {"fixed": width, "min": 1, "max": 30},
+                                             "rotation": {"fixed": 0, "min": -360, "max": 360, "mode": "mod"}}, "arrow": 0}})
     return out
 
 
@@ -187,9 +193,9 @@ def geomap():
                 ] + [{"matcher": {"id": "byFrameRefID", "options": f"{CLASS_PREFIX[k]}{i}"}, "properties": [{"id": "unit", "value": u}, {"id": "decimals", "value": 0}, {"id": "displayName", "value": n}]}
                      for k, u, n in (("good", "ms", "Latency"), ("degraded", "ms", "Latency"), ("bad", "percent", "Packet loss")) for i in range(1, len(PAIRS) + 1)] + [
                 {"matcher": {"id": "byFrameRefID", "options": "S"}, "properties": [{"id": "decimals", "value": 0}, {"id": "displayName", "value": "Open issues"}]},
-            ] + [{"matcher": {"id": "byFrameRefID", "options": f"t{i}"},
-                  "properties": [{"id": "unit", "value": "bps"}, {"id": "decimals", "value": 1}, {"id": "displayName", "value": "Traffic (both directions)"},
-                                 {"id": "min", "value": 0}, {"id": "max", "value": TRAFFIC_MAX_BPS}]} for i in range(1, len(PAIRS) + 1)]},
+            ] + [{"matcher": {"id": "byFrameRefID", "options": f"t{bid}{i}"},
+                  "properties": [{"id": "unit", "value": "bps"}, {"id": "decimals", "value": 1}, {"id": "displayName", "value": "Traffic (both directions)"}]}
+                 for bid, *_ in TRAFFIC_BANDS for i in range(1, len(PAIRS) + 1)]},
         "options": {
             "view": {"id": "coords", "lat": 38.6, "lon": -96.5, "zoom": 4, "allLayers": True},
             "controls": {"showZoom": True, "mouseWheelZoom": True, "showAttribution": True, "showScale": False, "showMeasure": False, "showDebug": False},
@@ -294,7 +300,7 @@ def legend():
           "- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm (both 5-minute averages)\n"
           "- <span style='color:#EF4444'>**red**</span> loss above 10%, or the link is down\n\n"
           "**Markers** are the sites: green = nothing wrong there, orange = failing checks or firing alerts at that site.\n\n"
-          "The **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet, widest = 50 kbit/s or more. Hover the line for latency, or the band for traffic.\n\n"
+          "The **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet (under 5 kbit/s), medium = moderate (5 to 25 kbit/s), wide = busy (over 25 kbit/s). Hover the line for latency, or the band for traffic.\n\n"
           "Hover a line or marker for numbers. Latency is compared with each link's *own* normal, so a long link (Portland to Florida, ~90 ms) is not flagged for being long.\n\n"
           "Underlying data: ping mesh (10 pings a minute from every site), plus the Network dashboard for the full matrix.")
     return {"id": 3, "type": "text", "title": "", "gridPos": {"x": 15, "y": 17, "w": 9, "h": 9}, "options": {"mode": "markdown", "content": md}}

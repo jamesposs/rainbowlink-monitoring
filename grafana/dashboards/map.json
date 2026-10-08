@@ -265,8 +265,8 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\")",
-     "refId": "t1",
+     "expr": "label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8)) <= 5000), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8)) <= 5000), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\")",
+     "refId": "tq1",
      "instant": true,
      "range": false,
      "format": "table"
@@ -276,8 +276,8 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\")",
-     "refId": "t2",
+     "expr": "label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8)) > 5000) and (((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8)) <= 25000), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8)) > 5000) and (((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8)) <= 25000), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\")",
+     "refId": "tm1",
      "instant": true,
      "range": false,
      "format": "table"
@@ -287,8 +287,8 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
-     "refId": "t3",
+     "expr": "label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8)) > 25000), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8)) > 25000), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\")",
+     "refId": "tb1",
      "instant": true,
      "range": false,
      "format": "table"
@@ -298,8 +298,8 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8)), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8)), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\")",
-     "refId": "t4",
+     "expr": "label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8)) <= 5000), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8)) <= 5000), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\")",
+     "refId": "tq2",
      "instant": true,
      "range": false,
      "format": "table"
@@ -309,8 +309,8 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8)), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8)), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
-     "refId": "t5",
+     "expr": "label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8)) > 5000) and (((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8)) <= 25000), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8)) > 5000) and (((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8)) <= 25000), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\")",
+     "refId": "tm2",
      "instant": true,
      "range": false,
      "format": "table"
@@ -320,8 +320,140 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8)), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8)), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
-     "refId": "t6",
+     "expr": "label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8)) > 25000), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8)) > 25000), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\")",
+     "refId": "tb2",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8)) <= 5000), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8)) <= 5000), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "tq3",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8)) > 5000) and (((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8)) <= 25000), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8)) > 5000) and (((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8)) <= 25000), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "tm3",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8)) > 25000), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8)) > 25000), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "tb3",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8)) <= 5000), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8)) <= 5000), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\")",
+     "refId": "tq4",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8)) > 5000) and (((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8)) <= 25000), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8)) > 5000) and (((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8)) <= 25000), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\")",
+     "refId": "tm4",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8)) > 25000), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8)) > 25000), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\")",
+     "refId": "tb4",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8)) <= 5000), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8)) <= 5000), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "tq5",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8)) > 5000) and (((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8)) <= 25000), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8)) > 5000) and (((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8)) <= 25000), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "tm5",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8)) > 25000), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8)) > 25000), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "tb5",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8)) <= 5000), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8)) <= 5000), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "tq6",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8)) > 5000) and (((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8)) <= 25000), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8)) > 5000) and (((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8)) <= 25000), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "tm6",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8)) > 25000), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8)) > 25000), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "tb6",
      "instant": true,
      "range": false,
      "format": "table"
@@ -839,7 +971,7 @@
      {
       "matcher": {
        "id": "byFrameRefID",
-       "options": "t1"
+       "options": "tq1"
       },
       "properties": [
        {
@@ -853,21 +985,13 @@
        {
         "id": "displayName",
         "value": "Traffic (both directions)"
-       },
-       {
-        "id": "min",
-        "value": 0
-       },
-       {
-        "id": "max",
-        "value": 50000
        }
       ]
      },
      {
       "matcher": {
        "id": "byFrameRefID",
-       "options": "t2"
+       "options": "tq2"
       },
       "properties": [
        {
@@ -881,21 +1005,13 @@
        {
         "id": "displayName",
         "value": "Traffic (both directions)"
-       },
-       {
-        "id": "min",
-        "value": 0
-       },
-       {
-        "id": "max",
-        "value": 50000
        }
       ]
      },
      {
       "matcher": {
        "id": "byFrameRefID",
-       "options": "t3"
+       "options": "tq3"
       },
       "properties": [
        {
@@ -909,21 +1025,13 @@
        {
         "id": "displayName",
         "value": "Traffic (both directions)"
-       },
-       {
-        "id": "min",
-        "value": 0
-       },
-       {
-        "id": "max",
-        "value": 50000
        }
       ]
      },
      {
       "matcher": {
        "id": "byFrameRefID",
-       "options": "t4"
+       "options": "tq4"
       },
       "properties": [
        {
@@ -937,21 +1045,13 @@
        {
         "id": "displayName",
         "value": "Traffic (both directions)"
-       },
-       {
-        "id": "min",
-        "value": 0
-       },
-       {
-        "id": "max",
-        "value": 50000
        }
       ]
      },
      {
       "matcher": {
        "id": "byFrameRefID",
-       "options": "t5"
+       "options": "tq5"
       },
       "properties": [
        {
@@ -965,21 +1065,13 @@
        {
         "id": "displayName",
         "value": "Traffic (both directions)"
-       },
-       {
-        "id": "min",
-        "value": 0
-       },
-       {
-        "id": "max",
-        "value": 50000
        }
       ]
      },
      {
       "matcher": {
        "id": "byFrameRefID",
-       "options": "t6"
+       "options": "tq6"
       },
       "properties": [
        {
@@ -993,14 +1085,246 @@
        {
         "id": "displayName",
         "value": "Traffic (both directions)"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "tm1"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
        },
        {
-        "id": "min",
-        "value": 0
+        "id": "decimals",
+        "value": 1
        },
        {
-        "id": "max",
-        "value": 50000
+        "id": "displayName",
+        "value": "Traffic (both directions)"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "tm2"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       },
+       {
+        "id": "displayName",
+        "value": "Traffic (both directions)"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "tm3"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       },
+       {
+        "id": "displayName",
+        "value": "Traffic (both directions)"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "tm4"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       },
+       {
+        "id": "displayName",
+        "value": "Traffic (both directions)"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "tm5"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       },
+       {
+        "id": "displayName",
+        "value": "Traffic (both directions)"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "tm6"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       },
+       {
+        "id": "displayName",
+        "value": "Traffic (both directions)"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "tb1"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       },
+       {
+        "id": "displayName",
+        "value": "Traffic (both directions)"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "tb2"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       },
+       {
+        "id": "displayName",
+        "value": "Traffic (both directions)"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "tb3"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       },
+       {
+        "id": "displayName",
+        "value": "Traffic (both directions)"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "tb4"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       },
+       {
+        "id": "displayName",
+        "value": "Traffic (both directions)"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "tb5"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       },
+       {
+        "id": "displayName",
+        "value": "Traffic (both directions)"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "tb6"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       },
+       {
+        "id": "displayName",
+        "value": "Traffic (both directions)"
        }
       ]
      }
@@ -1060,11 +1384,11 @@
      },
      {
       "type": "route",
-      "name": "Traffic: PDX - SJC",
+      "name": "Traffic (quiet): PDX - SJC",
       "tooltip": true,
       "filterData": {
        "id": "byRefId",
-       "options": "t1"
+       "options": "tq1"
       },
       "location": {
        "mode": "coords",
@@ -1077,12 +1401,11 @@
          "fixed": "#3B82F6"
         },
         "opacity": 0.35,
-        "lineWidth": 4,
+        "lineWidth": 6,
         "size": {
-         "field": "Value",
-         "fixed": 5,
-         "min": 5,
-         "max": 26
+         "fixed": 6,
+         "min": 1,
+         "max": 30
         },
         "rotation": {
          "fixed": 0,
@@ -1096,11 +1419,11 @@
      },
      {
       "type": "route",
-      "name": "Traffic: PDX - BOS",
+      "name": "Traffic (quiet): PDX - BOS",
       "tooltip": true,
       "filterData": {
        "id": "byRefId",
-       "options": "t2"
+       "options": "tq2"
       },
       "location": {
        "mode": "coords",
@@ -1113,12 +1436,11 @@
          "fixed": "#3B82F6"
         },
         "opacity": 0.35,
-        "lineWidth": 4,
+        "lineWidth": 6,
         "size": {
-         "field": "Value",
-         "fixed": 5,
-         "min": 5,
-         "max": 26
+         "fixed": 6,
+         "min": 1,
+         "max": 30
         },
         "rotation": {
          "fixed": 0,
@@ -1132,11 +1454,11 @@
      },
      {
       "type": "route",
-      "name": "Traffic: PDX - PCB",
+      "name": "Traffic (quiet): PDX - PCB",
       "tooltip": true,
       "filterData": {
        "id": "byRefId",
-       "options": "t3"
+       "options": "tq3"
       },
       "location": {
        "mode": "coords",
@@ -1149,12 +1471,11 @@
          "fixed": "#3B82F6"
         },
         "opacity": 0.35,
-        "lineWidth": 4,
+        "lineWidth": 6,
         "size": {
-         "field": "Value",
-         "fixed": 5,
-         "min": 5,
-         "max": 26
+         "fixed": 6,
+         "min": 1,
+         "max": 30
         },
         "rotation": {
          "fixed": 0,
@@ -1168,11 +1489,11 @@
      },
      {
       "type": "route",
-      "name": "Traffic: SJC - BOS",
+      "name": "Traffic (quiet): SJC - BOS",
       "tooltip": true,
       "filterData": {
        "id": "byRefId",
-       "options": "t4"
+       "options": "tq4"
       },
       "location": {
        "mode": "coords",
@@ -1185,12 +1506,11 @@
          "fixed": "#3B82F6"
         },
         "opacity": 0.35,
-        "lineWidth": 4,
+        "lineWidth": 6,
         "size": {
-         "field": "Value",
-         "fixed": 5,
-         "min": 5,
-         "max": 26
+         "fixed": 6,
+         "min": 1,
+         "max": 30
         },
         "rotation": {
          "fixed": 0,
@@ -1204,11 +1524,11 @@
      },
      {
       "type": "route",
-      "name": "Traffic: SJC - PCB",
+      "name": "Traffic (quiet): SJC - PCB",
       "tooltip": true,
       "filterData": {
        "id": "byRefId",
-       "options": "t5"
+       "options": "tq5"
       },
       "location": {
        "mode": "coords",
@@ -1221,12 +1541,11 @@
          "fixed": "#3B82F6"
         },
         "opacity": 0.35,
-        "lineWidth": 4,
+        "lineWidth": 6,
         "size": {
-         "field": "Value",
-         "fixed": 5,
-         "min": 5,
-         "max": 26
+         "fixed": 6,
+         "min": 1,
+         "max": 30
         },
         "rotation": {
          "fixed": 0,
@@ -1240,11 +1559,11 @@
      },
      {
       "type": "route",
-      "name": "Traffic: BOS - PCB",
+      "name": "Traffic (quiet): BOS - PCB",
       "tooltip": true,
       "filterData": {
        "id": "byRefId",
-       "options": "t6"
+       "options": "tq6"
       },
       "location": {
        "mode": "coords",
@@ -1257,12 +1576,431 @@
          "fixed": "#3B82F6"
         },
         "opacity": 0.35,
-        "lineWidth": 4,
+        "lineWidth": 6,
         "size": {
-         "field": "Value",
-         "fixed": 5,
-         "min": 5,
-         "max": 26
+         "fixed": 6,
+         "min": 1,
+         "max": 30
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       },
+       "arrow": 0
+      }
+     },
+     {
+      "type": "route",
+      "name": "Traffic (moderate): PDX - SJC",
+      "tooltip": true,
+      "filterData": {
+       "id": "byRefId",
+       "options": "tm1"
+      },
+      "location": {
+       "mode": "coords",
+       "latitude": "lat",
+       "longitude": "lon"
+      },
+      "config": {
+       "style": {
+        "color": {
+         "fixed": "#3B82F6"
+        },
+        "opacity": 0.35,
+        "lineWidth": 12,
+        "size": {
+         "fixed": 12,
+         "min": 1,
+         "max": 30
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       },
+       "arrow": 0
+      }
+     },
+     {
+      "type": "route",
+      "name": "Traffic (moderate): PDX - BOS",
+      "tooltip": true,
+      "filterData": {
+       "id": "byRefId",
+       "options": "tm2"
+      },
+      "location": {
+       "mode": "coords",
+       "latitude": "lat",
+       "longitude": "lon"
+      },
+      "config": {
+       "style": {
+        "color": {
+         "fixed": "#3B82F6"
+        },
+        "opacity": 0.35,
+        "lineWidth": 12,
+        "size": {
+         "fixed": 12,
+         "min": 1,
+         "max": 30
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       },
+       "arrow": 0
+      }
+     },
+     {
+      "type": "route",
+      "name": "Traffic (moderate): PDX - PCB",
+      "tooltip": true,
+      "filterData": {
+       "id": "byRefId",
+       "options": "tm3"
+      },
+      "location": {
+       "mode": "coords",
+       "latitude": "lat",
+       "longitude": "lon"
+      },
+      "config": {
+       "style": {
+        "color": {
+         "fixed": "#3B82F6"
+        },
+        "opacity": 0.35,
+        "lineWidth": 12,
+        "size": {
+         "fixed": 12,
+         "min": 1,
+         "max": 30
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       },
+       "arrow": 0
+      }
+     },
+     {
+      "type": "route",
+      "name": "Traffic (moderate): SJC - BOS",
+      "tooltip": true,
+      "filterData": {
+       "id": "byRefId",
+       "options": "tm4"
+      },
+      "location": {
+       "mode": "coords",
+       "latitude": "lat",
+       "longitude": "lon"
+      },
+      "config": {
+       "style": {
+        "color": {
+         "fixed": "#3B82F6"
+        },
+        "opacity": 0.35,
+        "lineWidth": 12,
+        "size": {
+         "fixed": 12,
+         "min": 1,
+         "max": 30
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       },
+       "arrow": 0
+      }
+     },
+     {
+      "type": "route",
+      "name": "Traffic (moderate): SJC - PCB",
+      "tooltip": true,
+      "filterData": {
+       "id": "byRefId",
+       "options": "tm5"
+      },
+      "location": {
+       "mode": "coords",
+       "latitude": "lat",
+       "longitude": "lon"
+      },
+      "config": {
+       "style": {
+        "color": {
+         "fixed": "#3B82F6"
+        },
+        "opacity": 0.35,
+        "lineWidth": 12,
+        "size": {
+         "fixed": 12,
+         "min": 1,
+         "max": 30
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       },
+       "arrow": 0
+      }
+     },
+     {
+      "type": "route",
+      "name": "Traffic (moderate): BOS - PCB",
+      "tooltip": true,
+      "filterData": {
+       "id": "byRefId",
+       "options": "tm6"
+      },
+      "location": {
+       "mode": "coords",
+       "latitude": "lat",
+       "longitude": "lon"
+      },
+      "config": {
+       "style": {
+        "color": {
+         "fixed": "#3B82F6"
+        },
+        "opacity": 0.35,
+        "lineWidth": 12,
+        "size": {
+         "fixed": 12,
+         "min": 1,
+         "max": 30
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       },
+       "arrow": 0
+      }
+     },
+     {
+      "type": "route",
+      "name": "Traffic (busy): PDX - SJC",
+      "tooltip": true,
+      "filterData": {
+       "id": "byRefId",
+       "options": "tb1"
+      },
+      "location": {
+       "mode": "coords",
+       "latitude": "lat",
+       "longitude": "lon"
+      },
+      "config": {
+       "style": {
+        "color": {
+         "fixed": "#3B82F6"
+        },
+        "opacity": 0.35,
+        "lineWidth": 20,
+        "size": {
+         "fixed": 20,
+         "min": 1,
+         "max": 30
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       },
+       "arrow": 0
+      }
+     },
+     {
+      "type": "route",
+      "name": "Traffic (busy): PDX - BOS",
+      "tooltip": true,
+      "filterData": {
+       "id": "byRefId",
+       "options": "tb2"
+      },
+      "location": {
+       "mode": "coords",
+       "latitude": "lat",
+       "longitude": "lon"
+      },
+      "config": {
+       "style": {
+        "color": {
+         "fixed": "#3B82F6"
+        },
+        "opacity": 0.35,
+        "lineWidth": 20,
+        "size": {
+         "fixed": 20,
+         "min": 1,
+         "max": 30
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       },
+       "arrow": 0
+      }
+     },
+     {
+      "type": "route",
+      "name": "Traffic (busy): PDX - PCB",
+      "tooltip": true,
+      "filterData": {
+       "id": "byRefId",
+       "options": "tb3"
+      },
+      "location": {
+       "mode": "coords",
+       "latitude": "lat",
+       "longitude": "lon"
+      },
+      "config": {
+       "style": {
+        "color": {
+         "fixed": "#3B82F6"
+        },
+        "opacity": 0.35,
+        "lineWidth": 20,
+        "size": {
+         "fixed": 20,
+         "min": 1,
+         "max": 30
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       },
+       "arrow": 0
+      }
+     },
+     {
+      "type": "route",
+      "name": "Traffic (busy): SJC - BOS",
+      "tooltip": true,
+      "filterData": {
+       "id": "byRefId",
+       "options": "tb4"
+      },
+      "location": {
+       "mode": "coords",
+       "latitude": "lat",
+       "longitude": "lon"
+      },
+      "config": {
+       "style": {
+        "color": {
+         "fixed": "#3B82F6"
+        },
+        "opacity": 0.35,
+        "lineWidth": 20,
+        "size": {
+         "fixed": 20,
+         "min": 1,
+         "max": 30
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       },
+       "arrow": 0
+      }
+     },
+     {
+      "type": "route",
+      "name": "Traffic (busy): SJC - PCB",
+      "tooltip": true,
+      "filterData": {
+       "id": "byRefId",
+       "options": "tb5"
+      },
+      "location": {
+       "mode": "coords",
+       "latitude": "lat",
+       "longitude": "lon"
+      },
+      "config": {
+       "style": {
+        "color": {
+         "fixed": "#3B82F6"
+        },
+        "opacity": 0.35,
+        "lineWidth": 20,
+        "size": {
+         "fixed": 20,
+         "min": 1,
+         "max": 30
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       },
+       "arrow": 0
+      }
+     },
+     {
+      "type": "route",
+      "name": "Traffic (busy): BOS - PCB",
+      "tooltip": true,
+      "filterData": {
+       "id": "byRefId",
+       "options": "tb6"
+      },
+      "location": {
+       "mode": "coords",
+       "latitude": "lat",
+       "longitude": "lon"
+      },
+      "config": {
+       "style": {
+        "color": {
+         "fixed": "#3B82F6"
+        },
+        "opacity": 0.35,
+        "lineWidth": 20,
+        "size": {
+         "fixed": 20,
+         "min": 1,
+         "max": 30
         },
         "rotation": {
          "fixed": 0,
@@ -2201,7 +2939,7 @@
    },
    "options": {
     "mode": "markdown",
-    "content": "### How to read the map\n**Lines** are the tailnet links between sites, coloured by health (worst of the two directions):\n\n- <span style='color:#22C55E'>**green**</span> normal\n- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm (both 5-minute averages)\n- <span style='color:#EF4444'>**red**</span> loss above 10%, or the link is down\n\n**Markers** are the sites: green = nothing wrong there, orange = failing checks or firing alerts at that site.\n\nThe **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet, widest = 50 kbit/s or more. Hover the line for latency, or the band for traffic.\n\nHover a line or marker for numbers. Latency is compared with each link's *own* normal, so a long link (Portland to Florida, ~90 ms) is not flagged for being long.\n\nUnderlying data: ping mesh (10 pings a minute from every site), plus the Network dashboard for the full matrix."
+    "content": "### How to read the map\n**Lines** are the tailnet links between sites, coloured by health (worst of the two directions):\n\n- <span style='color:#22C55E'>**green**</span> normal\n- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm (both 5-minute averages)\n- <span style='color:#EF4444'>**red**</span> loss above 10%, or the link is down\n\n**Markers** are the sites: green = nothing wrong there, orange = failing checks or firing alerts at that site.\n\nThe **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet (under 5 kbit/s), medium = moderate (5 to 25 kbit/s), wide = busy (over 25 kbit/s). Hover the line for latency, or the band for traffic.\n\nHover a line or marker for numbers. Latency is compared with each link's *own* normal, so a long link (Portland to Florida, ~90 ms) is not flagged for being long.\n\nUnderlying data: ping mesh (10 pings a minute from every site), plus the Network dashboard for the full matrix."
    }
   },
   {
