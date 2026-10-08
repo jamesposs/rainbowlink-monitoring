@@ -1765,7 +1765,7 @@
    "gridPos": {
     "x": 0,
     "y": 26,
-    "w": 13,
+    "w": 11,
     "h": 9
    },
    "description": "Bits per second carried over the tailnet between each pair of sites (sum of every host at each end). Includes backups, DNS sync, PBX trunks, monitoring. Internet traffic is not included.",
@@ -1818,9 +1818,9 @@
     "uid": "prometheus"
    },
    "gridPos": {
-    "x": 13,
+    "x": 11,
     "y": 26,
-    "w": 11,
+    "w": 13,
     "h": 9
    },
    "description": "Rates are 5-minute averages. First -> second follows the link name (PDX - PCB: PDX to PCB). Relayed = hosts reachable only through a DERP relay (slower path).",

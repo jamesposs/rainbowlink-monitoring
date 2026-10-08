@@ -68,6 +68,13 @@ LAN twin (pbx2, dns-pcb, hs, sjc, pcb, ...) are never touched.
 - **Undo:** set `enableAddressTranslation` to false on each node (instant). Records changed: `dns1` (had extra tailnet A/AAAA), `channels` and `claudeproxy`
   (were tailnet-only, now LAN + translation). Pre-change zone backup: `/root/dns-zones-pre-split-20261007.tgz` on dns1.
 
+## Site map and inter-site traffic
+`Site map` (Grafana): a US map of the sites with every link coloured by health (green normal; orange loss >2% or latency >2x its own
+1-day norm; red loss >10%/down; 5-minute averages) over Grafana's bundled US outline, so it needs no tile server or API key (Carto's free
+tiles now require a key). Below it: link detail, traffic per link, and the busiest hosts. Traffic comes from `rl-tailnet-metrics.py`
+(Ansible role, remote-site hosts): Tailscale's per-peer byte counters, summed per site; it covers tailnet traffic only, not internet traffic.
+Edit sites/links in `tools/gen_map.py`; add the new node's tailnet IP to `monitoring_tailnet_site_of` in the role.
+
 ## Disk health
 * **Servers & storage → Disk health:** NAS drives (SMART over SNMP: health, temperature, age, reallocated/pending/uncorrectable sectors, CRC errors), `pve0` drives (SATA SMART, NVMe wear/spare/media errors), LVM thin-pool data+metadata.
 * Alerts are early warnings (next-day digest): any pending/uncorrectable sector, *growth* of reallocated sectors/CRC errors over 7 days, NVMe critical flag / media errors / wear > 80% / spare < 20%, drive temperature, thin pool data > 85% or metadata > 75%.

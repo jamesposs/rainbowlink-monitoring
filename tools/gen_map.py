@@ -224,12 +224,12 @@ def traffic_panels():
     th = lambda *p: {"mode": "absolute", "steps": [{"color": c, "value": v} for v, c in p]}
     ov = lambda col, props: {"matcher": {"id": "byName", "options": col}, "properties": props}
     both = " or ".join(lab(f'({t["fwd"]} + {t["rev"]})', link=t["link"]) for t in traffic_exprs())
-    series = {"id": 4, "type": "timeseries", "title": "Traffic between sites (both directions, tailnet)", "datasource": DS, "gridPos": {"x": 0, "y": 26, "w": 13, "h": 9},
+    series = {"id": 4, "type": "timeseries", "title": "Traffic between sites (both directions, tailnet)", "datasource": DS, "gridPos": {"x": 0, "y": 26, "w": 11, "h": 9},
               "description": "Bits per second carried over the tailnet between each pair of sites (sum of every host at each end). Includes backups, DNS sync, PBX trunks, monitoring. Internet traffic is not included.",
               "targets": [{"datasource": DS, "expr": both, "refId": "A", "legendFormat": "{{link}}", "range": True, "instant": False}],
               "fieldConfig": {"defaults": {"unit": "bps", "min": 0, "custom": {"lineWidth": 1, "fillOpacity": 12, "showPoints": "never", "stacking": {"mode": "none"}}}, "overrides": []},
               "options": {"legend": {"displayMode": "list", "placement": "bottom", "showLegend": True}, "tooltip": {"mode": "multi", "sort": "desc"}}}
-    tbl = {"id": 5, "type": "table", "title": "Traffic per link (now / last 24 h)", "datasource": DS, "gridPos": {"x": 13, "y": 26, "w": 11, "h": 9},
+    tbl = {"id": 5, "type": "table", "title": "Traffic per link (now / last 24 h)", "datasource": DS, "gridPos": {"x": 11, "y": 26, "w": 13, "h": 9},
            "description": "Rates are 5-minute averages. First -> second follows the link name (PDX - PCB: PDX to PCB). Relayed = hosts reachable only through a DERP relay (slower path).",
            "targets": [q(_or("fwd"), "A"), q(_or("rev"), "B"), q(_or("day"), "C"), q(_or("relayed"), "D")],
            "transformations": [{"id": "merge", "options": {}},
