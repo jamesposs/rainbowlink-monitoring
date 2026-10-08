@@ -70,7 +70,7 @@ def link_targets():
     return out
 
 
-TRAFFIC_MAX_BPS = 1_000_000          # a link at/above 1 Mbit/s gets the widest ribbon; scale is linear so quiet links stay thin
+TRAFFIC_MAX_BPS = 50_000             # ribbon is widest at/above 50 kbit/s (typical load here is 2-25 kbit/s; a backup burst just saturates). Raise it if the links get busier.
 RIBBON = "#3B82F6"
 
 
@@ -294,7 +294,7 @@ def legend():
           "- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm (both 5-minute averages)\n"
           "- <span style='color:#EF4444'>**red**</span> loss above 10%, or the link is down\n\n"
           "**Markers** are the sites: green = nothing wrong there, orange = failing checks or firing alerts at that site.\n\n"
-          "The **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet, widest = 1 Mbit/s or more. Hover the line for latency, or the band for traffic.\n\n"
+          "The **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet, widest = 50 kbit/s or more. Hover the line for latency, or the band for traffic.\n\n"
           "Hover a line or marker for numbers. Latency is compared with each link's *own* normal, so a long link (Portland to Florida, ~90 ms) is not flagged for being long.\n\n"
           "Underlying data: ping mesh (10 pings a minute from every site), plus the Network dashboard for the full matrix.")
     return {"id": 3, "type": "text", "title": "", "gridPos": {"x": 15, "y": 17, "w": 9, "h": 9}, "options": {"mode": "markdown", "content": md}}

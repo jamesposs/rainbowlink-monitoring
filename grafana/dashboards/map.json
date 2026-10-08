@@ -860,7 +860,7 @@
        },
        {
         "id": "max",
-        "value": 1000000
+        "value": 50000
        }
       ]
      },
@@ -888,7 +888,7 @@
        },
        {
         "id": "max",
-        "value": 1000000
+        "value": 50000
        }
       ]
      },
@@ -916,7 +916,7 @@
        },
        {
         "id": "max",
-        "value": 1000000
+        "value": 50000
        }
       ]
      },
@@ -944,7 +944,7 @@
        },
        {
         "id": "max",
-        "value": 1000000
+        "value": 50000
        }
       ]
      },
@@ -972,7 +972,7 @@
        },
        {
         "id": "max",
-        "value": 1000000
+        "value": 50000
        }
       ]
      },
@@ -1000,7 +1000,7 @@
        },
        {
         "id": "max",
-        "value": 1000000
+        "value": 50000
        }
       ]
      }
@@ -2201,7 +2201,7 @@
    },
    "options": {
     "mode": "markdown",
-    "content": "### How to read the map\n**Lines** are the tailnet links between sites, coloured by health (worst of the two directions):\n\n- <span style='color:#22C55E'>**green**</span> normal\n- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm (both 5-minute averages)\n- <span style='color:#EF4444'>**red**</span> loss above 10%, or the link is down\n\n**Markers** are the sites: green = nothing wrong there, orange = failing checks or firing alerts at that site.\n\nThe **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet, widest = 1 Mbit/s or more. Hover the line for latency, or the band for traffic.\n\nHover a line or marker for numbers. Latency is compared with each link's *own* normal, so a long link (Portland to Florida, ~90 ms) is not flagged for being long.\n\nUnderlying data: ping mesh (10 pings a minute from every site), plus the Network dashboard for the full matrix."
+    "content": "### How to read the map\n**Lines** are the tailnet links between sites, coloured by health (worst of the two directions):\n\n- <span style='color:#22C55E'>**green**</span> normal\n- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm (both 5-minute averages)\n- <span style='color:#EF4444'>**red**</span> loss above 10%, or the link is down\n\n**Markers** are the sites: green = nothing wrong there, orange = failing checks or firing alerts at that site.\n\nThe **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet, widest = 50 kbit/s or more. Hover the line for latency, or the band for traffic.\n\nHover a line or marker for numbers. Latency is compared with each link's *own* normal, so a long link (Portland to Florida, ~90 ms) is not flagged for being long.\n\nUnderlying data: ping mesh (10 pings a minute from every site), plus the Network dashboard for the full matrix."
    }
   },
   {
