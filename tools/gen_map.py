@@ -89,8 +89,21 @@ def hide(*fields):
     return [{"matcher": {"id": "byName", "options": f}, "properties": [{"id": "custom.hideFrom", "value": {"legend": True, "tooltip": True, "viz": False}}]} for f in fields]
 
 
+# 1x1 transparent PNG. A tile server (Carto/OSM) would need an API key or send every map view to a third party, and Carto's free tiles now
+# demand a key. Grafana ships public/maps/usa-states.geojson, so the map draws entirely from the local server instead.
+BLANK_TILE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+
+
+def states_layer():
+    return {"type": "geojson", "name": "US states", "tooltip": False,
+            "config": {"src": "public/maps/usa-states.geojson", "rules": [],
+                       "style": {"color": {"fixed": "#1e293b"}, "opacity": 0.85, "lineWidth": 1, "size": {"fixed": 5, "min": 1, "max": 10},
+                                 "rotation": {"fixed": 0, "min": -360, "max": 360, "mode": "mod"}}}}
+
+
 def geomap():
     layers = [
+        states_layer(),
         route_layer("Healthy links", "A", GREEN),
         route_layer("Degraded links", "B", ORANGE),
         route_layer("Down / lossy links", "C", RED),
@@ -123,7 +136,7 @@ def geomap():
         "options": {
             "view": {"id": "coords", "lat": 38.6, "lon": -96.5, "zoom": 4, "allLayers": True},
             "controls": {"showZoom": True, "mouseWheelZoom": True, "showAttribution": True, "showScale": False, "showMeasure": False, "showDebug": False},
-            "basemap": {"type": "carto", "name": "Basemap", "config": {"showLabels": True, "theme": "auto"}},
+            "basemap": {"type": "xyz", "name": "Blank", "config": {"url": BLANK_TILE, "attribution": "US outline: Grafana bundled data"}},
             "layers": layers, "tooltip": {"mode": "details"}},
     }
 

@@ -340,14 +340,41 @@
      "showDebug": false
     },
     "basemap": {
-     "type": "carto",
-     "name": "Basemap",
+     "type": "xyz",
+     "name": "Blank",
      "config": {
-      "showLabels": true,
-      "theme": "auto"
+      "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+      "attribution": "US outline: Grafana bundled data"
      }
     },
     "layers": [
+     {
+      "type": "geojson",
+      "name": "US states",
+      "tooltip": false,
+      "config": {
+       "src": "public/maps/usa-states.geojson",
+       "rules": [],
+       "style": {
+        "color": {
+         "fixed": "#1e293b"
+        },
+        "opacity": 0.85,
+        "lineWidth": 1,
+        "size": {
+         "fixed": 5,
+         "min": 1,
+         "max": 10
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       }
+      }
+     },
      {
       "type": "route",
       "name": "Healthy links",
