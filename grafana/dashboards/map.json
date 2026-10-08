@@ -463,6 +463,28 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
+     "expr": "label_replace(label_replace(label_replace((avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[5m]) or avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[5m])) * 1000), \"link\", \"PDX - SJC\", \"\", \"\"), \"lat\", \"41.43\", \"\", \"\"), \"lon\", \"-122.285\", \"\", \"\") or label_replace(label_replace(label_replace((avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[5m]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[5m])) * 1000), \"link\", \"PDX - BOS\", \"\", \"\"), \"lat\", \"43.94\", \"\", \"\"), \"lon\", \"-96.87\", \"\", \"\") or label_replace(label_replace(label_replace((avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[5m]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[5m])) * 1000), \"link\", \"PDX - PCB\", \"\", \"\"), \"lat\", \"37.85\", \"\", \"\"), \"lon\", \"-104.24\", \"\", \"\") or label_replace(label_replace(label_replace((avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[5m]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[5m])) * 1000), \"link\", \"SJC - BOS\", \"\", \"\"), \"lat\", \"39.85\", \"\", \"\"), \"lon\", \"-96.475\", \"\", \"\") or label_replace(label_replace(label_replace((avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[5m]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[5m])) * 1000), \"link\", \"SJC - PCB\", \"\", \"\"), \"lat\", \"33.76\", \"\", \"\"), \"lon\", \"-103.845\", \"\", \"\") or label_replace(label_replace(label_replace((avg(avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[5m]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[5m])) * 1000), \"link\", \"BOS - PCB\", \"\", \"\"), \"lat\", \"36.27\", \"\", \"\"), \"lon\", \"-78.43\", \"\", \"\")",
+     "refId": "ML",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - SJC\", \"\", \"\"), \"lat\", \"41.43\", \"\", \"\"), \"lon\", \"-122.285\", \"\", \"\") or label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - BOS\", \"\", \"\"), \"lat\", \"43.94\", \"\", \"\"), \"lon\", \"-96.87\", \"\", \"\") or label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - PCB\", \"\", \"\"), \"lat\", \"37.85\", \"\", \"\"), \"lon\", \"-104.24\", \"\", \"\") or label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8)), \"link\", \"SJC - BOS\", \"\", \"\"), \"lat\", \"39.85\", \"\", \"\"), \"lon\", \"-96.475\", \"\", \"\") or label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8)), \"link\", \"SJC - PCB\", \"\", \"\"), \"lat\", \"33.76\", \"\", \"\"), \"lon\", \"-103.845\", \"\", \"\") or label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8)), \"link\", \"BOS - PCB\", \"\", \"\"), \"lat\", \"36.27\", \"\", \"\"), \"lon\", \"-78.43\", \"\", \"\")",
+     "refId": "MT",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
      "expr": "label_replace(label_replace(label_replace(label_replace(((count(probe_success{site=\"pdx\"} == 0) or vector(0)) + (count(ALERTS{site=\"pdx\", alertstate=\"firing\", severity!=\"none\"}) or vector(0))), \"name\", \"Home (Portland)\", \"\", \"\"), \"site\", \"pdx\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((count(probe_success{site=\"sjc\"} == 0) or vector(0)) + (count(ALERTS{site=\"sjc\", alertstate=\"firing\", severity!=\"none\"}) or vector(0))), \"name\", \"San Jose VPS\", \"\", \"\"), \"site\", \"sjc\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((count(probe_success{site=\"bos\"} == 0) or vector(0)) + (count(ALERTS{site=\"bos\", alertstate=\"firing\", severity!=\"none\"}) or vector(0))), \"name\", \"Boston VPS / PBX\", \"\", \"\"), \"site\", \"bos\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((count(probe_success{site=\"pcb\"} == 0) or vector(0)) + (count(ALERTS{site=\"pcb\", alertstate=\"firing\", severity!=\"none\"}) or vector(0))), \"name\", \"Panama City Beach\", \"\", \"\"), \"site\", \"pcb\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
      "refId": "S",
      "instant": true,
@@ -471,6 +493,474 @@
     }
    ],
    "transformations": [
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "g1"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "g2"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "g3"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "g4"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "g5"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "g6"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "d1"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "d2"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "d3"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "d4"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "d5"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "d6"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "b1"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Packet loss"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "b2"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Packet loss"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "b3"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Packet loss"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "b4"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Packet loss"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "b5"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Packet loss"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "b6"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Packet loss"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tq1"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tq2"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tq3"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tq4"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tq5"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tq6"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tm1"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tm2"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tm3"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tm4"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tm5"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tm6"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tb1"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tb2"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tb3"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tb4"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tb5"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tb6"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "ML"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "MT"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "S"
+     },
+     "options": {
+      "renameByName": {
+       "Value": "Open issues"
+      }
+     }
+    },
     {
      "id": "convertFieldType",
      "options": {
@@ -605,10 +1095,6 @@
        {
         "id": "decimals",
         "value": 0
-       },
-       {
-        "id": "displayName",
-        "value": "Latency"
        }
       ]
      },
@@ -625,10 +1111,6 @@
        {
         "id": "decimals",
         "value": 0
-       },
-       {
-        "id": "displayName",
-        "value": "Latency"
        }
       ]
      },
@@ -645,10 +1127,6 @@
        {
         "id": "decimals",
         "value": 0
-       },
-       {
-        "id": "displayName",
-        "value": "Latency"
        }
       ]
      },
@@ -665,10 +1143,6 @@
        {
         "id": "decimals",
         "value": 0
-       },
-       {
-        "id": "displayName",
-        "value": "Latency"
        }
       ]
      },
@@ -685,10 +1159,6 @@
        {
         "id": "decimals",
         "value": 0
-       },
-       {
-        "id": "displayName",
-        "value": "Latency"
        }
       ]
      },
@@ -705,10 +1175,6 @@
        {
         "id": "decimals",
         "value": 0
-       },
-       {
-        "id": "displayName",
-        "value": "Latency"
        }
       ]
      },
@@ -725,10 +1191,6 @@
        {
         "id": "decimals",
         "value": 0
-       },
-       {
-        "id": "displayName",
-        "value": "Latency"
        }
       ]
      },
@@ -745,10 +1207,6 @@
        {
         "id": "decimals",
         "value": 0
-       },
-       {
-        "id": "displayName",
-        "value": "Latency"
        }
       ]
      },
@@ -765,10 +1223,6 @@
        {
         "id": "decimals",
         "value": 0
-       },
-       {
-        "id": "displayName",
-        "value": "Latency"
        }
       ]
      },
@@ -785,10 +1239,6 @@
        {
         "id": "decimals",
         "value": 0
-       },
-       {
-        "id": "displayName",
-        "value": "Latency"
        }
       ]
      },
@@ -805,10 +1255,6 @@
        {
         "id": "decimals",
         "value": 0
-       },
-       {
-        "id": "displayName",
-        "value": "Latency"
        }
       ]
      },
@@ -825,10 +1271,6 @@
        {
         "id": "decimals",
         "value": 0
-       },
-       {
-        "id": "displayName",
-        "value": "Latency"
        }
       ]
      },
@@ -845,10 +1287,6 @@
        {
         "id": "decimals",
         "value": 0
-       },
-       {
-        "id": "displayName",
-        "value": "Packet loss"
        }
       ]
      },
@@ -865,10 +1303,6 @@
        {
         "id": "decimals",
         "value": 0
-       },
-       {
-        "id": "displayName",
-        "value": "Packet loss"
        }
       ]
      },
@@ -885,10 +1319,6 @@
        {
         "id": "decimals",
         "value": 0
-       },
-       {
-        "id": "displayName",
-        "value": "Packet loss"
        }
       ]
      },
@@ -905,10 +1335,6 @@
        {
         "id": "decimals",
         "value": 0
-       },
-       {
-        "id": "displayName",
-        "value": "Packet loss"
        }
       ]
      },
@@ -925,10 +1351,6 @@
        {
         "id": "decimals",
         "value": 0
-       },
-       {
-        "id": "displayName",
-        "value": "Packet loss"
        }
       ]
      },
@@ -945,26 +1367,6 @@
        {
         "id": "decimals",
         "value": 0
-       },
-       {
-        "id": "displayName",
-        "value": "Packet loss"
-       }
-      ]
-     },
-     {
-      "matcher": {
-       "id": "byFrameRefID",
-       "options": "S"
-      },
-      "properties": [
-       {
-        "id": "decimals",
-        "value": 0
-       },
-       {
-        "id": "displayName",
-        "value": "Open issues"
        }
       ]
      },
@@ -980,11 +1382,7 @@
        },
        {
         "id": "decimals",
-        "value": 1
-       },
-       {
-        "id": "displayName",
-        "value": "Traffic (both directions)"
+        "value": 0
        }
       ]
      },
@@ -1000,11 +1398,7 @@
        },
        {
         "id": "decimals",
-        "value": 1
-       },
-       {
-        "id": "displayName",
-        "value": "Traffic (both directions)"
+        "value": 0
        }
       ]
      },
@@ -1020,11 +1414,7 @@
        },
        {
         "id": "decimals",
-        "value": 1
-       },
-       {
-        "id": "displayName",
-        "value": "Traffic (both directions)"
+        "value": 0
        }
       ]
      },
@@ -1040,11 +1430,7 @@
        },
        {
         "id": "decimals",
-        "value": 1
-       },
-       {
-        "id": "displayName",
-        "value": "Traffic (both directions)"
+        "value": 0
        }
       ]
      },
@@ -1060,11 +1446,7 @@
        },
        {
         "id": "decimals",
-        "value": 1
-       },
-       {
-        "id": "displayName",
-        "value": "Traffic (both directions)"
+        "value": 0
        }
       ]
      },
@@ -1080,11 +1462,7 @@
        },
        {
         "id": "decimals",
-        "value": 1
-       },
-       {
-        "id": "displayName",
-        "value": "Traffic (both directions)"
+        "value": 0
        }
       ]
      },
@@ -1100,11 +1478,7 @@
        },
        {
         "id": "decimals",
-        "value": 1
-       },
-       {
-        "id": "displayName",
-        "value": "Traffic (both directions)"
+        "value": 0
        }
       ]
      },
@@ -1120,11 +1494,7 @@
        },
        {
         "id": "decimals",
-        "value": 1
-       },
-       {
-        "id": "displayName",
-        "value": "Traffic (both directions)"
+        "value": 0
        }
       ]
      },
@@ -1140,11 +1510,7 @@
        },
        {
         "id": "decimals",
-        "value": 1
-       },
-       {
-        "id": "displayName",
-        "value": "Traffic (both directions)"
+        "value": 0
        }
       ]
      },
@@ -1160,11 +1526,7 @@
        },
        {
         "id": "decimals",
-        "value": 1
-       },
-       {
-        "id": "displayName",
-        "value": "Traffic (both directions)"
+        "value": 0
        }
       ]
      },
@@ -1180,11 +1542,7 @@
        },
        {
         "id": "decimals",
-        "value": 1
-       },
-       {
-        "id": "displayName",
-        "value": "Traffic (both directions)"
+        "value": 0
        }
       ]
      },
@@ -1200,11 +1558,7 @@
        },
        {
         "id": "decimals",
-        "value": 1
-       },
-       {
-        "id": "displayName",
-        "value": "Traffic (both directions)"
+        "value": 0
        }
       ]
      },
@@ -1220,11 +1574,7 @@
        },
        {
         "id": "decimals",
-        "value": 1
-       },
-       {
-        "id": "displayName",
-        "value": "Traffic (both directions)"
+        "value": 0
        }
       ]
      },
@@ -1240,11 +1590,7 @@
        },
        {
         "id": "decimals",
-        "value": 1
-       },
-       {
-        "id": "displayName",
-        "value": "Traffic (both directions)"
+        "value": 0
        }
       ]
      },
@@ -1260,11 +1606,7 @@
        },
        {
         "id": "decimals",
-        "value": 1
-       },
-       {
-        "id": "displayName",
-        "value": "Traffic (both directions)"
+        "value": 0
        }
       ]
      },
@@ -1280,11 +1622,7 @@
        },
        {
         "id": "decimals",
-        "value": 1
-       },
-       {
-        "id": "displayName",
-        "value": "Traffic (both directions)"
+        "value": 0
        }
       ]
      },
@@ -1300,11 +1638,7 @@
        },
        {
         "id": "decimals",
-        "value": 1
-       },
-       {
-        "id": "displayName",
-        "value": "Traffic (both directions)"
+        "value": 0
        }
       ]
      },
@@ -1320,11 +1654,55 @@
        },
        {
         "id": "decimals",
-        "value": 1
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "ML"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "ms"
        },
        {
-        "id": "displayName",
-        "value": "Traffic (both directions)"
+        "id": "decimals",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "MT"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
+       },
+       {
+        "id": "decimals",
+        "value": 0
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "S"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "none"
+       },
+       {
+        "id": "decimals",
+        "value": 0
        }
       ]
      }
@@ -2644,6 +3022,106 @@
      },
      {
       "type": "markers",
+      "name": "Latency labels",
+      "tooltip": true,
+      "filterData": {
+       "id": "byRefId",
+       "options": "ML"
+      },
+      "location": {
+       "mode": "coords",
+       "latitude": "lat",
+       "longitude": "lon"
+      },
+      "config": {
+       "showLegend": false,
+       "style": {
+        "size": {
+         "fixed": 3,
+         "min": 2,
+         "max": 15
+        },
+        "color": {
+         "fixed": "#F8FAFC"
+        },
+        "opacity": 1,
+        "symbol": {
+         "mode": "fixed",
+         "fixed": "img/icons/marker/circle.svg"
+        },
+        "text": {
+         "mode": "field",
+         "field": "Value",
+         "fixed": ""
+        },
+        "textConfig": {
+         "fontSize": 12,
+         "offsetX": 0,
+         "offsetY": -13,
+         "textAlign": "center",
+         "textBaseline": "middle"
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       }
+      }
+     },
+     {
+      "type": "markers",
+      "name": "Traffic labels",
+      "tooltip": true,
+      "filterData": {
+       "id": "byRefId",
+       "options": "MT"
+      },
+      "location": {
+       "mode": "coords",
+       "latitude": "lat",
+       "longitude": "lon"
+      },
+      "config": {
+       "showLegend": false,
+       "style": {
+        "size": {
+         "fixed": 3,
+         "min": 2,
+         "max": 15
+        },
+        "color": {
+         "fixed": "#93C5FD"
+        },
+        "opacity": 1,
+        "symbol": {
+         "mode": "fixed",
+         "fixed": "img/icons/marker/circle.svg"
+        },
+        "text": {
+         "mode": "field",
+         "field": "Value",
+         "fixed": ""
+        },
+        "textConfig": {
+         "fontSize": 12,
+         "offsetX": 0,
+         "offsetY": 13,
+         "textAlign": "center",
+         "textBaseline": "middle"
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       }
+      }
+     },
+     {
+      "type": "markers",
       "name": "Sites",
       "tooltip": true,
       "filterData": {
@@ -2939,7 +3417,7 @@
    },
    "options": {
     "mode": "markdown",
-    "content": "### How to read the map\n**Lines** are the tailnet links between sites, coloured by health (worst of the two directions):\n\n- <span style='color:#22C55E'>**green**</span> normal\n- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm (both 5-minute averages)\n- <span style='color:#EF4444'>**red**</span> loss above 10%, or the link is down\n\n**Markers** are the sites: green = nothing wrong there, orange = failing checks or firing alerts at that site.\n\nThe **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet (under 5 kbit/s), medium = moderate (5 to 25 kbit/s), wide = busy (over 25 kbit/s). Hover the line for latency, or the band for traffic.\n\nHover a line or marker for numbers. Latency is compared with each link's *own* normal, so a long link (Portland to Florida, ~90 ms) is not flagged for being long.\n\nUnderlying data: ping mesh (10 pings a minute from every site), plus the Network dashboard for the full matrix."
+    "content": "### How to read the map\n**Lines** are the tailnet links between sites, coloured by health (worst of the two directions):\n\n- <span style='color:#22C55E'>**green**</span> normal\n- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm (both 5-minute averages)\n- <span style='color:#EF4444'>**red**</span> loss above 10%, or the link is down\n\n**Markers** are the sites: green = nothing wrong there, orange = failing checks or firing alerts at that site.\n\nThe **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet (under 5 kbit/s), medium = moderate (5 to 25 kbit/s), wide = busy (over 25 kbit/s). The numbers at the middle of each link are its latency (white) and traffic (blue).\n\nHover a line or marker for numbers. Latency is compared with each link's *own* normal, so a long link (Portland to Florida, ~90 ms) is not flagged for being long.\n\nUnderlying data: ping mesh (10 pings a minute from every site), plus the Network dashboard for the full matrix."
    }
   },
   {

@@ -91,6 +91,34 @@ def traffic_targets():
     return out
 
 
+def mid(a, b):
+    return round((SITES[a]["lat"] + SITES[b]["lat"]) / 2, 3), round((SITES[a]["lon"] + SITES[b]["lon"]) / 2, 3)
+
+
+def label_targets():
+    """ML: latency (ms) and MT: traffic (bits/s), one row per link at the link's midpoint, shown as small text labels on the map."""
+    lat_parts, trf_parts = [], []
+    for i, (a, b) in enumerate(PAIRS, 1):
+        la, lo = mid(a, b)
+        rtt_ms = (f'(avg(avg_over_time(rl_mesh_rtt_seconds{{site="{a}", to="{b}", stat="avg"{OV}}}[5m]) '
+                  f'or avg_over_time(rl_mesh_rtt_seconds{{site="{b}", to="{a}", stat="avg"{OV}}}[5m])) * 1000)')
+        t = traffic_exprs()[i - 1]
+        lat_parts.append(lab(rtt_ms, link=f"{a.upper()} - {b.upper()}", lat=la, lon=lo))
+        trf_parts.append(lab(f'({t["fwd"]} + {t["rev"]})', link=f"{a.upper()} - {b.upper()}", lat=la, lon=lo))
+    return [tgt(" or ".join(lat_parts), "ML"), tgt(" or ".join(trf_parts), "MT")]
+
+
+def label_layer(name, ref, color, dy):
+    return {"type": "markers", "name": name, "tooltip": True, "filterData": {"id": "byRefId", "options": ref},
+            "location": {"mode": "coords", "latitude": "lat", "longitude": "lon"},
+            "config": {"showLegend": False, "style": {
+                "size": {"fixed": 3, "min": 2, "max": 15}, "color": {"fixed": color}, "opacity": 1,
+                "symbol": {"mode": "fixed", "fixed": "img/icons/marker/circle.svg"},
+                "text": {"mode": "field", "field": "Value", "fixed": ""},
+                "textConfig": {"fontSize": 12, "offsetX": 0, "offsetY": dy, "textAlign": "center", "textBaseline": "middle"},
+                "rotation": {"fixed": 0, "min": -360, "max": 360, "mode": "mod"}}}}
+
+
 def ribbon_layers():
     out = []
     for bid, name, _lo, _hi, width in TRAFFIC_BANDS:
@@ -165,11 +193,30 @@ def states_layer():
                                  "rotation": {"fixed": 0, "min": -360, "max": 360, "mode": "mod"}}}}
 
 
+OVERRIDE_UNITS = ([(f"{CLASS_PREFIX[k]}{i}", u) for k, u in (("good", "ms"), ("degraded", "ms"), ("bad", "percent")) for i in range(1, len(PAIRS) + 1)]
+                  + [(f"t{bid}{i}", "bps") for bid, *_ in TRAFFIC_BANDS for i in range(1, len(PAIRS) + 1)] + [("ML", "ms"), ("MT", "bps"), ("S", "none")])
+
+
+def value_names():
+    """Name each query's number field so the popup reads 'Latency: 29 ms' instead of 'Value'."""
+    names = {}
+    for k, n in (("good", "Latency"), ("degraded", "Latency"), ("bad", "Packet loss")):
+        for i in range(1, len(PAIRS) + 1):
+            names[f"{CLASS_PREFIX[k]}{i}"] = n
+    for bid, *_ in TRAFFIC_BANDS:
+        for i in range(1, len(PAIRS) + 1):
+            names[f"t{bid}{i}"] = "Traffic (both directions)"
+    names.update({"ML": "Latency", "MT": "Traffic (both directions)", "S": "Open issues"})
+    return [{"id": "organize", "filter": {"id": "byRefId", "options": ref}, "options": {"renameByName": {"Value": n}}} for ref, n in names.items()]
+
+
 def geomap():
     layers = [
         states_layer(),
         *ribbon_layers(),
         *link_layers(),
+        label_layer("Latency labels", "ML", "#F8FAFC", -13),
+        label_layer("Traffic labels", "MT", "#93C5FD", 13),
         {"type": "markers", "name": "Sites", "tooltip": True, "filterData": {"id": "byRefId", "options": "S"},
          "location": {"mode": "coords", "latitude": "lat", "longitude": "lon"},
          "config": {"showLegend": False, "style": {
@@ -182,20 +229,16 @@ def geomap():
     return {
         "id": 1, "type": "geomap", "title": "Site-to-site links", "datasource": DS, "gridPos": {"x": 0, "y": 0, "w": 24, "h": 17},
         "description": "Line colour = health of the link (worst of both directions): green normal, orange loss >2% or latency >2x its norm, red loss >10% / down. Marker colour = site health.",
-        "targets": link_targets() + traffic_targets() + [tgt(site_query(), "S")],
-        "transformations": [
+        "targets": link_targets() + traffic_targets() + label_targets() + [tgt(site_query(), "S")],
+        "transformations": value_names() + [
             {"id": "convertFieldType", "options": {"conversions": [{"targetField": "lat", "destinationType": "number"}, {"targetField": "lon", "destinationType": "number"}], "fields": {}}},
         ],
         "fieldConfig": {
             "defaults": {"thresholds": {"mode": "absolute", "steps": [{"color": GREEN, "value": None}, {"color": ORANGE, "value": 1}, {"color": RED, "value": 3}]},
                          "color": {"mode": "thresholds"}},
             "overrides": hide("Time", "lat", "lon", "end", "site") + [
-                ] + [{"matcher": {"id": "byFrameRefID", "options": f"{CLASS_PREFIX[k]}{i}"}, "properties": [{"id": "unit", "value": u}, {"id": "decimals", "value": 0}, {"id": "displayName", "value": n}]}
-                     for k, u, n in (("good", "ms", "Latency"), ("degraded", "ms", "Latency"), ("bad", "percent", "Packet loss")) for i in range(1, len(PAIRS) + 1)] + [
-                {"matcher": {"id": "byFrameRefID", "options": "S"}, "properties": [{"id": "decimals", "value": 0}, {"id": "displayName", "value": "Open issues"}]},
-            ] + [{"matcher": {"id": "byFrameRefID", "options": f"t{bid}{i}"},
-                  "properties": [{"id": "unit", "value": "bps"}, {"id": "decimals", "value": 1}, {"id": "displayName", "value": "Traffic (both directions)"}]}
-                 for bid, *_ in TRAFFIC_BANDS for i in range(1, len(PAIRS) + 1)]},
+                {"matcher": {"id": "byFrameRefID", "options": ref}, "properties": [{"id": "unit", "value": u}, {"id": "decimals", "value": 0}]}
+                for ref, u in (OVERRIDE_UNITS)]},
         "options": {
             "view": {"id": "coords", "lat": 38.6, "lon": -96.5, "zoom": 4, "allLayers": True},
             "controls": {"showZoom": True, "mouseWheelZoom": True, "showAttribution": True, "showScale": False, "showMeasure": False, "showDebug": False},
@@ -300,7 +343,7 @@ def legend():
           "- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm (both 5-minute averages)\n"
           "- <span style='color:#EF4444'>**red**</span> loss above 10%, or the link is down\n\n"
           "**Markers** are the sites: green = nothing wrong there, orange = failing checks or firing alerts at that site.\n\n"
-          "The **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet (under 5 kbit/s), medium = moderate (5 to 25 kbit/s), wide = busy (over 25 kbit/s). Hover the line for latency, or the band for traffic.\n\n"
+          "The **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet (under 5 kbit/s), medium = moderate (5 to 25 kbit/s), wide = busy (over 25 kbit/s). The numbers at the middle of each link are its latency (white) and traffic (blue).\n\n"
           "Hover a line or marker for numbers. Latency is compared with each link's *own* normal, so a long link (Portland to Florida, ~90 ms) is not flagged for being long.\n\n"
           "Underlying data: ping mesh (10 pings a minute from every site), plus the Network dashboard for the full matrix.")
     return {"id": 3, "type": "text", "title": "", "gridPos": {"x": 15, "y": 17, "w": 9, "h": 9}, "options": {"mode": "markdown", "content": md}}
