@@ -70,6 +70,33 @@ def link_targets():
     return out
 
 
+TRAFFIC_MAX_BPS = 1_000_000          # a link at/above 1 Mbit/s gets the widest ribbon; scale is linear so quiet links stay thin
+RIBBON = "#3B82F6"
+
+
+def traffic_targets():
+    """One instant query per link: both end points, value = traffic in both directions (bits/s) over the last 5 minutes."""
+    out = []
+    for i, (a, b) in enumerate(PAIRS, 1):
+        t = traffic_exprs()[i - 1]
+        both = f'({t["fwd"]} + {t["rev"]})'
+        parts = [lab(both, link=f"{a.upper()} - {b.upper()}", end=end, lat=SITES[x]["lat"], lon=SITES[x]["lon"]) for end, x in (("a", a), ("b", b))]
+        out.append(tgt(" or ".join(parts), f"t{i}"))
+    return out
+
+
+def ribbon_layers():
+    """Widths follow traffic (field Value, domain 0..TRAFFIC_MAX_BPS set in fieldConfig); drawn under the health lines."""
+    out = []
+    for i, (a, b) in enumerate(PAIRS, 1):
+        out.append({"type": "route", "name": f"Traffic: {a.upper()} - {b.upper()}", "tooltip": True, "filterData": {"id": "byRefId", "options": f"t{i}"},
+                    "location": {"mode": "coords", "latitude": "lat", "longitude": "lon"},
+                    "config": {"style": {"color": {"fixed": RIBBON}, "opacity": 0.35, "lineWidth": 4,
+                                         "size": {"field": "Value", "fixed": 5, "min": 5, "max": 26},
+                                         "rotation": {"fixed": 0, "min": -360, "max": 360, "mode": "mod"}}, "arrow": 0}})
+    return out
+
+
 CLASS_STYLE = {"good": ("Healthy", GREEN), "degraded": ("Degraded", ORANGE), "bad": ("Down/lossy", RED)}
 
 
@@ -135,6 +162,7 @@ def states_layer():
 def geomap():
     layers = [
         states_layer(),
+        *ribbon_layers(),
         *link_layers(),
         {"type": "markers", "name": "Sites", "tooltip": True, "filterData": {"id": "byRefId", "options": "S"},
          "location": {"mode": "coords", "latitude": "lat", "longitude": "lon"},
@@ -148,7 +176,7 @@ def geomap():
     return {
         "id": 1, "type": "geomap", "title": "Site-to-site links", "datasource": DS, "gridPos": {"x": 0, "y": 0, "w": 24, "h": 17},
         "description": "Line colour = health of the link (worst of both directions): green normal, orange loss >2% or latency >2x its norm, red loss >10% / down. Marker colour = site health.",
-        "targets": link_targets() + [tgt(site_query(), "S")],
+        "targets": link_targets() + traffic_targets() + [tgt(site_query(), "S")],
         "transformations": [
             {"id": "convertFieldType", "options": {"conversions": [{"targetField": "lat", "destinationType": "number"}, {"targetField": "lon", "destinationType": "number"}], "fields": {}}},
         ],
@@ -159,7 +187,9 @@ def geomap():
                 ] + [{"matcher": {"id": "byFrameRefID", "options": f"{CLASS_PREFIX[k]}{i}"}, "properties": [{"id": "unit", "value": u}, {"id": "decimals", "value": 0}, {"id": "displayName", "value": n}]}
                      for k, u, n in (("good", "ms", "Latency"), ("degraded", "ms", "Latency"), ("bad", "percent", "Packet loss")) for i in range(1, len(PAIRS) + 1)] + [
                 {"matcher": {"id": "byFrameRefID", "options": "S"}, "properties": [{"id": "decimals", "value": 0}, {"id": "displayName", "value": "Open issues"}]},
-            ]},
+            ] + [{"matcher": {"id": "byFrameRefID", "options": f"t{i}"},
+                  "properties": [{"id": "unit", "value": "bps"}, {"id": "decimals", "value": 1}, {"id": "displayName", "value": "Traffic (both directions)"},
+                                 {"id": "min", "value": 0}, {"id": "max", "value": TRAFFIC_MAX_BPS}]} for i in range(1, len(PAIRS) + 1)]},
         "options": {
             "view": {"id": "coords", "lat": 38.6, "lon": -96.5, "zoom": 4, "allLayers": True},
             "controls": {"showZoom": True, "mouseWheelZoom": True, "showAttribution": True, "showScale": False, "showMeasure": False, "showDebug": False},
@@ -264,6 +294,7 @@ def legend():
           "- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm (both 5-minute averages)\n"
           "- <span style='color:#EF4444'>**red**</span> loss above 10%, or the link is down\n\n"
           "**Markers** are the sites: green = nothing wrong there, orange = failing checks or firing alerts at that site.\n\n"
+          "The **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet, widest = 1 Mbit/s or more. Hover the line for latency, or the band for traffic.\n\n"
           "Hover a line or marker for numbers. Latency is compared with each link's *own* normal, so a long link (Portland to Florida, ~90 ms) is not flagged for being long.\n\n"
           "Underlying data: ping mesh (10 pings a minute from every site), plus the Network dashboard for the full matrix.")
     return {"id": 3, "type": "text", "title": "", "gridPos": {"x": 15, "y": 17, "w": 9, "h": 9}, "options": {"mode": "markdown", "content": md}}

@@ -265,6 +265,72 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
+     "expr": "label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\")",
+     "refId": "t1",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\")",
+     "refId": "t2",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "t3",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8)), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8)), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\")",
+     "refId": "t4",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8)), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8)), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "t5",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8)), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8)), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "t6",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
      "expr": "label_replace(label_replace(label_replace(label_replace(((count(probe_success{site=\"pdx\"} == 0) or vector(0)) + (count(ALERTS{site=\"pdx\", alertstate=\"firing\", severity!=\"none\"}) or vector(0))), \"name\", \"Home (Portland)\", \"\", \"\"), \"site\", \"pdx\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((count(probe_success{site=\"sjc\"} == 0) or vector(0)) + (count(ALERTS{site=\"sjc\", alertstate=\"firing\", severity!=\"none\"}) or vector(0))), \"name\", \"San Jose VPS\", \"\", \"\"), \"site\", \"sjc\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((count(probe_success{site=\"bos\"} == 0) or vector(0)) + (count(ALERTS{site=\"bos\", alertstate=\"firing\", severity!=\"none\"}) or vector(0))), \"name\", \"Boston VPS / PBX\", \"\", \"\"), \"site\", \"bos\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((count(probe_success{site=\"pcb\"} == 0) or vector(0)) + (count(ALERTS{site=\"pcb\", alertstate=\"firing\", severity!=\"none\"}) or vector(0))), \"name\", \"Panama City Beach\", \"\", \"\"), \"site\", \"pcb\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
      "refId": "S",
      "instant": true,
@@ -769,6 +835,174 @@
         "value": "Open issues"
        }
       ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "t1"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       },
+       {
+        "id": "displayName",
+        "value": "Traffic (both directions)"
+       },
+       {
+        "id": "min",
+        "value": 0
+       },
+       {
+        "id": "max",
+        "value": 1000000
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "t2"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       },
+       {
+        "id": "displayName",
+        "value": "Traffic (both directions)"
+       },
+       {
+        "id": "min",
+        "value": 0
+       },
+       {
+        "id": "max",
+        "value": 1000000
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "t3"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       },
+       {
+        "id": "displayName",
+        "value": "Traffic (both directions)"
+       },
+       {
+        "id": "min",
+        "value": 0
+       },
+       {
+        "id": "max",
+        "value": 1000000
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "t4"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       },
+       {
+        "id": "displayName",
+        "value": "Traffic (both directions)"
+       },
+       {
+        "id": "min",
+        "value": 0
+       },
+       {
+        "id": "max",
+        "value": 1000000
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "t5"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       },
+       {
+        "id": "displayName",
+        "value": "Traffic (both directions)"
+       },
+       {
+        "id": "min",
+        "value": 0
+       },
+       {
+        "id": "max",
+        "value": 1000000
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "t6"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       },
+       {
+        "id": "displayName",
+        "value": "Traffic (both directions)"
+       },
+       {
+        "id": "min",
+        "value": 0
+       },
+       {
+        "id": "max",
+        "value": 1000000
+       }
+      ]
      }
     ]
    },
@@ -822,6 +1056,222 @@
          "mode": "mod"
         }
        }
+      }
+     },
+     {
+      "type": "route",
+      "name": "Traffic: PDX - SJC",
+      "tooltip": true,
+      "filterData": {
+       "id": "byRefId",
+       "options": "t1"
+      },
+      "location": {
+       "mode": "coords",
+       "latitude": "lat",
+       "longitude": "lon"
+      },
+      "config": {
+       "style": {
+        "color": {
+         "fixed": "#3B82F6"
+        },
+        "opacity": 0.35,
+        "lineWidth": 4,
+        "size": {
+         "field": "Value",
+         "fixed": 5,
+         "min": 5,
+         "max": 26
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       },
+       "arrow": 0
+      }
+     },
+     {
+      "type": "route",
+      "name": "Traffic: PDX - BOS",
+      "tooltip": true,
+      "filterData": {
+       "id": "byRefId",
+       "options": "t2"
+      },
+      "location": {
+       "mode": "coords",
+       "latitude": "lat",
+       "longitude": "lon"
+      },
+      "config": {
+       "style": {
+        "color": {
+         "fixed": "#3B82F6"
+        },
+        "opacity": 0.35,
+        "lineWidth": 4,
+        "size": {
+         "field": "Value",
+         "fixed": 5,
+         "min": 5,
+         "max": 26
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       },
+       "arrow": 0
+      }
+     },
+     {
+      "type": "route",
+      "name": "Traffic: PDX - PCB",
+      "tooltip": true,
+      "filterData": {
+       "id": "byRefId",
+       "options": "t3"
+      },
+      "location": {
+       "mode": "coords",
+       "latitude": "lat",
+       "longitude": "lon"
+      },
+      "config": {
+       "style": {
+        "color": {
+         "fixed": "#3B82F6"
+        },
+        "opacity": 0.35,
+        "lineWidth": 4,
+        "size": {
+         "field": "Value",
+         "fixed": 5,
+         "min": 5,
+         "max": 26
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       },
+       "arrow": 0
+      }
+     },
+     {
+      "type": "route",
+      "name": "Traffic: SJC - BOS",
+      "tooltip": true,
+      "filterData": {
+       "id": "byRefId",
+       "options": "t4"
+      },
+      "location": {
+       "mode": "coords",
+       "latitude": "lat",
+       "longitude": "lon"
+      },
+      "config": {
+       "style": {
+        "color": {
+         "fixed": "#3B82F6"
+        },
+        "opacity": 0.35,
+        "lineWidth": 4,
+        "size": {
+         "field": "Value",
+         "fixed": 5,
+         "min": 5,
+         "max": 26
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       },
+       "arrow": 0
+      }
+     },
+     {
+      "type": "route",
+      "name": "Traffic: SJC - PCB",
+      "tooltip": true,
+      "filterData": {
+       "id": "byRefId",
+       "options": "t5"
+      },
+      "location": {
+       "mode": "coords",
+       "latitude": "lat",
+       "longitude": "lon"
+      },
+      "config": {
+       "style": {
+        "color": {
+         "fixed": "#3B82F6"
+        },
+        "opacity": 0.35,
+        "lineWidth": 4,
+        "size": {
+         "field": "Value",
+         "fixed": 5,
+         "min": 5,
+         "max": 26
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       },
+       "arrow": 0
+      }
+     },
+     {
+      "type": "route",
+      "name": "Traffic: BOS - PCB",
+      "tooltip": true,
+      "filterData": {
+       "id": "byRefId",
+       "options": "t6"
+      },
+      "location": {
+       "mode": "coords",
+       "latitude": "lat",
+       "longitude": "lon"
+      },
+      "config": {
+       "style": {
+        "color": {
+         "fixed": "#3B82F6"
+        },
+        "opacity": 0.35,
+        "lineWidth": 4,
+        "size": {
+         "field": "Value",
+         "fixed": 5,
+         "min": 5,
+         "max": 26
+        },
+        "rotation": {
+         "fixed": 0,
+         "min": -360,
+         "max": 360,
+         "mode": "mod"
+        }
+       },
+       "arrow": 0
       }
      },
      {
@@ -1751,7 +2201,7 @@
    },
    "options": {
     "mode": "markdown",
-    "content": "### How to read the map\n**Lines** are the tailnet links between sites, coloured by health (worst of the two directions):\n\n- <span style='color:#22C55E'>**green**</span> normal\n- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm (both 5-minute averages)\n- <span style='color:#EF4444'>**red**</span> loss above 10%, or the link is down\n\n**Markers** are the sites: green = nothing wrong there, orange = failing checks or firing alerts at that site.\n\nHover a line or marker for numbers. Latency is compared with each link's *own* normal, so a long link (Portland to Florida, ~90 ms) is not flagged for being long.\n\nUnderlying data: ping mesh (10 pings a minute from every site), plus the Network dashboard for the full matrix."
+    "content": "### How to read the map\n**Lines** are the tailnet links between sites, coloured by health (worst of the two directions):\n\n- <span style='color:#22C55E'>**green**</span> normal\n- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm (both 5-minute averages)\n- <span style='color:#EF4444'>**red**</span> loss above 10%, or the link is down\n\n**Markers** are the sites: green = nothing wrong there, orange = failing checks or firing alerts at that site.\n\nThe **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet, widest = 1 Mbit/s or more. Hover the line for latency, or the band for traffic.\n\nHover a line or marker for numbers. Latency is compared with each link's *own* normal, so a long link (Portland to Florida, ~90 ms) is not flagged for being long.\n\nUnderlying data: ping mesh (10 pings a minute from every site), plus the Network dashboard for the full matrix."
    }
   },
   {
