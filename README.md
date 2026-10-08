@@ -113,7 +113,7 @@ server's page and tests the SSO server, not your app. Public checks run on vps-s
 ## Update / upgrade
 * Containers are **pinned** in `compose.yml`. To upgrade: read the release notes, change the tag, `sudo ./scripts/apply.sh`. Roll back by restoring the old tag.
 * Hosts' `node_exporter` is the distro package (security updates arrive with normal apt updates).
-* Dashboards: edit `tools/gen_dashboards.py`, run `python3 tools/gen_dashboards.py`, then `apply.sh`.
+* Dashboards: edit the JSON in `grafana/dashboards/` directly (there is no generator any more), then `apply.sh`; Grafana picks it up in 1-2 minutes. UI edits are disabled on purpose.
 
 ## Backup, restore, rebuild
 * The whole stack (config, git history, secrets, Prometheus + Grafana data volumes) is inside LXC 128, which Proxmox
