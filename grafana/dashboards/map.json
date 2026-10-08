@@ -463,7 +463,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace((avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[5m]) or avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[5m])) * 1000), \"link\", \"PDX - SJC\", \"\", \"\"), \"lat\", \"41.43\", \"\", \"\"), \"lon\", \"-122.285\", \"\", \"\") or label_replace(label_replace(label_replace((avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[5m]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[5m])) * 1000), \"link\", \"PDX - BOS\", \"\", \"\"), \"lat\", \"43.94\", \"\", \"\"), \"lon\", \"-96.87\", \"\", \"\") or label_replace(label_replace(label_replace((avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[5m]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[5m])) * 1000), \"link\", \"PDX - PCB\", \"\", \"\"), \"lat\", \"37.85\", \"\", \"\"), \"lon\", \"-104.24\", \"\", \"\") or label_replace(label_replace(label_replace((avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[5m]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[5m])) * 1000), \"link\", \"SJC - BOS\", \"\", \"\"), \"lat\", \"39.85\", \"\", \"\"), \"lon\", \"-96.475\", \"\", \"\") or label_replace(label_replace(label_replace((avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[5m]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[5m])) * 1000), \"link\", \"SJC - PCB\", \"\", \"\"), \"lat\", \"33.76\", \"\", \"\"), \"lon\", \"-103.845\", \"\", \"\") or label_replace(label_replace(label_replace((avg(avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[5m]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[5m])) * 1000), \"link\", \"BOS - PCB\", \"\", \"\"), \"lat\", \"36.27\", \"\", \"\"), \"lon\", \"-78.43\", \"\", \"\")",
+     "expr": "label_replace(label_replace(label_replace(round(avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[5m]) or avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[5m])) * 1000), \"link\", \"PDX - SJC\", \"\", \"\"), \"lat\", \"41.43\", \"\", \"\"), \"lon\", \"-122.285\", \"\", \"\") or label_replace(label_replace(label_replace(round(avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[5m]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[5m])) * 1000), \"link\", \"PDX - BOS\", \"\", \"\"), \"lat\", \"43.94\", \"\", \"\"), \"lon\", \"-96.87\", \"\", \"\") or label_replace(label_replace(label_replace(round(avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[5m]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[5m])) * 1000), \"link\", \"PDX - PCB\", \"\", \"\"), \"lat\", \"37.85\", \"\", \"\"), \"lon\", \"-104.24\", \"\", \"\") or label_replace(label_replace(label_replace(round(avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[5m]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[5m])) * 1000), \"link\", \"SJC - BOS\", \"\", \"\"), \"lat\", \"39.85\", \"\", \"\"), \"lon\", \"-96.475\", \"\", \"\") or label_replace(label_replace(label_replace(round(avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[5m]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[5m])) * 1000), \"link\", \"SJC - PCB\", \"\", \"\"), \"lat\", \"33.76\", \"\", \"\"), \"lon\", \"-103.845\", \"\", \"\") or label_replace(label_replace(label_replace(round(avg(avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[5m]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[5m])) * 1000), \"link\", \"BOS - PCB\", \"\", \"\"), \"lat\", \"36.27\", \"\", \"\"), \"lon\", \"-78.43\", \"\", \"\")",
      "refId": "ML",
      "instant": true,
      "range": false,
@@ -474,7 +474,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - SJC\", \"\", \"\"), \"lat\", \"41.43\", \"\", \"\"), \"lon\", \"-122.285\", \"\", \"\") or label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - BOS\", \"\", \"\"), \"lat\", \"43.94\", \"\", \"\"), \"lon\", \"-96.87\", \"\", \"\") or label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - PCB\", \"\", \"\"), \"lat\", \"37.85\", \"\", \"\"), \"lon\", \"-104.24\", \"\", \"\") or label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8)), \"link\", \"SJC - BOS\", \"\", \"\"), \"lat\", \"39.85\", \"\", \"\"), \"lon\", \"-96.475\", \"\", \"\") or label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8)), \"link\", \"SJC - PCB\", \"\", \"\"), \"lat\", \"33.76\", \"\", \"\"), \"lon\", \"-103.845\", \"\", \"\") or label_replace(label_replace(label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8)), \"link\", \"BOS - PCB\", \"\", \"\"), \"lat\", \"36.27\", \"\", \"\"), \"lon\", \"-78.43\", \"\", \"\")",
+     "expr": "label_replace(label_replace(label_replace((round(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8)) / 100) / 10), \"link\", \"PDX - SJC\", \"\", \"\"), \"lat\", \"41.43\", \"\", \"\"), \"lon\", \"-122.285\", \"\", \"\") or label_replace(label_replace(label_replace((round(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8)) / 100) / 10), \"link\", \"PDX - BOS\", \"\", \"\"), \"lat\", \"43.94\", \"\", \"\"), \"lon\", \"-96.87\", \"\", \"\") or label_replace(label_replace(label_replace((round(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8)) / 100) / 10), \"link\", \"PDX - PCB\", \"\", \"\"), \"lat\", \"37.85\", \"\", \"\"), \"lon\", \"-104.24\", \"\", \"\") or label_replace(label_replace(label_replace((round(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8)) / 100) / 10), \"link\", \"SJC - BOS\", \"\", \"\"), \"lat\", \"39.85\", \"\", \"\"), \"lon\", \"-96.475\", \"\", \"\") or label_replace(label_replace(label_replace((round(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8)) / 100) / 10), \"link\", \"SJC - PCB\", \"\", \"\"), \"lat\", \"33.76\", \"\", \"\"), \"lon\", \"-103.845\", \"\", \"\") or label_replace(label_replace(label_replace((round(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8)) / 100) / 10), \"link\", \"BOS - PCB\", \"\", \"\"), \"lat\", \"36.27\", \"\", \"\"), \"lon\", \"-78.43\", \"\", \"\")",
      "refId": "MT",
      "instant": true,
      "range": false,
@@ -493,6 +493,36 @@
     }
    ],
    "transformations": [
+    {
+     "id": "calculateField",
+     "filter": {
+      "id": "byRefId",
+      "options": "ML"
+     },
+     "options": {
+      "mode": "template",
+      "alias": "label",
+      "replaceFields": false,
+      "template": {
+       "expression": "${Value} ms"
+      }
+     }
+    },
+    {
+     "id": "calculateField",
+     "filter": {
+      "id": "byRefId",
+      "options": "MT"
+     },
+     "options": {
+      "mode": "template",
+      "alias": "label",
+      "replaceFields": false,
+      "template": {
+       "expression": "${Value} kb/s"
+      }
+     }
+    },
     {
      "id": "organize",
      "filter": {
@@ -918,30 +948,6 @@
      "filter": {
       "id": "byRefId",
       "options": "tb6"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Traffic (both directions)"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "ML"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Latency"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "MT"
      },
      "options": {
       "renameByName": {
@@ -1682,7 +1688,7 @@
       "properties": [
        {
         "id": "unit",
-        "value": "bps"
+        "value": "none"
        },
        {
         "id": "decimals",
@@ -3051,7 +3057,7 @@
         },
         "text": {
          "mode": "field",
-         "field": "Value",
+         "field": "label",
          "fixed": ""
         },
         "textConfig": {
@@ -3101,7 +3107,7 @@
         },
         "text": {
          "mode": "field",
-         "field": "Value",
+         "field": "label",
          "fixed": ""
         },
         "textConfig": {

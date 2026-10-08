@@ -100,11 +100,11 @@ def label_targets():
     lat_parts, trf_parts = [], []
     for i, (a, b) in enumerate(PAIRS, 1):
         la, lo = mid(a, b)
-        rtt_ms = (f'(avg(avg_over_time(rl_mesh_rtt_seconds{{site="{a}", to="{b}", stat="avg"{OV}}}[5m]) '
+        rtt_ms = (f'round(avg(avg_over_time(rl_mesh_rtt_seconds{{site="{a}", to="{b}", stat="avg"{OV}}}[5m]) '
                   f'or avg_over_time(rl_mesh_rtt_seconds{{site="{b}", to="{a}", stat="avg"{OV}}}[5m])) * 1000)')
         t = traffic_exprs()[i - 1]
         lat_parts.append(lab(rtt_ms, link=f"{a.upper()} - {b.upper()}", lat=la, lon=lo))
-        trf_parts.append(lab(f'({t["fwd"]} + {t["rev"]})', link=f"{a.upper()} - {b.upper()}", lat=la, lon=lo))
+        trf_parts.append(lab(f'(round(({t["fwd"]} + {t["rev"]}) / 100) / 10)', link=f"{a.upper()} - {b.upper()}", lat=la, lon=lo))
     return [tgt(" or ".join(lat_parts), "ML"), tgt(" or ".join(trf_parts), "MT")]
 
 
@@ -114,7 +114,7 @@ def label_layer(name, ref, color, dy):
             "config": {"showLegend": False, "style": {
                 "size": {"fixed": 3, "min": 2, "max": 15}, "color": {"fixed": color}, "opacity": 1,
                 "symbol": {"mode": "fixed", "fixed": "img/icons/marker/circle.svg"},
-                "text": {"mode": "field", "field": "Value", "fixed": ""},
+                "text": {"mode": "field", "field": "label", "fixed": ""},
                 "textConfig": {"fontSize": 12, "offsetX": 0, "offsetY": dy, "textAlign": "center", "textBaseline": "middle"},
                 "rotation": {"fixed": 0, "min": -360, "max": 360, "mode": "mod"}}}}
 
@@ -194,7 +194,7 @@ def states_layer():
 
 
 OVERRIDE_UNITS = ([(f"{CLASS_PREFIX[k]}{i}", u) for k, u in (("good", "ms"), ("degraded", "ms"), ("bad", "percent")) for i in range(1, len(PAIRS) + 1)]
-                  + [(f"t{bid}{i}", "bps") for bid, *_ in TRAFFIC_BANDS for i in range(1, len(PAIRS) + 1)] + [("ML", "ms"), ("MT", "bps"), ("S", "none")])
+                  + [(f"t{bid}{i}", "bps") for bid, *_ in TRAFFIC_BANDS for i in range(1, len(PAIRS) + 1)] + [("ML", "ms"), ("MT", "none"), ("S", "none")])
 
 
 def value_names():
@@ -206,8 +206,11 @@ def value_names():
     for bid, *_ in TRAFFIC_BANDS:
         for i in range(1, len(PAIRS) + 1):
             names[f"t{bid}{i}"] = "Traffic (both directions)"
-    names.update({"ML": "Latency", "MT": "Traffic (both directions)", "S": "Open issues"})
-    return [{"id": "organize", "filter": {"id": "byRefId", "options": ref}, "options": {"renameByName": {"Value": n}}} for ref, n in names.items()]
+    names["S"] = "Open issues"
+    labels = [{"id": "calculateField", "filter": {"id": "byRefId", "options": ref},
+               "options": {"mode": "template", "alias": "label", "replaceFields": False, "template": {"expression": expr}}}
+              for ref, expr in (("ML", "${Value} ms"), ("MT", "${Value} kb/s"))]
+    return labels + [{"id": "organize", "filter": {"id": "byRefId", "options": ref}, "options": {"renameByName": {"Value": n}}} for ref, n in names.items()]
 
 
 def geomap():
