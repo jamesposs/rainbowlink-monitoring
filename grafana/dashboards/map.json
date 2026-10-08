@@ -1753,6 +1753,414 @@
     "mode": "markdown",
     "content": "### How to read the map\n**Lines** are the tailnet links between sites, coloured by health (worst of the two directions):\n\n- <span style='color:#22C55E'>**green**</span> normal\n- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm (both 5-minute averages)\n- <span style='color:#EF4444'>**red**</span> loss above 10%, or the link is down\n\n**Markers** are the sites: green = nothing wrong there, orange = failing checks or firing alerts at that site.\n\nHover a line or marker for numbers. Latency is compared with each link's *own* normal, so a long link (Portland to Florida, ~90 ms) is not flagged for being long.\n\nUnderlying data: ping mesh (10 pings a minute from every site), plus the Network dashboard for the full matrix."
    }
+  },
+  {
+   "id": 4,
+   "type": "timeseries",
+   "title": "Traffic between sites (both directions, tailnet)",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 26,
+    "w": 13,
+    "h": 9
+   },
+   "description": "Bits per second carried over the tailnet between each pair of sites (sum of every host at each end). Includes backups, DNS sync, PBX trunks, monitoring. Internet traffic is not included.",
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - SJC\", \"\", \"\") or label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - BOS\", \"\", \"\") or label_replace(((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8)), \"link\", \"PDX - PCB\", \"\", \"\") or label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8)), \"link\", \"SJC - BOS\", \"\", \"\") or label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8)), \"link\", \"SJC - PCB\", \"\", \"\") or label_replace(((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8) + (sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8)), \"link\", \"BOS - PCB\", \"\", \"\")",
+     "refId": "A",
+     "legendFormat": "{{link}}",
+     "range": true,
+     "instant": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "bps",
+     "min": 0,
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 12,
+      "showPoints": "never",
+      "stacking": {
+       "mode": "none"
+      }
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom",
+     "showLegend": true
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "desc"
+    }
+   }
+  },
+  {
+   "id": 5,
+   "type": "table",
+   "title": "Traffic per link (now / last 24 h)",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 13,
+    "y": 26,
+    "w": 11,
+    "h": 9
+   },
+   "description": "Rates are 5-minute averages. First -> second follows the link name (PDX - PCB: PDX to PCB). Relayed = hosts reachable only through a DERP relay (slower path).",
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8), \"link\", \"PDX - SJC\", \"\", \"\") or label_replace((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8), \"link\", \"PDX - BOS\", \"\", \"\") or label_replace((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8), \"link\", \"PDX - PCB\", \"\", \"\") or label_replace((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8), \"link\", \"SJC - BOS\", \"\", \"\") or label_replace((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8), \"link\", \"SJC - PCB\", \"\", \"\") or label_replace((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8), \"link\", \"BOS - PCB\", \"\", \"\")",
+     "refId": "A",
+     "instant": true,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[5m])) * 8), \"link\", \"PDX - SJC\", \"\", \"\") or label_replace((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pdx\"}[5m])) * 8), \"link\", \"PDX - BOS\", \"\", \"\") or label_replace((sum(rate(rl_tailnet_peer_tx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[5m])) * 8), \"link\", \"PDX - PCB\", \"\", \"\") or label_replace((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"bos\"}[5m])) * 8), \"link\", \"SJC - BOS\", \"\", \"\") or label_replace((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[5m])) * 8), \"link\", \"SJC - PCB\", \"\", \"\") or label_replace((sum(rate(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pcb\"}[5m])) * 8), \"link\", \"BOS - PCB\", \"\", \"\")",
+     "refId": "B",
+     "instant": true,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(sum(increase(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[24h]) + increase(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pdx\"}[24h])), \"link\", \"PDX - SJC\", \"\", \"\") or label_replace(sum(increase(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pdx\"}[24h]) + increase(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pdx\"}[24h])), \"link\", \"PDX - BOS\", \"\", \"\") or label_replace(sum(increase(rl_tailnet_peer_rx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[24h]) + increase(rl_tailnet_peer_tx_bytes_total{site=\"pcb\", to_site=\"pdx\"}[24h])), \"link\", \"PDX - PCB\", \"\", \"\") or label_replace(sum(increase(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"bos\"}[24h]) + increase(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"bos\"}[24h])), \"link\", \"SJC - BOS\", \"\", \"\") or label_replace(sum(increase(rl_tailnet_peer_rx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[24h]) + increase(rl_tailnet_peer_tx_bytes_total{site=\"sjc\", to_site=\"pcb\"}[24h])), \"link\", \"SJC - PCB\", \"\", \"\") or label_replace(sum(increase(rl_tailnet_peer_rx_bytes_total{site=\"bos\", to_site=\"pcb\"}[24h]) + increase(rl_tailnet_peer_tx_bytes_total{site=\"bos\", to_site=\"pcb\"}[24h])), \"link\", \"BOS - PCB\", \"\", \"\")",
+     "refId": "C",
+     "instant": true,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(sum(rl_tailnet_peer_relayed{site=\"sjc\", to_site=\"pdx\"}), \"link\", \"PDX - SJC\", \"\", \"\") or label_replace(sum(rl_tailnet_peer_relayed{site=\"bos\", to_site=\"pdx\"}), \"link\", \"PDX - BOS\", \"\", \"\") or label_replace(sum(rl_tailnet_peer_relayed{site=\"pcb\", to_site=\"pdx\"}), \"link\", \"PDX - PCB\", \"\", \"\") or label_replace(sum(rl_tailnet_peer_relayed{site=\"sjc\", to_site=\"bos\"}), \"link\", \"SJC - BOS\", \"\", \"\") or label_replace(sum(rl_tailnet_peer_relayed{site=\"sjc\", to_site=\"pcb\"}), \"link\", \"SJC - PCB\", \"\", \"\") or label_replace(sum(rl_tailnet_peer_relayed{site=\"bos\", to_site=\"pcb\"}), \"link\", \"BOS - PCB\", \"\", \"\")",
+     "refId": "D",
+     "instant": true,
+     "format": "table"
+    }
+   ],
+   "transformations": [
+    {
+     "id": "merge",
+     "options": {}
+    },
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {
+       "Time": true
+      },
+      "renameByName": {
+       "link": "Link",
+       "Value #A": "First to second",
+       "Value #B": "Second to first",
+       "Value #C": "Last 24 h",
+       "Value #D": "Relayed hosts"
+      },
+      "indexByName": {
+       "link": 0,
+       "Value #A": 1,
+       "Value #B": 2,
+       "Value #C": 3,
+       "Value #D": 4
+      }
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "auto",
+      "cellOptions": {
+       "type": "auto"
+      }
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "First to second"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Second to first"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bps"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Last 24 h"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bytes"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Relayed hosts"
+      },
+      "properties": [
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-background",
+         "mode": "basic"
+        }
+       },
+       {
+        "id": "thresholds",
+        "value": {
+         "mode": "absolute",
+         "steps": [
+          {
+           "color": "green",
+           "value": null
+          },
+          {
+           "color": "orange",
+           "value": 1
+          }
+         ]
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm",
+    "sortBy": [
+     {
+      "displayName": "Last 24 h",
+      "desc": true
+     }
+    ]
+   }
+  },
+  {
+   "id": 6,
+   "type": "table",
+   "title": "Busiest hosts on the links (last 24 h)",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 35,
+    "w": 24,
+    "h": 8
+   },
+   "description": "Which host is moving the data. 'Measured at' is the remote-site machine; 'Other end' is the machine it talks to (home hosts are shown by name). Counters come from Tailscale's per-peer accounting.",
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "topk(12, sum by (site, to_site, peer) (increase(rl_tailnet_peer_rx_bytes_total[24h]) + increase(rl_tailnet_peer_tx_bytes_total[24h])))",
+     "refId": "A",
+     "instant": true,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "sum by (site, to_site, peer) (increase(rl_tailnet_peer_rx_bytes_total[24h]))",
+     "refId": "B",
+     "instant": true,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "sum by (site, to_site, peer) (increase(rl_tailnet_peer_tx_bytes_total[24h]))",
+     "refId": "C",
+     "instant": true,
+     "format": "table"
+    }
+   ],
+   "transformations": [
+    {
+     "id": "merge",
+     "options": {}
+    },
+    {
+     "id": "filterByValue",
+     "options": {
+      "type": "include",
+      "match": "any",
+      "filters": [
+       {
+        "fieldName": "Value #A",
+        "config": {
+         "id": "greater",
+         "options": {
+          "value": 0
+         }
+        }
+       }
+      ]
+     }
+    },
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {
+       "Time": true
+      },
+      "renameByName": {
+       "site": "Measured at",
+       "to_site": "Other site",
+       "peer": "Other end",
+       "Value #A": "Total",
+       "Value #B": "Received",
+       "Value #C": "Sent"
+      },
+      "indexByName": {
+       "site": 0,
+       "to_site": 1,
+       "peer": 2,
+       "Value #A": 3,
+       "Value #B": 4,
+       "Value #C": 5
+      }
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "auto",
+      "cellOptions": {
+       "type": "auto"
+      }
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Total"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bytes"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Received"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bytes"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Sent"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "bytes"
+       },
+       {
+        "id": "decimals",
+        "value": 1
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm",
+    "sortBy": [
+     {
+      "displayName": "Total",
+      "desc": true
+     }
+    ]
+   }
   }
  ],
  "templating": {

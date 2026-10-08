@@ -191,6 +191,72 @@ def link_table():
     }
 
 
+def _view(a, b):
+    """Traffic for a link is read on the remote-site host (each remote site is one node): for a home pair that is the remote end,
+    for two remote sites it is the first of them. Returns (viewing site, other site)."""
+    return (b, a) if a == "pdx" else (a, b)
+
+
+def _sel(metric, v, o):
+    return f'{metric}{{site="{v}", to_site="{o}"}}'
+
+
+def traffic_exprs():
+    """PromQL per pair, as dicts of expression strings (each an unlabelled vector)."""
+    out = []
+    for a, b in PAIRS:
+        v, o = _view(a, b)
+        rx, tx = "rl_tailnet_peer_rx_bytes_total", "rl_tailnet_peer_tx_bytes_total"
+        a_to_b, b_to_a = ((rx, tx) if v == b else (tx, rx))     # at the viewing host, rx = traffic arriving from the other site
+        out.append({"link": f"{a.upper()} - {b.upper()}", "v": v, "o": o,
+                    "fwd": f'(sum(rate({_sel(a_to_b, v, o)}[5m])) * 8)', "rev": f'(sum(rate({_sel(b_to_a, v, o)}[5m])) * 8)',
+                    "day": f'sum(increase({_sel(rx, v, o)}[24h]) + increase({_sel(tx, v, o)}[24h]))',
+                    "relayed": f'sum({_sel("rl_tailnet_peer_relayed", v, o)})'})
+    return out
+
+
+def _or(key):
+    return " or ".join(lab(t[key], link=t["link"]) for t in traffic_exprs())
+
+
+def traffic_panels():
+    q = lambda e, ref: {"datasource": DS, "expr": e, "refId": ref, "instant": True, "format": "table"}
+    th = lambda *p: {"mode": "absolute", "steps": [{"color": c, "value": v} for v, c in p]}
+    ov = lambda col, props: {"matcher": {"id": "byName", "options": col}, "properties": props}
+    both = " or ".join(lab(f'({t["fwd"]} + {t["rev"]})', link=t["link"]) for t in traffic_exprs())
+    series = {"id": 4, "type": "timeseries", "title": "Traffic between sites (both directions, tailnet)", "datasource": DS, "gridPos": {"x": 0, "y": 26, "w": 13, "h": 9},
+              "description": "Bits per second carried over the tailnet between each pair of sites (sum of every host at each end). Includes backups, DNS sync, PBX trunks, monitoring. Internet traffic is not included.",
+              "targets": [{"datasource": DS, "expr": both, "refId": "A", "legendFormat": "{{link}}", "range": True, "instant": False}],
+              "fieldConfig": {"defaults": {"unit": "bps", "min": 0, "custom": {"lineWidth": 1, "fillOpacity": 12, "showPoints": "never", "stacking": {"mode": "none"}}}, "overrides": []},
+              "options": {"legend": {"displayMode": "list", "placement": "bottom", "showLegend": True}, "tooltip": {"mode": "multi", "sort": "desc"}}}
+    tbl = {"id": 5, "type": "table", "title": "Traffic per link (now / last 24 h)", "datasource": DS, "gridPos": {"x": 13, "y": 26, "w": 11, "h": 9},
+           "description": "Rates are 5-minute averages. First -> second follows the link name (PDX - PCB: PDX to PCB). Relayed = hosts reachable only through a DERP relay (slower path).",
+           "targets": [q(_or("fwd"), "A"), q(_or("rev"), "B"), q(_or("day"), "C"), q(_or("relayed"), "D")],
+           "transformations": [{"id": "merge", "options": {}},
+                               {"id": "organize", "options": {"excludeByName": {"Time": True},
+                                                              "renameByName": {"link": "Link", "Value #A": "First to second", "Value #B": "Second to first", "Value #C": "Last 24 h", "Value #D": "Relayed hosts"},
+                                                              "indexByName": {"link": 0, "Value #A": 1, "Value #B": 2, "Value #C": 3, "Value #D": 4}}}],
+           "fieldConfig": {"defaults": {"custom": {"align": "auto", "cellOptions": {"type": "auto"}}},
+                           "overrides": [ov("First to second", [{"id": "unit", "value": "bps"}, {"id": "decimals", "value": 1}]),
+                                         ov("Second to first", [{"id": "unit", "value": "bps"}, {"id": "decimals", "value": 1}]),
+                                         ov("Last 24 h", [{"id": "unit", "value": "bytes"}, {"id": "decimals", "value": 1}]),
+                                         ov("Relayed hosts", [{"id": "custom.cellOptions", "value": {"type": "color-background", "mode": "basic"}}, {"id": "thresholds", "value": th((None, "green"), (1, "orange"))}])]},
+           "options": {"showHeader": True, "cellHeight": "sm", "sortBy": [{"displayName": "Last 24 h", "desc": True}]}}
+    talkers = {"id": 6, "type": "table", "title": "Busiest hosts on the links (last 24 h)", "datasource": DS, "gridPos": {"x": 0, "y": 35, "w": 24, "h": 8},
+               "description": "Which host is moving the data. 'Measured at' is the remote-site machine; 'Other end' is the machine it talks to (home hosts are shown by name). Counters come from Tailscale's per-peer accounting.",
+               "targets": [q('topk(12, sum by (site, to_site, peer) (increase(rl_tailnet_peer_rx_bytes_total[24h]) + increase(rl_tailnet_peer_tx_bytes_total[24h])))', "A"),
+                           q('sum by (site, to_site, peer) (increase(rl_tailnet_peer_rx_bytes_total[24h]))', "B"), q('sum by (site, to_site, peer) (increase(rl_tailnet_peer_tx_bytes_total[24h]))', "C")],
+               "transformations": [{"id": "merge", "options": {}},
+                                   {"id": "filterByValue", "options": {"type": "include", "match": "any", "filters": [{"fieldName": "Value #A", "config": {"id": "greater", "options": {"value": 0}}}]}},
+                                   {"id": "organize", "options": {"excludeByName": {"Time": True},
+                                                                  "renameByName": {"site": "Measured at", "to_site": "Other site", "peer": "Other end", "Value #A": "Total", "Value #B": "Received", "Value #C": "Sent"},
+                                                                  "indexByName": {"site": 0, "to_site": 1, "peer": 2, "Value #A": 3, "Value #B": 4, "Value #C": 5}}}],
+               "fieldConfig": {"defaults": {"custom": {"align": "auto", "cellOptions": {"type": "auto"}}},
+                               "overrides": [ov(c, [{"id": "unit", "value": "bytes"}, {"id": "decimals", "value": 1}]) for c in ("Total", "Received", "Sent")]},
+               "options": {"showHeader": True, "cellHeight": "sm", "sortBy": [{"displayName": "Total", "desc": True}]}}
+    return [series, tbl, talkers]
+
+
 def legend():
     md = ("### How to read the map\n"
           "**Lines** are the tailnet links between sites, coloured by health (worst of the two directions):\n\n"
@@ -213,7 +279,7 @@ def nav_for(uid):
 def main():
     d = {"uid": "rl-map", "title": "Site map", "tags": ["rainbowlink", "network"], "timezone": "browser", "schemaVersion": 39, "version": 1, "editable": True,
          "graphTooltip": 1, "refresh": "1m", "time": {"from": "now-6h", "to": "now"}, "links": nav_for("rl-map"),
-         "panels": [geomap(), link_table(), legend()], "templating": {"list": []}, "annotations": {"list": []}}
+         "panels": [geomap(), link_table(), legend(), *traffic_panels()], "templating": {"list": []}, "annotations": {"list": []}}
     with open(os.path.join(OUT, "map.json"), "w") as f:
         json.dump(d, f, indent=1)
     print("wrote map.json")
