@@ -67,8 +67,8 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"sjc\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"sjc\", to=\"pdx\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"sjc\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"sjc\", to=\"pdx\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"pdx\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"pdx\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"pdx\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"pdx\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"sjc\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"sjc\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"sjc\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"sjc\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"bos\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"bos\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"bos\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"bos\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
-     "refId": "A",
+     "expr": "label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"sjc\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"sjc\", to=\"pdx\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"sjc\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"sjc\", to=\"pdx\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\")",
+     "refId": "g1",
      "instant": true,
      "range": false,
      "format": "table"
@@ -78,8 +78,8 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"pdx\", to=\"sjc\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"sjc\", to=\"pdx\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"sjc\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"sjc\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"pdx\", to=\"sjc\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"sjc\", to=\"pdx\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"sjc\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"sjc\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"pdx\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"pdx\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"pdx\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"pdx\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"pdx\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"pdx\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"pdx\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"pdx\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"sjc\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"sjc\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"sjc\", path=\"overlay\"})) > 0.10), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"sjc\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"sjc\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"sjc\", path=\"overlay\"})) > 0.10), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"sjc\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"sjc\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"sjc\", path=\"overlay\"})) > 0.10), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"sjc\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"sjc\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"sjc\", path=\"overlay\"})) > 0.10), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"bos\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"bos\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"bos\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"bos\", path=\"overlay\"})) > 0.10), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"bos\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"bos\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"bos\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"bos\", path=\"overlay\"})) > 0.10), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
-     "refId": "B",
+     "expr": "label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"pdx\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"pdx\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\")",
+     "refId": "g2",
      "instant": true,
      "range": false,
      "format": "table"
@@ -89,8 +89,173 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"sjc\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"sjc\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"sjc\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"sjc\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"sjc\", path=\"overlay\"})) > 0.10), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"sjc\", path=\"overlay\"})) > 0.10), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"sjc\", path=\"overlay\"})) > 0.10), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"sjc\", path=\"overlay\"})) > 0.10), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"bos\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"bos\", path=\"overlay\"})) > 0.10), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"bos\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"bos\", path=\"overlay\"})) > 0.10), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
-     "refId": "C",
+     "expr": "label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"pdx\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"pdx\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "g3",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"sjc\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"sjc\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\")",
+     "refId": "g4",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"sjc\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"sjc\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "g5",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"bos\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"bos\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) * 1000) unless (max((rl_mesh_loss_ratio{site=\"bos\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"bos\", path=\"overlay\"})) > 0.02) unless (((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "g6",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"pdx\", to=\"sjc\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"sjc\", to=\"pdx\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"sjc\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"sjc\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"pdx\", to=\"sjc\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"sjc\", to=\"pdx\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"sjc\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"sjc\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\")",
+     "refId": "d1",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"pdx\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"pdx\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"pdx\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"pdx\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\")",
+     "refId": "d2",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"pdx\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"pdx\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"pdx\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"pdx\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"pdx\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"pdx\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "d3",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"sjc\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"sjc\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"sjc\", path=\"overlay\"})) > 0.10), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"sjc\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"sjc\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"sjc\", path=\"overlay\"})) > 0.10), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\")",
+     "refId": "d4",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"sjc\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"sjc\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"sjc\", path=\"overlay\"})) > 0.10), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"sjc\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"sjc\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"sjc\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"sjc\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"sjc\", path=\"overlay\"})) > 0.10), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "d5",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"bos\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"bos\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"bos\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"bos\", path=\"overlay\"})) > 0.10), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) * 1000) and ((max((rl_mesh_loss_ratio{site=\"bos\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"bos\", path=\"overlay\"})) > 0.02) or (((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) > 2 * (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d])))) and ((avg((rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"} or rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}))) > (avg(avg_over_time(rl_mesh_rtt_seconds{site=\"bos\", to=\"pcb\", stat=\"avg\", path=\"overlay\"}[1d]) or avg_over_time(rl_mesh_rtt_seconds{site=\"pcb\", to=\"bos\", stat=\"avg\", path=\"overlay\"}[1d]))) + 0.03)))) unless (max((rl_mesh_loss_ratio{site=\"bos\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"bos\", path=\"overlay\"})) > 0.10), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "d6",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"sjc\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"sjc\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"sjc\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"sjc\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - SJC\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\")",
+     "refId": "b1",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\")",
+     "refId": "b2",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"pdx\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"pdx\", path=\"overlay\"})) > 0.10), \"link\", \"PDX - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "b3",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"sjc\", path=\"overlay\"})) > 0.10), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"bos\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"bos\", to=\"sjc\", path=\"overlay\"})) > 0.10), \"link\", \"SJC - BOS\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\")",
+     "refId": "b4",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"sjc\", path=\"overlay\"})) > 0.10), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"sjc\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"sjc\", path=\"overlay\"})) > 0.10), \"link\", \"SJC - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "b5",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"bos\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"bos\", path=\"overlay\"})) > 0.10), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(100 * (max((rl_mesh_loss_ratio{site=\"bos\", to=\"pcb\", path=\"overlay\"} or rl_mesh_loss_ratio{site=\"pcb\", to=\"bos\", path=\"overlay\"})) > 0.10), \"link\", \"BOS - PCB\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "refId": "b6",
      "instant": true,
      "range": false,
      "format": "table"
@@ -101,29 +266,13 @@
       "uid": "prometheus"
      },
      "expr": "label_replace(label_replace(label_replace(label_replace(((count(probe_success{site=\"pdx\"} == 0) or vector(0)) + (count(ALERTS{site=\"pdx\", alertstate=\"firing\", severity!=\"none\"}) or vector(0))), \"name\", \"Home (Portland)\", \"\", \"\"), \"site\", \"pdx\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((count(probe_success{site=\"sjc\"} == 0) or vector(0)) + (count(ALERTS{site=\"sjc\", alertstate=\"firing\", severity!=\"none\"}) or vector(0))), \"name\", \"San Jose VPS\", \"\", \"\"), \"site\", \"sjc\", \"\", \"\"), \"lat\", \"37.34\", \"\", \"\"), \"lon\", \"-121.89\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((count(probe_success{site=\"bos\"} == 0) or vector(0)) + (count(ALERTS{site=\"bos\", alertstate=\"firing\", severity!=\"none\"}) or vector(0))), \"name\", \"Boston VPS / PBX\", \"\", \"\"), \"site\", \"bos\", \"\", \"\"), \"lat\", \"42.36\", \"\", \"\"), \"lon\", \"-71.06\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((count(probe_success{site=\"pcb\"} == 0) or vector(0)) + (count(ALERTS{site=\"pcb\", alertstate=\"firing\", severity!=\"none\"}) or vector(0))), \"name\", \"Panama City Beach\", \"\", \"\"), \"site\", \"pcb\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
-     "refId": "D",
+     "refId": "S",
      "instant": true,
      "range": false,
      "format": "table"
     }
    ],
    "transformations": [
-    {
-     "id": "partitionByValues",
-     "filter": {
-      "id": "byRefId",
-      "options": "A|B|C"
-     },
-     "options": {
-      "fields": [
-       "link"
-      ],
-      "keepFields": true,
-      "naming": {
-       "asLabels": false
-      }
-     }
-    },
     {
      "id": "convertFieldType",
      "options": {
@@ -248,7 +397,7 @@
      {
       "matcher": {
        "id": "byFrameRefID",
-       "options": "A"
+       "options": "g1"
       },
       "properties": [
        {
@@ -268,7 +417,7 @@
      {
       "matcher": {
        "id": "byFrameRefID",
-       "options": "B"
+       "options": "g2"
       },
       "properties": [
        {
@@ -288,7 +437,207 @@
      {
       "matcher": {
        "id": "byFrameRefID",
-       "options": "C"
+       "options": "g3"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "ms"
+       },
+       {
+        "id": "decimals",
+        "value": 0
+       },
+       {
+        "id": "displayName",
+        "value": "Latency"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "g4"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "ms"
+       },
+       {
+        "id": "decimals",
+        "value": 0
+       },
+       {
+        "id": "displayName",
+        "value": "Latency"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "g5"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "ms"
+       },
+       {
+        "id": "decimals",
+        "value": 0
+       },
+       {
+        "id": "displayName",
+        "value": "Latency"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "g6"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "ms"
+       },
+       {
+        "id": "decimals",
+        "value": 0
+       },
+       {
+        "id": "displayName",
+        "value": "Latency"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "d1"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "ms"
+       },
+       {
+        "id": "decimals",
+        "value": 0
+       },
+       {
+        "id": "displayName",
+        "value": "Latency"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "d2"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "ms"
+       },
+       {
+        "id": "decimals",
+        "value": 0
+       },
+       {
+        "id": "displayName",
+        "value": "Latency"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "d3"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "ms"
+       },
+       {
+        "id": "decimals",
+        "value": 0
+       },
+       {
+        "id": "displayName",
+        "value": "Latency"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "d4"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "ms"
+       },
+       {
+        "id": "decimals",
+        "value": 0
+       },
+       {
+        "id": "displayName",
+        "value": "Latency"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "d5"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "ms"
+       },
+       {
+        "id": "decimals",
+        "value": 0
+       },
+       {
+        "id": "displayName",
+        "value": "Latency"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "d6"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "ms"
+       },
+       {
+        "id": "decimals",
+        "value": 0
+       },
+       {
+        "id": "displayName",
+        "value": "Latency"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "b1"
       },
       "properties": [
        {
@@ -308,7 +657,107 @@
      {
       "matcher": {
        "id": "byFrameRefID",
-       "options": "D"
+       "options": "b2"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "percent"
+       },
+       {
+        "id": "decimals",
+        "value": 0
+       },
+       {
+        "id": "displayName",
+        "value": "Packet loss"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "b3"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "percent"
+       },
+       {
+        "id": "decimals",
+        "value": 0
+       },
+       {
+        "id": "displayName",
+        "value": "Packet loss"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "b4"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "percent"
+       },
+       {
+        "id": "decimals",
+        "value": 0
+       },
+       {
+        "id": "displayName",
+        "value": "Packet loss"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "b5"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "percent"
+       },
+       {
+        "id": "decimals",
+        "value": 0
+       },
+       {
+        "id": "displayName",
+        "value": "Packet loss"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "b6"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "percent"
+       },
+       {
+        "id": "decimals",
+        "value": 0
+       },
+       {
+        "id": "displayName",
+        "value": "Packet loss"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byFrameRefID",
+       "options": "S"
       },
       "properties": [
        {
@@ -343,7 +792,7 @@
      "type": "xyz",
      "name": "Blank",
      "config": {
-      "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+      "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGPgFlAAAABlADxDY+hZAAAAAElFTkSuQmCC",
       "attribution": "US outline: Grafana bundled data"
      }
     },
@@ -381,7 +830,7 @@
       "tooltip": true,
       "filterData": {
        "id": "byRefId",
-       "options": "A"
+       "options": "g1|g2|g3|g4|g5|g6"
       },
       "location": {
        "mode": "coords",
@@ -416,7 +865,7 @@
       "tooltip": true,
       "filterData": {
        "id": "byRefId",
-       "options": "B"
+       "options": "d1|d2|d3|d4|d5|d6"
       },
       "location": {
        "mode": "coords",
@@ -451,7 +900,7 @@
       "tooltip": true,
       "filterData": {
        "id": "byRefId",
-       "options": "C"
+       "options": "b1|b2|b3|b4|b5|b6"
       },
       "location": {
        "mode": "coords",
@@ -486,7 +935,7 @@
       "tooltip": true,
       "filterData": {
        "id": "byRefId",
-       "options": "D"
+       "options": "S"
       },
       "location": {
        "mode": "coords",

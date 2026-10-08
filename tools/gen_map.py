@@ -53,15 +53,23 @@ def link_exprs(a, b):
     }
 
 
-def class_query(kind):
-    """One instant query per class, returning BOTH end points of every link in that class (rows grouped by `link`)."""
-    parts = []
-    for a, b in PAIRS:
-        core = link_exprs(a, b)[kind]
-        name = f'{SITES[a]["name"].split(" ")[0]} - {SITES[b]["name"].split(" ")[0]}'
-        for end, s in (("a", a), ("b", b)):
-            parts.append(lab(core, link=f'{a.upper()} - {b.upper()}', end=end, lat=SITES[s]["lat"], lon=SITES[s]["lon"]))
-    return " or ".join(parts)
+CLASS_PREFIX = {"good": "g", "degraded": "d", "bad": "b"}
+
+
+def link_targets():
+    """One instant query per (class, link). Each returns one frame with two rows (the link's two end points) when the link is in
+    that class, and nothing otherwise. refIds g1.. (healthy) d1.. (degraded) b1.. (down/lossy) drive the layer filters."""
+    out = []
+    for kind, pre in CLASS_PREFIX.items():
+        for i, (a, b) in enumerate(PAIRS, 1):
+            core = link_exprs(a, b)[kind]
+            parts = [lab(core, link=f"{a.upper()} - {b.upper()}", end=end, lat=SITES[s]["lat"], lon=SITES[s]["lon"]) for end, s in (("a", a), ("b", b))]
+            out.append(tgt(" or ".join(parts), f"{pre}{i}"))
+    return out
+
+
+def refs(kind):
+    return "|".join(f"{CLASS_PREFIX[kind]}{i}" for i in range(1, len(PAIRS) + 1))
 
 
 def site_query():
@@ -91,7 +99,19 @@ def hide(*fields):
 
 # 1x1 transparent PNG. A tile server (Carto/OSM) would need an API key or send every map view to a third party, and Carto's free tiles now
 # demand a key. Grafana ships public/maps/usa-states.geojson, so the map draws entirely from the local server instead.
-BLANK_TILE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+def _solid_png(rgb):
+    """A valid 1x1 PNG of one colour, as a data: URI (stdlib only)."""
+    import base64, struct, zlib
+    def chunk(t, d):
+        c = struct.pack(">I", len(d)) + t + d
+        return c + struct.pack(">I", zlib.crc32(t + d) & 0xFFFFFFFF)
+    raw = b"\x00" + bytes(rgb)
+    png = (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", 1, 1, 8, 2, 0, 0, 0))
+           + chunk(b"IDAT", zlib.compress(raw)) + chunk(b"IEND", b""))
+    return "data:image/png;base64," + base64.b64encode(png).decode()
+
+
+BLANK_TILE = _solid_png((11, 16, 32))        # #0b1020: the "ocean", a dark navy to match the dashboards
 
 
 def states_layer():
@@ -104,10 +124,10 @@ def states_layer():
 def geomap():
     layers = [
         states_layer(),
-        route_layer("Healthy links", "A", GREEN),
-        route_layer("Degraded links", "B", ORANGE),
-        route_layer("Down / lossy links", "C", RED),
-        {"type": "markers", "name": "Sites", "tooltip": True, "filterData": {"id": "byRefId", "options": "D"},
+        route_layer("Healthy links", refs("good"), GREEN),
+        route_layer("Degraded links", refs("degraded"), ORANGE),
+        route_layer("Down / lossy links", refs("bad"), RED),
+        {"type": "markers", "name": "Sites", "tooltip": True, "filterData": {"id": "byRefId", "options": "S"},
          "location": {"mode": "coords", "latitude": "lat", "longitude": "lon"},
          "config": {"showLegend": False, "style": {
              "size": {"fixed": 16, "min": 2, "max": 15}, "color": {"field": "Value", "fixed": GREEN}, "opacity": 1,
@@ -119,19 +139,17 @@ def geomap():
     return {
         "id": 1, "type": "geomap", "title": "Site-to-site links", "datasource": DS, "gridPos": {"x": 0, "y": 0, "w": 24, "h": 17},
         "description": "Line colour = health of the link (worst of both directions): green normal, orange loss >2% or latency >2x its norm, red loss >10% / down. Marker colour = site health.",
-        "targets": [tgt(class_query("good"), "A"), tgt(class_query("degraded"), "B"), tgt(class_query("bad"), "C"), tgt(site_query(), "D")],
+        "targets": link_targets() + [tgt(site_query(), "S")],
         "transformations": [
-            {"id": "partitionByValues", "filter": {"id": "byRefId", "options": "A|B|C"}, "options": {"fields": ["link"], "keepFields": True, "naming": {"asLabels": False}}},
             {"id": "convertFieldType", "options": {"conversions": [{"targetField": "lat", "destinationType": "number"}, {"targetField": "lon", "destinationType": "number"}], "fields": {}}},
         ],
         "fieldConfig": {
             "defaults": {"thresholds": {"mode": "absolute", "steps": [{"color": GREEN, "value": None}, {"color": ORANGE, "value": 1}, {"color": RED, "value": 3}]},
                          "color": {"mode": "thresholds"}},
             "overrides": hide("Time", "lat", "lon", "end", "site") + [
-                {"matcher": {"id": "byFrameRefID", "options": "A"}, "properties": [{"id": "unit", "value": "ms"}, {"id": "decimals", "value": 0}, {"id": "displayName", "value": "Latency"}]},
-                {"matcher": {"id": "byFrameRefID", "options": "B"}, "properties": [{"id": "unit", "value": "ms"}, {"id": "decimals", "value": 0}, {"id": "displayName", "value": "Latency"}]},
-                {"matcher": {"id": "byFrameRefID", "options": "C"}, "properties": [{"id": "unit", "value": "percent"}, {"id": "decimals", "value": 0}, {"id": "displayName", "value": "Packet loss"}]},
-                {"matcher": {"id": "byFrameRefID", "options": "D"}, "properties": [{"id": "decimals", "value": 0}, {"id": "displayName", "value": "Open issues"}]},
+                ] + [{"matcher": {"id": "byFrameRefID", "options": f"{CLASS_PREFIX[k]}{i}"}, "properties": [{"id": "unit", "value": u}, {"id": "decimals", "value": 0}, {"id": "displayName", "value": n}]}
+                     for k, u, n in (("good", "ms", "Latency"), ("degraded", "ms", "Latency"), ("bad", "percent", "Packet loss")) for i in range(1, len(PAIRS) + 1)] + [
+                {"matcher": {"id": "byFrameRefID", "options": "S"}, "properties": [{"id": "decimals", "value": 0}, {"id": "displayName", "value": "Open issues"}]},
             ]},
         "options": {
             "view": {"id": "coords", "lat": 38.6, "lon": -96.5, "zoom": 4, "allLayers": True},
