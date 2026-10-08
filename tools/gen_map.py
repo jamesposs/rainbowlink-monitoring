@@ -6,7 +6,7 @@
 ADD A SITE: add it to SITES (city-level coordinates are enough: do not use a street address). Links are drawn between every
 pair of sites, using the ping mesh (rl_mesh_* metrics, measured from each site; see the monitoring_agent Ansible role).
 Line colour = link health, worst of the two directions:
-  green  normal                                    orange  loss > 2%, or latency > 2x its own 1-day norm (and +30 ms)
+  green  normal                                    orange  loss > 2% or latency > 2x its own 1-day norm (and +30 ms), both as 5-minute averages
   red    loss > 10% (or the link is down)
 Marker colour = site health (failing checks + firing alerts at that site).
 This script also adds the "Site map" shortcut to the other dashboards' navigation (idempotent).
@@ -41,8 +41,10 @@ def union(metric, a, b, extra):
 
 def link_exprs(a, b):
     """Health classes for the link a<->b, taking the worst of both directions. Each expression is an unlabelled vector."""
-    rtt = f'avg({union("rl_mesh_rtt_seconds", a, b, ", stat=\"avg\"" + OV)})'
-    loss = f'max({union("rl_mesh_loss_ratio", a, b, OV)})'
+    def smooth(metric, extra):   # 5-minute average per direction, so one lost ping cannot flip a line's colour
+        return (f'avg_over_time({metric}{{site="{a}", to="{b}"{extra}}}[5m]) or avg_over_time({metric}{{site="{b}", to="{a}"{extra}}}[5m])')
+    rtt = f'avg({smooth("rl_mesh_rtt_seconds", ", stat=\"avg\"" + OV)})'
+    loss = f'max({smooth("rl_mesh_loss_ratio", OV)})'
     base = (f'avg(avg_over_time(rl_mesh_rtt_seconds{{site="{a}", to="{b}", stat="avg"{OV}}}[1d]) '
             f'or avg_over_time(rl_mesh_rtt_seconds{{site="{b}", to="{a}", stat="avg"{OV}}}[1d]))')
     slow = f'(({rtt}) > 2 * ({base})) and (({rtt}) > ({base}) + 0.03)'
@@ -68,8 +70,17 @@ def link_targets():
     return out
 
 
-def refs(kind):
-    return "|".join(f"{CLASS_PREFIX[kind]}{i}" for i in range(1, len(PAIRS) + 1))
+CLASS_STYLE = {"good": ("Healthy", GREEN), "degraded": ("Degraded", ORANGE), "bad": ("Down/lossy", RED)}
+
+
+def link_layers():
+    """Bottom-to-top: healthy, then degraded, then down/lossy, so the worst state of a link is always on top."""
+    out = []
+    for kind in ("good", "degraded", "bad"):
+        label, color = CLASS_STYLE[kind]
+        for i, (a, b) in enumerate(PAIRS, 1):
+            out.append(route_layer(f"{label}: {a.upper()} - {b.upper()}", f"{CLASS_PREFIX[kind]}{i}", color))
+    return out
 
 
 def site_query():
@@ -124,9 +135,7 @@ def states_layer():
 def geomap():
     layers = [
         states_layer(),
-        route_layer("Healthy links", refs("good"), GREEN),
-        route_layer("Degraded links", refs("degraded"), ORANGE),
-        route_layer("Down / lossy links", refs("bad"), RED),
+        *link_layers(),
         {"type": "markers", "name": "Sites", "tooltip": True, "filterData": {"id": "byRefId", "options": "S"},
          "location": {"mode": "coords", "latitude": "lat", "longitude": "lon"},
          "config": {"showLegend": False, "style": {
@@ -186,7 +195,7 @@ def legend():
     md = ("### How to read the map\n"
           "**Lines** are the tailnet links between sites, coloured by health (worst of the two directions):\n\n"
           "- <span style='color:#22C55E'>**green**</span> normal\n"
-          "- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm\n"
+          "- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm (both 5-minute averages)\n"
           "- <span style='color:#EF4444'>**red**</span> loss above 10%, or the link is down\n\n"
           "**Markers** are the sites: green = nothing wrong there, orange = failing checks or firing alerts at that site.\n\n"
           "Hover a line or marker for numbers. Latency is compared with each link's *own* normal, so a long link (Portland to Florida, ~90 ms) is not flagged for being long.\n\n"
