@@ -198,7 +198,8 @@ OVERRIDE_UNITS = ([(f"{CLASS_PREFIX[k]}{i}", u) for k, u in (("good", "ms"), ("d
 
 
 def value_names():
-    """Name each query's number field so the popup reads 'Latency: 29 ms' instead of 'Value'."""
+    """Give each query's number field a readable name, then build the text labels for the midpoint markers.
+    Grafana names a query's number field "Value #<refId>" when the panel has several queries, so that is what we rename."""
     names = {}
     for k, n in (("good", "Latency"), ("degraded", "Latency"), ("bad", "Packet loss")):
         for i in range(1, len(PAIRS) + 1):
@@ -206,11 +207,12 @@ def value_names():
     for bid, *_ in TRAFFIC_BANDS:
         for i in range(1, len(PAIRS) + 1):
             names[f"t{bid}{i}"] = "Traffic (both directions)"
-    names["S"] = "Open issues"
+    names.update({"ML": "Latency", "MT": "Traffic", "S": "Open issues"})
+    renames = [{"id": "organize", "filter": {"id": "byRefId", "options": ref}, "options": {"renameByName": {f"Value #{ref}": n, "Value": n}}} for ref, n in names.items()]
     labels = [{"id": "calculateField", "filter": {"id": "byRefId", "options": ref},
                "options": {"mode": "template", "alias": "label", "replaceFields": False, "template": {"expression": expr}}}
-              for ref, expr in (("ML", "${Value} ms"), ("MT", "${Value} kb/s"))]
-    return labels + [{"id": "organize", "filter": {"id": "byRefId", "options": ref}, "options": {"renameByName": {"Value": n}}} for ref, n in names.items()]
+              for ref, expr in (("ML", "${Latency} ms"), ("MT", "${Traffic} kb/s"))]
+    return renames + labels
 
 
 def geomap():

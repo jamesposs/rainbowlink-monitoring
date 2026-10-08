@@ -494,6 +494,513 @@
    ],
    "transformations": [
     {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "g1"
+     },
+     "options": {
+      "renameByName": {
+       "Value #g1": "Latency",
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "g2"
+     },
+     "options": {
+      "renameByName": {
+       "Value #g2": "Latency",
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "g3"
+     },
+     "options": {
+      "renameByName": {
+       "Value #g3": "Latency",
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "g4"
+     },
+     "options": {
+      "renameByName": {
+       "Value #g4": "Latency",
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "g5"
+     },
+     "options": {
+      "renameByName": {
+       "Value #g5": "Latency",
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "g6"
+     },
+     "options": {
+      "renameByName": {
+       "Value #g6": "Latency",
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "d1"
+     },
+     "options": {
+      "renameByName": {
+       "Value #d1": "Latency",
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "d2"
+     },
+     "options": {
+      "renameByName": {
+       "Value #d2": "Latency",
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "d3"
+     },
+     "options": {
+      "renameByName": {
+       "Value #d3": "Latency",
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "d4"
+     },
+     "options": {
+      "renameByName": {
+       "Value #d4": "Latency",
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "d5"
+     },
+     "options": {
+      "renameByName": {
+       "Value #d5": "Latency",
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "d6"
+     },
+     "options": {
+      "renameByName": {
+       "Value #d6": "Latency",
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "b1"
+     },
+     "options": {
+      "renameByName": {
+       "Value #b1": "Packet loss",
+       "Value": "Packet loss"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "b2"
+     },
+     "options": {
+      "renameByName": {
+       "Value #b2": "Packet loss",
+       "Value": "Packet loss"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "b3"
+     },
+     "options": {
+      "renameByName": {
+       "Value #b3": "Packet loss",
+       "Value": "Packet loss"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "b4"
+     },
+     "options": {
+      "renameByName": {
+       "Value #b4": "Packet loss",
+       "Value": "Packet loss"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "b5"
+     },
+     "options": {
+      "renameByName": {
+       "Value #b5": "Packet loss",
+       "Value": "Packet loss"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "b6"
+     },
+     "options": {
+      "renameByName": {
+       "Value #b6": "Packet loss",
+       "Value": "Packet loss"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tq1"
+     },
+     "options": {
+      "renameByName": {
+       "Value #tq1": "Traffic (both directions)",
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tq2"
+     },
+     "options": {
+      "renameByName": {
+       "Value #tq2": "Traffic (both directions)",
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tq3"
+     },
+     "options": {
+      "renameByName": {
+       "Value #tq3": "Traffic (both directions)",
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tq4"
+     },
+     "options": {
+      "renameByName": {
+       "Value #tq4": "Traffic (both directions)",
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tq5"
+     },
+     "options": {
+      "renameByName": {
+       "Value #tq5": "Traffic (both directions)",
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tq6"
+     },
+     "options": {
+      "renameByName": {
+       "Value #tq6": "Traffic (both directions)",
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tm1"
+     },
+     "options": {
+      "renameByName": {
+       "Value #tm1": "Traffic (both directions)",
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tm2"
+     },
+     "options": {
+      "renameByName": {
+       "Value #tm2": "Traffic (both directions)",
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tm3"
+     },
+     "options": {
+      "renameByName": {
+       "Value #tm3": "Traffic (both directions)",
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tm4"
+     },
+     "options": {
+      "renameByName": {
+       "Value #tm4": "Traffic (both directions)",
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tm5"
+     },
+     "options": {
+      "renameByName": {
+       "Value #tm5": "Traffic (both directions)",
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tm6"
+     },
+     "options": {
+      "renameByName": {
+       "Value #tm6": "Traffic (both directions)",
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tb1"
+     },
+     "options": {
+      "renameByName": {
+       "Value #tb1": "Traffic (both directions)",
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tb2"
+     },
+     "options": {
+      "renameByName": {
+       "Value #tb2": "Traffic (both directions)",
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tb3"
+     },
+     "options": {
+      "renameByName": {
+       "Value #tb3": "Traffic (both directions)",
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tb4"
+     },
+     "options": {
+      "renameByName": {
+       "Value #tb4": "Traffic (both directions)",
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tb5"
+     },
+     "options": {
+      "renameByName": {
+       "Value #tb5": "Traffic (both directions)",
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "tb6"
+     },
+     "options": {
+      "renameByName": {
+       "Value #tb6": "Traffic (both directions)",
+       "Value": "Traffic (both directions)"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "ML"
+     },
+     "options": {
+      "renameByName": {
+       "Value #ML": "Latency",
+       "Value": "Latency"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "MT"
+     },
+     "options": {
+      "renameByName": {
+       "Value #MT": "Traffic",
+       "Value": "Traffic"
+      }
+     }
+    },
+    {
+     "id": "organize",
+     "filter": {
+      "id": "byRefId",
+      "options": "S"
+     },
+     "options": {
+      "renameByName": {
+       "Value #S": "Open issues",
+       "Value": "Open issues"
+      }
+     }
+    },
+    {
      "id": "calculateField",
      "filter": {
       "id": "byRefId",
@@ -504,7 +1011,7 @@
       "alias": "label",
       "replaceFields": false,
       "template": {
-       "expression": "${Value} ms"
+       "expression": "${Latency} ms"
       }
      }
     },
@@ -519,451 +1026,7 @@
       "alias": "label",
       "replaceFields": false,
       "template": {
-       "expression": "${Value} kb/s"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "g1"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Latency"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "g2"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Latency"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "g3"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Latency"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "g4"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Latency"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "g5"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Latency"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "g6"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Latency"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "d1"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Latency"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "d2"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Latency"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "d3"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Latency"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "d4"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Latency"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "d5"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Latency"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "d6"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Latency"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "b1"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Packet loss"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "b2"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Packet loss"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "b3"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Packet loss"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "b4"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Packet loss"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "b5"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Packet loss"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "b6"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Packet loss"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "tq1"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Traffic (both directions)"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "tq2"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Traffic (both directions)"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "tq3"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Traffic (both directions)"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "tq4"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Traffic (both directions)"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "tq5"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Traffic (both directions)"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "tq6"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Traffic (both directions)"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "tm1"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Traffic (both directions)"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "tm2"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Traffic (both directions)"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "tm3"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Traffic (both directions)"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "tm4"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Traffic (both directions)"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "tm5"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Traffic (both directions)"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "tm6"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Traffic (both directions)"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "tb1"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Traffic (both directions)"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "tb2"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Traffic (both directions)"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "tb3"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Traffic (both directions)"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "tb4"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Traffic (both directions)"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "tb5"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Traffic (both directions)"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "tb6"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Traffic (both directions)"
-      }
-     }
-    },
-    {
-     "id": "organize",
-     "filter": {
-      "id": "byRefId",
-      "options": "S"
-     },
-     "options": {
-      "renameByName": {
-       "Value": "Open issues"
+       "expression": "${Traffic} kb/s"
       }
      }
     },
