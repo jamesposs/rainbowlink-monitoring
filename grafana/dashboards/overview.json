@@ -17,6 +17,13 @@
  },
  "links": [
   {
+   "title": "Site map",
+   "type": "link",
+   "url": "/d/rl-map",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
    "title": "Network",
    "type": "link",
    "url": "/d/rl-network",
