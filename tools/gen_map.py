@@ -25,6 +25,8 @@ SITES = {
     "pcb": {"name": "Panama City Beach", "lat": 30.18, "lon": -85.80},
 }
 PAIRS = list(itertools.combinations(SITES, 2))
+SITE_MARKER_PX = 34          # big enough to hold a 3-letter code at 12 px
+SITE_TEXT_COLOR = "#0B1020"  # dark navy: readable on the green, orange and red marker colours
 OV = ', path="overlay"'
 
 
@@ -149,7 +151,7 @@ def site_query():
     for s, v in SITES.items():
         health = (f'((count(probe_success{{site="{s}"}} == 0) or vector(0)) + '
                   f'(count(ALERTS{{site="{s}", alertstate="firing", severity!="none"}}) or vector(0)))')
-        parts.append(lab(health, name=v["name"], site=s, lat=v["lat"], lon=v["lon"]))
+        parts.append(lab(health, name=v.get("code", s.upper()), site=s, lat=v["lat"], lon=v["lon"]))
     return " or ".join(parts)
 
 
@@ -222,10 +224,18 @@ def geomap():
         {"type": "markers", "name": "Sites", "tooltip": True, "filterData": {"id": "byRefId", "options": "S"},
          "location": {"mode": "coords", "latitude": "lat", "longitude": "lon"},
          "config": {"showLegend": False, "style": {
-             "size": {"fixed": 16, "min": 2, "max": 15}, "color": {"field": "Value", "fixed": GREEN}, "opacity": 1,
+             "size": {"fixed": SITE_MARKER_PX, "min": 2, "max": 15}, "color": {"field": "Value", "fixed": GREEN}, "opacity": 1,
+             "symbol": {"mode": "fixed", "fixed": "img/icons/marker/circle.svg"},
+             "text": {"mode": "fixed", "fixed": ""},
+             "rotation": {"fixed": 0, "min": -360, "max": 360, "mode": "mod"}}}},
+        # Same points again, on top: only the code, in dark navy, which reads on green, orange and red alike. Its own tiny dot hides behind the letters.
+        {"type": "markers", "name": "Site codes", "tooltip": False, "filterData": {"id": "byRefId", "options": "S"},
+         "location": {"mode": "coords", "latitude": "lat", "longitude": "lon"},
+         "config": {"showLegend": False, "style": {
+             "size": {"fixed": 1, "min": 1, "max": 2}, "color": {"fixed": SITE_TEXT_COLOR}, "opacity": 1,
              "symbol": {"mode": "fixed", "fixed": "img/icons/marker/circle.svg"},
              "text": {"mode": "field", "field": "name", "fixed": ""},
-             "textConfig": {"fontSize": 13, "offsetX": 0, "offsetY": -20, "textAlign": "center", "textBaseline": "middle"},
+             "textConfig": {"fontSize": 12, "offsetX": 0, "offsetY": 0, "textAlign": "center", "textBaseline": "middle"},
              "rotation": {"fixed": 0, "min": -360, "max": 360, "mode": "mod"}}}},
     ]
     return {
@@ -344,7 +354,7 @@ def legend():
           "- <span style='color:#22C55E'>**green**</span> normal\n"
           "- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm (both 5-minute averages)\n"
           "- <span style='color:#EF4444'>**red**</span> loss above 10%, or the link is down\n\n"
-          "**Markers** are the sites: green = nothing wrong there, orange = failing checks or firing alerts at that site.\n\n"
+          "**Markers** are the sites, labelled with their code (PDX Portland, SJC San Jose, BOS Boston, PCB Panama City Beach): green = nothing wrong there, orange = failing checks or firing alerts at that site.\n\n"
           "The **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet (under 5 kbit/s), medium = moderate (5 to 25 kbit/s), wide = busy (over 25 kbit/s). The numbers at the middle of each link are its latency (white) and traffic (blue).\n\n"
           "Hover a line or marker for numbers. Latency is compared with each link's *own* normal, so a long link (Portland to Florida, ~90 ms) is not flagged for being long.\n\n"
           "Underlying data: ping mesh (10 pings a minute from every site), plus the Network dashboard for the full matrix.")
