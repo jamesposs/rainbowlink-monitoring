@@ -1284,7 +1284,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 170
+                "value": 130
               }
             ]
           },
@@ -1301,7 +1301,7 @@
                     "type": "value",
                     "options": {
                       "all": {
-                        "text": "every server"
+                        "text": "all"
                       },
                       "primary": {
                         "text": "dns1 only"
@@ -1312,7 +1312,7 @@
               },
               {
                 "id": "custom.width",
-                "value": 95
+                "value": 78
               }
             ]
           },
@@ -1340,6 +1340,10 @@
                   "type": "color-background",
                   "mode": "basic"
                 }
+              },
+              {
+                "id": "custom.width",
+                "value": 62
               }
             ]
           },
@@ -1367,6 +1371,10 @@
                   "type": "color-background",
                   "mode": "basic"
                 }
+              },
+              {
+                "id": "custom.width",
+                "value": 62
               }
             ]
           },
@@ -1394,6 +1402,10 @@
                   "type": "color-background",
                   "mode": "basic"
                 }
+              },
+              {
+                "id": "custom.width",
+                "value": 62
               }
             ]
           },
@@ -1421,6 +1433,10 @@
                   "type": "color-background",
                   "mode": "basic"
                 }
+              },
+              {
+                "id": "custom.width",
+                "value": 62
               }
             ]
           },
@@ -1448,6 +1464,10 @@
                   "type": "color-background",
                   "mode": "basic"
                 }
+              },
+              {
+                "id": "custom.width",
+                "value": 62
               }
             ]
           }
