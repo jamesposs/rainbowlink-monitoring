@@ -126,6 +126,9 @@ server's page and tests the SSO server, not your app. Public checks run on vps-s
 * Hosts' `node_exporter` is the distro package (security updates arrive with normal apt updates).
 * Dashboards: edit the JSON in `grafana/dashboards/` directly (there is no generator any more), then `apply.sh`; Grafana picks it up in 1-2 minutes. UI edits are disabled on purpose.
   Exception: the **Site map** (`map.json`) is generated. To add a site or move a marker, edit `SITES` in `tools/gen_map.py`, run `python3 tools/gen_map.py`, then `apply.sh`.
+  Also generated: the **Transit** board (`transit.json`, from `tools/gen_transit.py`; run it, then `gen_map.py` to sync the navigation links, then `apply.sh`).
+  Its data comes from `scripts/ha-transit-metrics.py` (timer `rl-ha-transit`, every minute): Home Assistant's Prometheus endpoint exports only entity *state*, so this reads `/api/states` and
+  turns every sensor with an `arrivals` attribute into `rl_ha_transit_*` metrics. A new stop added in Home Assistant appears with no change here.
 
 ## Backup, restore, rebuild
 * The whole stack (config, git history, secrets, Prometheus + Grafana data volumes) is inside LXC 128, which Proxmox
