@@ -14,6 +14,7 @@
 - {targets: ['https://unifi.rainbowlink.org/'],               labels: {module: http_2xx_insecure, host: gateway, site: pdx, service: UniFi gateway UI}}
 - {targets: ['https://dns1.rainbowlink.org:53443/'],          labels: {module: http_2xx, host: dns1, site: pdx, service: DNS admin UI}}
 - {targets: ['https://dns2.rainbowlink.org:53443/'],          labels: {module: http_2xx, host: dns2, site: pdx, service: DNS admin UI}}
+- {targets: ['https://dns3.rainbowlink.org:53443/'],          labels: {module: http_2xx, host: dns3, site: pdx, service: DNS admin UI}}
 - {targets: ['https://pbx2.rainbowlink.org/'],                labels: {module: http_2xx, host: vps-bos, site: bos, service: PBX admin UI}}
 - {targets: ['http://172.20.1.12:8089/'],                     labels: {module: http_2xx, host: channels, site: pdx, service: Channels DVR}}
 - {targets: ['http://172.20.2.231:8181/status'],              labels: {module: http_2xx, host: tautulli, site: pdx, service: Tautulli}}
