@@ -253,7 +253,7 @@ def geomap():
             "overrides": hide("Time", "lat", "lon", "end", "site") + [
                 {"matcher": {"id": "byFrameRefID", "options": "S"}, "properties": [{"id": "mappings", "value": [
                     {"type": "value", "options": {"0": {"text": "Reachable", "index": 0}, "1": {"text": "Some packet loss", "index": 1}}},
-                    {"type": "range", "options": {"from": 10, "to": 100, "result": {"text": "Unreachable", "index": 2}}}]}]},
+                    {"type": "range", "options": {"from": 10, "to": 100, "result": {"text": "Unreachable", "index": 2}}}]}]}] + [
                 {"matcher": {"id": "byFrameRefID", "options": ref}, "properties": [{"id": "unit", "value": u}, {"id": "decimals", "value": 0}]}
                 for ref, u in (OVERRIDE_UNITS)]},
         "options": {
