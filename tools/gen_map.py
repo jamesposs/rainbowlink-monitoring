@@ -147,11 +147,11 @@ def link_layers():
 
 
 def site_query():
+    """Connectivity only (this map is about the links, not about what runs at a site):
+       0 reachable, 1 some packet loss to it from another site (5-min average over 2%), 10+ unreachable (no other site can reach it)."""
     parts = []
     for s, v in SITES.items():
-        # failing checks + firing alerts at the site; +10 (always red) while no other site can reach it over the tailnet
-        health = (f'((count(probe_success{{site="{s}"}} == 0) or vector(0)) + '
-                  f'(count(ALERTS{{site="{s}", alertstate="firing", severity!="none"}}) or vector(0)) + '
+        health = (f'(((vector(1) and on() (max(avg_over_time(rl_mesh_loss_ratio{{path="overlay", to="{s}"}}[5m])) > 0.02)) or vector(0)) + '
                   f'10 * ((vector(1) and on() (min(avg_over_time(rl_mesh_loss_ratio{{path="overlay", to="{s}"}}[2m])) >= 0.9)) or vector(0)))')
         parts.append(lab(health, name=v.get("code", s.upper()), site=s, lat=v["lat"], lon=v["lon"]))
     return " or ".join(parts)
@@ -211,7 +211,7 @@ def value_names():
     for bid, *_ in TRAFFIC_BANDS:
         for i in range(1, len(PAIRS) + 1):
             names[f"t{bid}{i}"] = "Traffic (both directions)"
-    names.update({"ML": "Latency", "MT": "Traffic", "S": "Open issues"})
+    names.update({"ML": "Latency", "MT": "Traffic", "S": "Connectivity"})
     renames = [{"id": "organize", "filter": {"id": "byRefId", "options": ref}, "options": {"renameByName": {f"Value #{ref}": n, "Value": n}}} for ref, n in names.items()]
     return renames
 
@@ -226,7 +226,7 @@ def geomap():
         {"type": "markers", "name": "Sites", "tooltip": True, "filterData": {"id": "byRefId", "options": "S"},
          "location": {"mode": "coords", "latitude": "lat", "longitude": "lon"},
          "config": {"showLegend": False, "style": {
-             "size": {"fixed": SITE_MARKER_PX, "min": 2, "max": 15}, "color": {"field": "Open issues", "fixed": GREEN}, "opacity": 1,
+             "size": {"fixed": SITE_MARKER_PX, "min": 2, "max": 15}, "color": {"field": "Connectivity", "fixed": GREEN}, "opacity": 1,
              "symbol": {"mode": "fixed", "fixed": "img/icons/marker/circle.svg"},
              "text": {"mode": "fixed", "fixed": ""},
              "rotation": {"fixed": 0, "min": -360, "max": 360, "mode": "mod"}}}},
@@ -251,6 +251,9 @@ def geomap():
             "defaults": {"thresholds": {"mode": "absolute", "steps": [{"color": GREEN, "value": None}, {"color": ORANGE, "value": 1}, {"color": RED, "value": 10}]},
                          "color": {"mode": "thresholds"}},
             "overrides": hide("Time", "lat", "lon", "end", "site") + [
+                {"matcher": {"id": "byFrameRefID", "options": "S"}, "properties": [{"id": "mappings", "value": [
+                    {"type": "value", "options": {"0": {"text": "Reachable", "index": 0}, "1": {"text": "Some packet loss", "index": 1}}},
+                    {"type": "range", "options": {"from": 10, "to": 100, "result": {"text": "Unreachable", "index": 2}}}]}]},
                 {"matcher": {"id": "byFrameRefID", "options": ref}, "properties": [{"id": "unit", "value": u}, {"id": "decimals", "value": 0}]}
                 for ref, u in (OVERRIDE_UNITS)]},
         "options": {
@@ -356,7 +359,7 @@ def legend():
           "- <span style='color:#22C55E'>**green**</span> normal\n"
           "- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm (both 5-minute averages)\n"
           "- <span style='color:#EF4444'>**red**</span> loss above 10%, or the link is down\n\n"
-          "**Markers** are the sites, labelled with their code (PDX Portland, SJC San Jose, BOS Boston, PCB Panama City Beach): green = nothing wrong there, orange = a failing check or firing alert at that site, **red = the site is unreachable** from the other sites.\n\n"
+          "**Markers** are the sites, labelled with their code (PDX Portland, SJC San Jose, BOS Boston, PCB Panama City Beach): green = reachable from the other sites, orange = some packet loss reaching it, **red = unreachable** (no other site can reach it). Markers show connectivity only; what runs at a site is on the Status board.\n\n"
           "The **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet (under 5 kbit/s), medium = moderate (5 to 25 kbit/s), wide = busy (over 25 kbit/s). The numbers at the middle of each link are its latency (white) and traffic (blue).\n\n"
           "Hover a line or marker for numbers. Latency is compared with each link's *own* normal, so a long link (Portland to Florida, ~90 ms) is not flagged for being long.\n\n"
           "Underlying data: ping mesh (10 pings a minute from every site), plus the Network dashboard for the full matrix.")
