@@ -1037,12 +1037,22 @@
                   "index": 1
                 }
               }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "text": "off",
+                  "color": "#6b7280",
+                  "index": 2
+                }
+              }
             }
           ],
           "color": {
             "mode": "thresholds"
-          },
-          "noValue": "off"
+          }
         },
         "overrides": []
       },
@@ -1136,7 +1146,7 @@
       "id": 33,
       "type": "timeseries",
       "title": "Pi CPU clock (history)",
-      "description": "ARM clock speed; it drops under throttling.",
+      "description": "ARM clock speed. It scales between ~600 MHz (idle) and the maximum with load - that zigzag is normal. A clock stuck low while the CPU is busy, or the Pi throttling tile turning red, is the sign of trouble.",
       "gridPos": {
         "x": 12,
         "y": 20,
