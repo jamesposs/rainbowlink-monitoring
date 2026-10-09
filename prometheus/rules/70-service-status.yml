@@ -145,7 +145,7 @@ groups:
           or vector(0)
 
       - record: rl_service_status
-        labels: {service: Media (Plex, Channels), group: Applications}
+        labels: {service: Media (Plex and Channels), group: Applications}
         expr: |
           (vector(2) and on() (max_over_time(probe_success{job="tcp", service="Plex"}[3m]) == 0))
           or (vector(1) and on() (
