@@ -3,10 +3,6 @@
 {{ (index .Alerts 0).Annotations.summary }}{{ if gt (len .Alerts) 1 }} (and {{ len .Alerts }} alerts in total){{ end }}
 {{- end }}
 
-{{ define "rl.digest.title" -}}
-☀️ {{ len .Alerts }} thing{{ if gt (len .Alerts) 1 }}s{{ end }} to look at today
-{{- end }}
-
 {{ define "rl.message" -}}
 {{ range .Alerts -}}
 • <b>{{ .Annotations.summary }}</b>

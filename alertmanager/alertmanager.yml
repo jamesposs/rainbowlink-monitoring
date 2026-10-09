@@ -9,13 +9,13 @@ global:
 templates: ["/etc/alertmanager/templates/*.tmpl"]
 
 time_intervals:
-  - name: morning
+  - name: daytime
     time_intervals:
-      - times: [{start_time: "08:00", end_time: "09:00"}]
+      - times: [{start_time: "07:00", end_time: "22:00"}]
         location: America/Los_Angeles
 
 route:
-  receiver: morning-digest
+  receiver: "null"      # warnings are NOT pushed individually: they appear in the 08:00 summary (scripts/daily-summary.py)
   group_by: []
   group_wait: 1m
   group_interval: 30m
@@ -36,13 +36,18 @@ route:
       group_interval: 5m
       repeat_interval: 4h
 
+    # A whole remote site is unreachable (Boston is critical above): tell me during the day, normal priority, and when it recovers.
+    # Outside 07:00-22:00 it waits for the 08:00 summary (or goes out at 07:00 if it is still down).
+    - matchers: [alertname="SiteDown", severity="warning"]
+      receiver: site-notice
+      group_by: [alertname, site]
+      group_wait: 30s
+      group_interval: 10m
+      repeat_interval: 12h
+      active_time_intervals: [daytime]
+
     - matchers: [severity="warning"]
-      receiver: morning-digest
-      group_by: []
-      group_wait: 1m
-      group_interval: 30m
-      repeat_interval: 24h
-      active_time_intervals: [morning]
+      receiver: "null"
 
     - matchers: [severity="none"]
       receiver: "null"
@@ -65,17 +70,17 @@ receivers:
         url_title: Open the Overview dashboard
         send_resolved: true
 
-  - name: morning-digest
+  - name: site-notice
     pushover_configs:
       - user_key_file: /run/secrets/pushover_user
         token_file: /run/secrets/pushover_token
         priority: '0'
-        title: '{{ template "rl.digest.title" . }}'
+        title: '{{ template "rl.title" . }}'
         message: '{{ template "rl.message" . }}'
         html: true
-        url: https://grafana.rainbowlink.org/d/rl-overview
-        url_title: Open the Overview dashboard
-        send_resolved: false
+        url: https://grafana.rainbowlink.org/d/rl-status
+        url_title: Open the Status board
+        send_resolved: true
 
   - name: deadmans-switch
     webhook_configs:

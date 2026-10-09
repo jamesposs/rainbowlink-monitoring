@@ -159,25 +159,3 @@ groups:
         expr: |
           (vector(1) and on() (ALERTS{alertname=~".*CollectorStale|MonitoringTargetDown|AlertDeliveryFailing|RuleEvaluationFailing|MeshProbeStale", alertstate="firing"}))
           or vector(0)
-
-      # ---- Media automation ----------------------------------------------------------------------------------------
-      - record: rl_service_status
-        labels: {service: Request portal & automation, group: Applications}
-        expr: |
-          (vector(2) and on() (sum(max_over_time(up{job="arr"}[3m])) == 0))
-          or (vector(1) and on() (
-                 (min(max_over_time(up{job="arr"}[3m])) == 0)
-              or (max_over_time(probe_success{service="Request portal"}[3m]) == 0)
-              or (ALERTS{alertname=~"ArrHealthError|ArrIndexersFailing|ArrNoIndexers|ArrUpdateFailed", alertstate="firing"})
-              or absent(up{job="arr"})))
-          or vector(0)
-
-      - record: rl_service_status
-        labels: {service: Downloader (Mullvad VPN), group: Applications}
-        expr: |
-          (vector(2) and on() (max(max_over_time(rl_vpn_state_code[3m])) == 2))
-          or (vector(1) and on() (
-                 (max(max_over_time(rl_vpn_state_code[3m])) == 1)
-              or (ALERTS{alertname=~"VpnWatchdogSilent|VpnRelayFailover", alertstate="firing"})
-              or absent(rl_vpn_state_code)))
-          or vector(0)

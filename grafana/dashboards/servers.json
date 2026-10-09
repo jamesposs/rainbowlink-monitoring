@@ -53,13 +53,6 @@
    "targetBlank": false
   },
   {
-   "title": "Media automation",
-   "type": "link",
-   "url": "/d/rl-media",
-   "icon": "dashboard",
-   "targetBlank": false
-  },
-  {
    "title": "Transit",
    "type": "link",
    "url": "/d/rl-transit",

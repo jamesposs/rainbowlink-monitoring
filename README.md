@@ -27,7 +27,13 @@ things worth investigating.
 | Severity | Meaning | Delivery |
 |---|---|---|
 | `critical` | crippling, worth waking up | Pushover **emergency** priority: repeats every 5 min until you acknowledge (max 1 h) |
-| `warning` | look at it tomorrow (missed backup, cert expiring, disk 85%, service down at home...) | **one** Pushover message 08:00-09:00 PT, then daily while still true |
+| `warning` | look at it tomorrow (missed backup, cert expiring, disk 85%, service down at home...) | **no individual message.** Listed in the **08:00 summary** (see below) |
+| `warning` + `SiteDown` | a whole remote site (Panama City Beach, San Jose) is unreachable | **normal-priority push** 07:00-22:00 PT (and again when it recovers); overnight it waits for 07:00 / the 08:00 summary |
+
+**08:00 summary** (`scripts/daily-summary.py`, timer `rl-daily-summary`): one Pushover message every morning listing every alert that fired in the last
+24 hours and whether it is **still firing** or **resolved** (with start-end times). It is built from Prometheus' own alert history, so an outage that cleared
+overnight is still reported. It is sent even when nothing happened ("All quiet"): **no 08:00 message = check the monitor.** Alerts that are only a consequence of a site/host being
+down are folded into that outage. Preview it any time with `python3 scripts/daily-summary.py --dry-run`.
 
 Critical today: **home DNS outage** (dns1+dns2 both failing) · **pve0 down** · **PBX not answering SIP** ·
 **both carrier trunks unregistered** · **Boston/PBX site unreachable** · **NAS RAID crashed**.

@@ -1,0 +1,12 @@
+[Unit]
+Description=08:00 Pushover summary of the last 24 hours of alerts
+After=network-online.target
+[Service]
+Type=oneshot
+User=prometheus
+LoadCredential=pushover_user:/opt/monitoring/secrets/pushover_user
+LoadCredential=pushover_token:/opt/monitoring/secrets/pushover_token
+ExecStart=/usr/bin/python3 /opt/monitoring/scripts/daily-summary.py
+NoNewPrivileges=true
+ProtectSystem=strict
+PrivateTmp=true

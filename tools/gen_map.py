@@ -361,7 +361,7 @@ def legend():
     return {"id": 3, "type": "text", "title": "", "gridPos": {"x": 15, "y": 17, "w": 9, "h": 9}, "options": {"mode": "markdown", "content": md}}
 
 
-NAV = [("rl-overview", "Overview"), ("rl-status", "Status"), ("rl-map", "Site map"), ("rl-network", "Network"), ("rl-servers", "Servers & storage"), ("rl-services", "Services"), ("rl-media", "Media automation"), ("rl-transit", "Transit")]
+NAV = [("rl-overview", "Overview"), ("rl-status", "Status"), ("rl-map", "Site map"), ("rl-network", "Network"), ("rl-servers", "Servers & storage"), ("rl-services", "Services"), ("rl-transit", "Transit")]
 
 
 def nav_for(uid):
