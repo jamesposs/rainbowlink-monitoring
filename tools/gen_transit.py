@@ -20,7 +20,7 @@ def stat(pid, title, expr, unit, x, w, steps, desc="", legend=TILE_NAME):
 
 
 def arrivals_table():
-    hide = ["Time", "__name__", "entity", "idx", "job", "instance", "host", "kind", "parent", "role", "site"]
+    hide = ["Time", "__name__", "entity", "idx", "direction", "job", "instance", "host", "kind", "parent", "role", "site"]
     return {"id": 3, "type": "table", "title": "Upcoming arrivals", "datasource": DS, "gridPos": {"x": 0, "y": 6, "w": 14, "h": 11},
             "description": "Every arrival Home Assistant knows about, soonest first. 'Catchable' = you can still walk to the stop in time.",
             "targets": [{**tgt("rl_ha_transit_arrival_minutes" + INFO.replace(", line, destination", ""), "A"), "instant": True, "range": False, "format": "table"}],
@@ -46,7 +46,7 @@ def arrivals_table():
 
 
 def stops_table():
-    hide = ["Time", "__name__", "entity", "job", "instance", "host", "kind", "parent", "role", "site", "summary", "line", "destination", "vehicle"]
+    hide = ["Time", "__name__", "entity", "job", "instance", "host", "kind", "parent", "role", "site", "summary", "line", "destination", "vehicle", "stop_id"]
     return {"id": 4, "type": "table", "title": "Stops", "datasource": DS, "gridPos": {"x": 14, "y": 6, "w": 10, "h": 11},
             "targets": [{**tgt("rl_ha_transit_approach_minutes * on(entity) group_left(name, stop, stop_id, service) rl_ha_transit_info", "A"), "instant": True, "range": False, "format": "table"}],
             "transformations": [{"id": "organize", "options": {"excludeByName": {k: True for k in hide},

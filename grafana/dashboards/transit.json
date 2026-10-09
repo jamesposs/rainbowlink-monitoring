@@ -235,6 +235,7 @@
        "__name__": true,
        "entity": true,
        "idx": true,
+       "direction": true,
        "job": true,
        "instance": true,
        "host": true,
@@ -465,7 +466,8 @@
        "summary": true,
        "line": true,
        "destination": true,
-       "vehicle": true
+       "vehicle": true,
+       "stop_id": true
       },
       "renameByName": {
        "name": "Sensor",
