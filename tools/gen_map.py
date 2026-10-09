@@ -248,7 +248,7 @@ def geomap():
             {"id": "convertFieldType", "options": {"conversions": [{"targetField": "lat", "destinationType": "number"}, {"targetField": "lon", "destinationType": "number"}], "fields": {}}},
         ],
         "fieldConfig": {
-            "defaults": {"thresholds": {"mode": "absolute", "steps": [{"color": GREEN, "value": None}, {"color": ORANGE, "value": 1}, {"color": RED, "value": 3}]},
+            "defaults": {"thresholds": {"mode": "absolute", "steps": [{"color": GREEN, "value": None}, {"color": ORANGE, "value": 1}, {"color": RED, "value": 10}]},
                          "color": {"mode": "thresholds"}},
             "overrides": hide("Time", "lat", "lon", "end", "site") + [
                 {"matcher": {"id": "byFrameRefID", "options": ref}, "properties": [{"id": "unit", "value": u}, {"id": "decimals", "value": 0}]}
@@ -356,7 +356,7 @@ def legend():
           "- <span style='color:#22C55E'>**green**</span> normal\n"
           "- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm (both 5-minute averages)\n"
           "- <span style='color:#EF4444'>**red**</span> loss above 10%, or the link is down\n\n"
-          "**Markers** are the sites, labelled with their code (PDX Portland, SJC San Jose, BOS Boston, PCB Panama City Beach): green = nothing wrong there, orange = a failing check or firing alert at that site, **red = the site is unreachable** (or three or more things are failing).\n\n"
+          "**Markers** are the sites, labelled with their code (PDX Portland, SJC San Jose, BOS Boston, PCB Panama City Beach): green = nothing wrong there, orange = a failing check or firing alert at that site, **red = the site is unreachable** from the other sites.\n\n"
           "The **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet (under 5 kbit/s), medium = moderate (5 to 25 kbit/s), wide = busy (over 25 kbit/s). The numbers at the middle of each link are its latency (white) and traffic (blue).\n\n"
           "Hover a line or marker for numbers. Latency is compared with each link's *own* normal, so a long link (Portland to Florida, ~90 ms) is not flagged for being long.\n\n"
           "Underlying data: ping mesh (10 pings a minute from every site), plus the Network dashboard for the full matrix.")
