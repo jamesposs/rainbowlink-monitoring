@@ -43,6 +43,13 @@
    "url": "/d/rl-services",
    "icon": "dashboard",
    "targetBlank": false
+  },
+  {
+   "title": "Transit",
+   "type": "link",
+   "url": "/d/rl-transit",
+   "icon": "dashboard",
+   "targetBlank": false
   }
  ],
  "panels": [

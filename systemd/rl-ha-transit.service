@@ -1,0 +1,12 @@
+[Unit]
+Description=Home Assistant transit arrivals as metrics
+After=network-online.target
+[Service]
+Type=oneshot
+User=prometheus
+LoadCredential=ha_token:/opt/monitoring/secrets/ha_token
+ExecStart=/usr/bin/python3 /opt/monitoring/scripts/ha-transit-metrics.py
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/prometheus/node-exporter
+PrivateTmp=true

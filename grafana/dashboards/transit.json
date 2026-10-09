@@ -1,0 +1,648 @@
+{
+ "uid": "rl-transit",
+ "title": "Transit",
+ "tags": [
+  "rainbowlink",
+  "home-assistant"
+ ],
+ "timezone": "browser",
+ "schemaVersion": 39,
+ "version": 1,
+ "editable": true,
+ "graphTooltip": 1,
+ "refresh": "30s",
+ "time": {
+  "from": "now-6h",
+  "to": "now"
+ },
+ "links": [
+  {
+   "title": "Overview",
+   "type": "link",
+   "url": "/d/rl-overview",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "Site map",
+   "type": "link",
+   "url": "/d/rl-map",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "Network",
+   "type": "link",
+   "url": "/d/rl-network",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "Servers & storage",
+   "type": "link",
+   "url": "/d/rl-servers",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "Services",
+   "type": "link",
+   "url": "/d/rl-services",
+   "icon": "dashboard",
+   "targetBlank": false
+  }
+ ],
+ "description": "Live TriMet arrivals from Home Assistant (sensors with an 'arrivals' attribute are discovered automatically).",
+ "panels": [
+  {
+   "id": 1,
+   "type": "stat",
+   "title": "Next catchable",
+   "description": "Minutes until the next vehicle you can still walk to in time. Red = leave now or you'll miss it.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rl_ha_transit_next_catchable_minutes * on(entity) group_left(name, stop, line, destination) rl_ha_transit_info",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "table",
+     "legendFormat": "{{name}} \u00b7 {{line}} to {{destination}}"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "m",
+     "decimals": 0,
+     "noValue": "no service",
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#EF4444",
+        "value": null
+       },
+       {
+        "color": "#FFA726",
+        "value": 3
+       },
+       {
+        "color": "#22C55E",
+        "value": 8
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value_and_name",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   }
+  },
+  {
+   "id": 2,
+   "type": "stat",
+   "title": "Delay of next vehicle",
+   "description": "How late the very next vehicle is running.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 16,
+    "y": 0,
+    "w": 8,
+    "h": 6
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rl_ha_transit_next_delay_minutes * on(entity) group_left(name, stop) rl_ha_transit_info",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "table",
+     "legendFormat": "{{name}}"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "m",
+     "decimals": 0,
+     "noValue": "no service",
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#22C55E",
+        "value": null
+       },
+       {
+        "color": "#FFA726",
+        "value": 2
+       },
+       {
+        "color": "#EF4444",
+        "value": 6
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value_and_name",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   }
+  },
+  {
+   "id": 3,
+   "type": "table",
+   "title": "Upcoming arrivals",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 6,
+    "w": 16,
+    "h": 11
+   },
+   "description": "Every arrival Home Assistant knows about, soonest first. 'Catchable' = you can still walk to the stop in time.",
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rl_ha_transit_arrival_minutes * on(entity) group_left(name, stop) rl_ha_transit_info",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    }
+   ],
+   "transformations": [
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {
+       "Time": true,
+       "__name__": true,
+       "entity": true,
+       "idx": true,
+       "job": true,
+       "instance": true,
+       "host": true,
+       "kind": true,
+       "parent": true,
+       "role": true,
+       "site": true
+      },
+      "renameByName": {
+       "name": "Stop",
+       "line": "Line",
+       "destination": "To",
+       "direction": "Direction",
+       "Value": "In",
+       "catchable": "Catchable",
+       "status": "Status"
+      },
+      "indexByName": {
+       "name": 0,
+       "line": 1,
+       "destination": 2,
+       "direction": 3,
+       "Value": 4,
+       "catchable": 5,
+       "status": 6
+      }
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "auto",
+      "cellOptions": {
+       "type": "auto"
+      }
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "In"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "m"
+       },
+       {
+        "id": "decimals",
+        "value": 0
+       },
+       {
+        "id": "custom.width",
+        "value": 90
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-text"
+        }
+       },
+       {
+        "id": "thresholds",
+        "value": {
+         "mode": "absolute",
+         "steps": [
+          {
+           "color": "#EF4444",
+           "value": null
+          },
+          {
+           "color": "#FFA726",
+           "value": 4
+          },
+          {
+           "color": "#22C55E",
+           "value": 8
+          }
+         ]
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Catchable"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 100
+       },
+       {
+        "id": "mappings",
+        "value": [
+         {
+          "type": "value",
+          "options": {
+           "yes": {
+            "text": "yes",
+            "color": "#22C55E",
+            "index": 0
+           },
+           "no": {
+            "text": "too soon",
+            "color": "#94A3B8",
+            "index": 1
+           }
+          }
+         }
+        ]
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-text"
+        }
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Status"
+      },
+      "properties": [
+       {
+        "id": "mappings",
+        "value": [
+         {
+          "type": "value",
+          "options": {
+           "on time": {
+            "text": "on time",
+            "color": "#22C55E",
+            "index": 0
+           }
+          }
+         },
+         {
+          "type": "regex",
+          "options": {
+           "pattern": "canceled",
+           "result": {
+            "color": "#EF4444",
+            "index": 1
+           }
+          }
+         },
+         {
+          "type": "regex",
+          "options": {
+           "pattern": "\\+.*",
+           "result": {
+            "color": "#FFA726",
+            "index": 2
+           }
+          }
+         }
+        ]
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-text"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm",
+    "sortBy": [
+     {
+      "displayName": "In",
+      "desc": false
+     }
+    ]
+   }
+  },
+  {
+   "id": 4,
+   "type": "table",
+   "title": "Stops",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 16,
+    "y": 6,
+    "w": 8,
+    "h": 11
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rl_ha_transit_approach_minutes * on(entity) group_left(name, stop, stop_id, service) rl_ha_transit_info",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    }
+   ],
+   "transformations": [
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {
+       "Time": true,
+       "__name__": true,
+       "entity": true,
+       "job": true,
+       "instance": true,
+       "host": true,
+       "kind": true,
+       "parent": true,
+       "role": true,
+       "site": true,
+       "summary": true,
+       "line": true,
+       "destination": true,
+       "vehicle": true
+      },
+      "renameByName": {
+       "name": "Sensor",
+       "stop": "Stop",
+       "stop_id": "ID",
+       "Value": "Walk (min)",
+       "service": "In service"
+      },
+      "indexByName": {
+       "name": 0,
+       "stop": 1,
+       "stop_id": 2,
+       "Value": 3,
+       "service": 4
+      }
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "auto"
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "In service"
+      },
+      "properties": [
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-text"
+        }
+       },
+       {
+        "id": "mappings",
+        "value": [
+         {
+          "type": "value",
+          "options": {
+           "yes": {
+            "text": "yes",
+            "color": "#22C55E",
+            "index": 0
+           },
+           "no": {
+            "text": "no",
+            "color": "#EF4444",
+            "index": 1
+           }
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm"
+   }
+  },
+  {
+   "id": 5,
+   "type": "timeseries",
+   "title": "Minutes to next catchable arrival",
+   "description": "Sawtooth: counts down, jumps up when a vehicle is gone. Long jumps = a gap in service.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 17,
+    "w": 12,
+    "h": 8
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rl_ha_transit_next_catchable_minutes * on(entity) group_left(name, stop) rl_ha_transit_info",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "table",
+     "legendFormat": "{{name}}"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "m",
+     "decimals": 0,
+     "custom": {
+      "lineWidth": 2,
+      "fillOpacity": 8,
+      "showPoints": "never",
+      "spanNulls": false
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "none"
+    }
+   }
+  },
+  {
+   "id": 6,
+   "type": "timeseries",
+   "title": "Delay of next vehicle",
+   "description": "",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 17,
+    "w": 12,
+    "h": 8
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rl_ha_transit_next_delay_minutes * on(entity) group_left(name, stop) rl_ha_transit_info",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "table",
+     "legendFormat": "{{name}}"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "m",
+     "decimals": 0,
+     "custom": {
+      "lineWidth": 2,
+      "fillOpacity": 8,
+      "showPoints": "never",
+      "spanNulls": false
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "none"
+    }
+   }
+  }
+ ],
+ "templating": {
+  "list": []
+ },
+ "annotations": {
+  "list": []
+ }
+}
