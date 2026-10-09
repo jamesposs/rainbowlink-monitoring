@@ -57,6 +57,13 @@
    "url": "/d/rl-services",
    "icon": "dashboard",
    "targetBlank": false
+  },
+  {
+   "title": "Media automation",
+   "type": "link",
+   "url": "/d/rl-media",
+   "icon": "dashboard",
+   "targetBlank": false
   }
  ],
  "description": "Live TriMet arrivals from Home Assistant (sensors with an 'arrivals' attribute are discovered automatically).",

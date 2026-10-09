@@ -1,0 +1,17 @@
+rule_files: [../rules/90-media.yml]
+evaluation_interval: 1m
+tests:
+  - interval: 1m
+    input_series:
+      - {series: 'rl_vpn_state_code{host="dl"}', values: '0 0 2 2 2 2'}
+      - {series: 'rl_vpn_qbit_running{host="dl"}', values: '1 1 1 1 1 1'}
+    alert_rule_test:
+      - {eval_time: 5m, alertname: VpnCritical, exp_alerts: [{exp_labels: {severity: critical, site: pdx, host: dl}, exp_annotations: {summary: "DOWNLOADER: possible NON-Mullvad Internet path on dl (qBittorrent stopped)", description: "The kill-switch watchdog found evidence the download client could reach the Internet outside the Mullvad tunnel (kill switch missing/weakened, a direct probe succeeded, IPv6 present, or a non-Mullvad resolver). qBittorrent was stopped. See /run/rl-vpn/state.json and 'journalctl -u rl-vpn-watchdog' on dl."}}]}
+      - {eval_time: 1m, alertname: VpnCritical, exp_alerts: []}
+  - interval: 1m
+    input_series:
+      - {series: 'rl_vpn_state_code{host="dl"}', values: '1+0x15'}
+      - {series: 'rl_vpn_qbit_running{host="dl"}', values: '1+0x15'}
+    alert_rule_test:
+      - {eval_time: 12m, alertname: VpnUnhealthy, exp_alerts: [{exp_labels: {severity: warning, site: pdx, host: dl}, exp_annotations: {summary: "Download client is running but the Mullvad tunnel is not healthy (dl)", description: "Nothing can leak (the kill switch holds), but downloads are stalled: tunnel down, relay or DNS problem. The watchdog rotates relays automatically; check 'sudo systemctl status rl-vpn' on dl."}}]}
+      - {eval_time: 5m, alertname: VpnUnhealthy, exp_alerts: []}

@@ -1,0 +1,92 @@
+# Media automation: request portal + Radarr/Sonarr/Prowlarr (host arr) and the Mullvad-isolated downloader (host dl).
+# rl_vpn_* come from dl's rl-vpn-watchdog (node_exporter textfile). State code: 0 HEALTHY, 1 DEGRADED (nothing can leak, downloads
+# paused), 2 CRITICAL (possible non-Mullvad path; the watchdog has already stopped qBittorrent).
+groups:
+  - name: media
+    rules:
+      - alert: VpnCritical
+        expr: max by (host) (rl_vpn_state_code) == 2
+        for: 1m
+        labels: {severity: critical, site: pdx}
+        annotations:
+          summary: "DOWNLOADER: possible NON-Mullvad Internet path on {{ $labels.host }} (qBittorrent stopped)"
+          description: "The kill-switch watchdog found evidence the download client could reach the Internet outside the Mullvad tunnel (kill switch missing/weakened, a direct probe succeeded, IPv6 present, or a non-Mullvad resolver). qBittorrent was stopped. See /run/rl-vpn/state.json and 'journalctl -u rl-vpn-watchdog' on dl."
+
+      - alert: VpnUnhealthy
+        expr: max by (host) (rl_vpn_state_code) == 1 and on (host) max by (host) (rl_vpn_qbit_running) == 1
+        for: 10m
+        labels: {severity: warning, site: pdx}
+        annotations:
+          summary: "Download client is running but the Mullvad tunnel is not healthy ({{ $labels.host }})"
+          description: "Nothing can leak (the kill switch holds), but downloads are stalled: tunnel down, relay or DNS problem. The watchdog rotates relays automatically; check 'sudo systemctl status rl-vpn' on dl."
+
+      - alert: VpnDownLong
+        expr: max by (host) (rl_vpn_state_code) == 1
+        for: 3h
+        labels: {severity: critical, site: pdx}
+        annotations:
+          summary: "Mullvad tunnel on {{ $labels.host }} has been down for 3+ hours"
+          description: "No relay worked for hours. Account expired/out of devices, or Mullvad blocked? Downloads are paused (fail closed)."
+
+      - alert: VpnWatchdogSilent
+        expr: absent(rl_vpn_state_code{host="dl"}) or (time() - max(rl_vpn_check_timestamp_seconds) > 300)
+        for: 5m
+        labels: {severity: warning, site: pdx}
+        annotations:
+          summary: "The kill-switch watchdog on dl stopped reporting"
+          description: "VPN protection cannot be confirmed. The nftables kill switch itself is independent and still holds, but check dl (rl-vpn-watchdog.timer, node_exporter)."
+
+      - alert: VpnRelayFailover
+        expr: increase(rl_vpn_failovers_total[1h]) > 2
+        labels: {severity: warning, site: pdx}
+        annotations:
+          summary: "Mullvad relays keep failing over on {{ $labels.host }}"
+          description: "More than two relay switches in an hour: Mullvad capacity, or the home WAN dropping UDP."
+
+      - alert: ArrAppDown
+        expr: up{job="arr"} == 0
+        for: 10m
+        labels: {severity: warning, site: pdx}
+        annotations:
+          summary: "{{ $labels.app }} is not answering (host arr)"
+          description: "exportarr cannot reach the {{ $labels.app }} API. Check 'docker compose ps' in /opt/arr on arr."
+
+      - alert: ArrHealthError
+        expr: max by (source, message) ({__name__=~"(radarr|sonarr|prowlarr)_system_health_issues", type="error"}) > 0
+        for: 30m
+        labels: {severity: warning, site: pdx}
+        annotations:
+          summary: "{{ $labels.source }}: {{ $labels.message }}"
+          description: "Reported by the application's own health check (System > Status)."
+
+      - alert: ArrIndexersFailing
+        expr: prowlarr_indexer_total - prowlarr_indexer_enabled_total > 0
+        for: 2h
+        labels: {severity: warning, site: pdx}
+        annotations:
+          summary: "Prowlarr has disabled {{ $value }} failing indexer(s)"
+          description: "Searches may return fewer results. Prowlarr retries disabled indexers on its own; if this persists, test them in Indexers."
+
+      - alert: ArrNoIndexers
+        expr: max(prowlarr_indexer_enabled_total) == 0
+        for: 30m
+        labels: {severity: warning, site: pdx}
+        annotations:
+          summary: "No working indexers: requests cannot be fulfilled"
+          description: "Every indexer in Prowlarr is disabled or failing."
+
+      - alert: ArrUpdateFailed
+        expr: rl_arr_update_ok == 0
+        for: 5m
+        labels: {severity: warning, site: pdx}
+        annotations:
+          summary: "Weekly arr image update left a container unhealthy ({{ $labels.host }})"
+          description: "See /var/log/rl-arr-update.log on arr; rollback = pin the previous image digest listed there."
+
+      - alert: ArrPortalDown
+        expr: probe_success{service="Request portal"} == 0
+        for: 5m
+        labels: {severity: warning, site: pdx}
+        annotations:
+          summary: "The request portal front door (nginx + SSO redirect) is failing"
+          description: "Probed from the monitoring server. Check nginx on arr and Authentik."
