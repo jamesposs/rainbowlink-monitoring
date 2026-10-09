@@ -1,0 +1,85 @@
+# Unit tests for monitoring/rules/80-pi.yml (goes next to alerts_test.yml; run by ./scripts/apply.sh).
+rule_files:
+  - ../rules/80-pi.yml
+evaluation_interval: 1m
+
+tests:
+  # Under-voltage must persist 5 minutes before it is worth a line in the digest.
+  - interval: 1m
+    input_series:
+      - series: 'rl_pi_under_voltage_now{host="pi-pdx", site="pdx"}'
+        values: '0x10 1x30'
+    alert_rule_test:
+      - eval_time: 12m
+        alertname: PiUndervoltage
+        exp_alerts: []                          # started at 10m: still inside the 5m "for"
+      - eval_time: 20m
+        alertname: PiUndervoltage
+        exp_alerts:
+          - exp_labels: {severity: warning, site: pdx, host: pi-pdx}
+            exp_annotations:
+              summary: "pi-pdx: the power supply is sagging (under-voltage)"
+              description: "The Pi reports under-voltage right now. It will throttle and can corrupt the SD card. Use the official 5.1 V / 3 A supply and a short, thick cable; a touchscreen on the same supply makes it worse."
+
+  # A single bad sample (e.g. a brownout during boot) must not alert.
+  - interval: 1m
+    input_series:
+      - series: 'rl_pi_under_voltage_now{host="pi-pdx", site="pdx"}'
+        values: '0x5 1 0x40'
+    alert_rule_test:
+      - eval_time: 30m
+        alertname: PiUndervoltage
+        exp_alerts: []
+
+  # The dashboard being down for 15+ minutes is worth a digest line; a reboot-length gap is not.
+  - interval: 1m
+    input_series:
+      - series: 'rl_pi_kiosk_active{host="pi-pdx", site="pdx"}'
+        values: '1x5 0x30'
+    alert_rule_test:
+      - eval_time: 12m
+        alertname: PiKioskDown
+        exp_alerts: []
+      - eval_time: 25m
+        alertname: PiKioskDown
+        exp_alerts:
+          - exp_labels: {severity: warning, site: pdx, host: pi-pdx}
+            exp_annotations:
+              summary: "pi-pdx: the dashboard screen is not running"
+              description: "kiosk.service is not active (display unplugged, browser crash loop, or GPU/compositor problem). DNS and the subnet router are unaffected. journalctl -u kiosk on the Pi."
+
+  # Crash loop = restart counter climbing; the normal once-a-day restart must stay quiet.
+  - interval: 1m
+    input_series:
+      - series: 'rl_pi_kiosk_restarts{host="pi-pdx", site="pdx"}'
+        values: '0x60 1+1x60'                   # flat for an hour, then +1 per minute
+      - series: 'rl_pi_kiosk_restarts{host="pi-quiet", site="pdx"}'
+        values: '3x59 4x61'                    # a single scheduled restart
+    alert_rule_test:
+      - eval_time: 55m
+        alertname: PiKioskCrashLooping
+        exp_alerts: []
+      - eval_time: 100m
+        alertname: PiKioskCrashLooping
+        exp_alerts:
+          - exp_labels: {severity: warning, site: pdx, host: pi-pdx}
+            exp_annotations:
+              summary: "pi-pdx: the dashboard browser keeps restarting"
+              description: "More than 6 restarts in an hour. One a day is normal (scheduled clean restart); this is a crash loop or the memory limit being hit: check rl_pi_kiosk_memory_bytes."
+
+  # Standby router that lost its routes.
+  - interval: 1m
+    input_series:
+      - series: 'rl_pi_tailscale_advertised_routes{host="pi-pdx", site="pdx"}'
+        values: '4x5 0x30'
+    alert_rule_test:
+      - eval_time: 12m
+        alertname: PiNotAdvertisingRoutes
+        exp_alerts: []
+      - eval_time: 25m
+        alertname: PiNotAdvertisingRoutes
+        exp_alerts:
+          - exp_labels: {severity: warning, site: pdx, host: pi-pdx}
+            exp_annotations:
+              summary: "pi-pdx is not advertising any subnet routes"
+              description: "The second subnet router would not take over if the first fails. Re-run: ansible-playbook playbooks/pi-pdx.yml --tags router, then approve the routes in Headscale."

@@ -1,0 +1,53 @@
+groups:
+  - name: pi
+    # Metrics come from roles/pi_monitoring (rl-pi-metrics.sh, textfile collector) on the Pi.
+    # node_systemd_unit_state{state="active"} is dropped by the central scrape config to save space, so "is it
+    # running" is exported by the collector itself. All of these are warnings -> the 08:00 digest, not a page:
+    # DNS failure is already caught (and escalated) by DnsResolverFailing / DnsOutage.
+    rules:
+      - alert: PiUndervoltage
+        expr: rl_pi_under_voltage_now == 1
+        for: 5m
+        labels: {severity: warning, site: pdx}
+        annotations:
+          summary: "{{ $labels.host }}: the power supply is sagging (under-voltage)"
+          description: "The Pi reports under-voltage right now. It will throttle and can corrupt the SD card. Use the official 5.1 V / 3 A supply and a short, thick cable; a touchscreen on the same supply makes it worse."
+
+      - alert: PiThermalThrottling
+        expr: rl_pi_soft_temp_limit_now == 1 or rl_pi_cpu_temp_celsius > 80
+        for: 15m
+        labels: {severity: warning, site: pdx}
+        annotations:
+          summary: "{{ $labels.host }}: running hot (at or near the CPU throttle point)"
+          description: "CPU at or near the 80 C throttle point. Check airflow/case; this node carries DNS and a subnet router."
+
+      - alert: PiKioskDown
+        expr: rl_pi_kiosk_active == 0
+        for: 15m
+        labels: {severity: warning, site: pdx}
+        annotations:
+          summary: "{{ $labels.host }}: the dashboard screen is not running"
+          description: "kiosk.service is not active (display unplugged, browser crash loop, or GPU/compositor problem). DNS and the subnet router are unaffected. journalctl -u kiosk on the Pi."
+
+      - alert: PiKioskCrashLooping
+        expr: increase(rl_pi_kiosk_restarts[1h]) > 6
+        labels: {severity: warning, site: pdx}
+        annotations:
+          summary: "{{ $labels.host }}: the dashboard browser keeps restarting"
+          description: "More than 6 restarts in an hour. One a day is normal (scheduled clean restart); this is a crash loop or the memory limit being hit: check rl_pi_kiosk_memory_bytes."
+
+      - alert: PiNotAdvertisingRoutes
+        expr: rl_pi_tailscale_advertised_routes == 0
+        for: 15m
+        labels: {severity: warning, site: pdx}
+        annotations:
+          summary: "{{ $labels.host }} is not advertising any subnet routes"
+          description: "The second subnet router would not take over if the first fails. Re-run: ansible-playbook playbooks/pi-pdx.yml --tags router, then approve the routes in Headscale."
+
+      - alert: PiMetricsStale
+        expr: time() - rl_pi_metrics_last_run_timestamp_seconds > 600
+        for: 10m
+        labels: {severity: warning, site: pdx}
+        annotations:
+          summary: "{{ $labels.host }}: the Pi power/kiosk collector stopped reporting"
+          description: "rl-pi-metrics.timer is not running; under-voltage and kiosk alerts are blind until it is."
