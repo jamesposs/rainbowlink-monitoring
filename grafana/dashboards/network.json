@@ -1,2155 +1,2195 @@
 {
- "uid": "rl-network",
- "title": "Network",
- "tags": [
-  "rainbowlink",
-  "network"
- ],
- "timezone": "browser",
- "schemaVersion": 39,
- "version": 1,
- "editable": true,
- "graphTooltip": 1,
- "refresh": "30s",
- "time": {
-  "from": "now-6h",
-  "to": "now"
- },
- "links": [
-  {
-   "title": "Overview",
-   "type": "link",
-   "url": "/d/rl-overview",
-   "icon": "dashboard",
-   "targetBlank": false
+  "uid": "rl-network",
+  "title": "Network",
+  "tags": [
+    "rainbowlink",
+    "network"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "graphTooltip": 1,
+  "refresh": "30s",
+  "time": {
+    "from": "now-6h",
+    "to": "now"
   },
-  {
-   "title": "Status",
-   "type": "link",
-   "url": "/d/rl-status",
-   "icon": "dashboard",
-   "targetBlank": false
-  },
-  {
-   "title": "Site map",
-   "type": "link",
-   "url": "/d/rl-map",
-   "icon": "dashboard",
-   "targetBlank": false
-  },
-  {
-   "title": "Servers & storage",
-   "type": "link",
-   "url": "/d/rl-servers",
-   "icon": "dashboard",
-   "targetBlank": false
-  },
-  {
-   "title": "Services",
-   "type": "link",
-   "url": "/d/rl-services",
-   "icon": "dashboard",
-   "targetBlank": false
-  },
-  {
-   "title": "Transit",
-   "type": "link",
-   "url": "/d/rl-transit",
-   "icon": "dashboard",
-   "targetBlank": false
-  }
- ],
- "panels": [
-  {
-   "id": 1,
-   "type": "row",
-   "title": "Internet / WAN",
-   "gridPos": {
-    "x": 0,
-    "y": 0,
-    "w": 24,
-    "h": 1
-   },
-   "collapsed": false,
-   "panels": []
-  },
-  {
-   "id": 2,
-   "type": "stat",
-   "title": "Internet",
-   "description": "",
-   "gridPos": {
-    "x": 0,
-    "y": 1,
-    "w": 3,
-    "h": 4
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "targets": [
+  "links": [
     {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "avg(probe_success{job=\"wan\"})",
-     "refId": "A",
-     "instant": true,
-     "range": false
-    }
-   ],
-   "fieldConfig": {
-    "defaults": {
-     "unit": "percentunit",
-     "thresholds": {
-      "mode": "absolute",
-      "steps": [
-       {
-        "color": "red",
-        "value": null
-       },
-       {
-        "color": "orange",
-        "value": 0.67
-       },
-       {
-        "color": "green",
-        "value": 1
-       }
-      ]
-     },
-     "mappings": [],
-     "color": {
-      "mode": "thresholds"
-     }
+      "title": "Overview",
+      "type": "link",
+      "url": "/d/rl-overview",
+      "icon": "dashboard",
+      "targetBlank": false
     },
-    "overrides": []
-   },
-   "options": {
-    "colorMode": "background",
-    "graphMode": "none",
-    "textMode": "value",
-    "justifyMode": "center",
-    "reduceOptions": {
-     "calcs": [
-      "lastNotNull"
-     ],
-     "fields": "",
-     "values": false
-    }
-   }
-  },
-  {
-   "id": 3,
-   "type": "stat",
-   "title": "Primary WAN",
-   "description": "",
-   "gridPos": {
-    "x": 3,
-    "y": 1,
-    "w": 3,
-    "h": 4
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "targets": [
     {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "unpoller_wan_interface_state{wan_networkgroup=\"WAN\"}",
-     "refId": "A",
-     "instant": true,
-     "range": false
+      "title": "Status",
+      "type": "link",
+      "url": "/d/rl-status",
+      "icon": "dashboard",
+      "targetBlank": false
+    },
+    {
+      "title": "Site map",
+      "type": "link",
+      "url": "/d/rl-map",
+      "icon": "dashboard",
+      "targetBlank": false
+    },
+    {
+      "title": "Servers & storage",
+      "type": "link",
+      "url": "/d/rl-servers",
+      "icon": "dashboard",
+      "targetBlank": false
+    },
+    {
+      "title": "Services",
+      "type": "link",
+      "url": "/d/rl-services",
+      "icon": "dashboard",
+      "targetBlank": false
+    },
+    {
+      "title": "Transit",
+      "type": "link",
+      "url": "/d/rl-transit",
+      "icon": "dashboard",
+      "targetBlank": false
     }
-   ],
-   "fieldConfig": {
-    "defaults": {
-     "unit": "none",
-     "thresholds": {
-      "mode": "absolute",
-      "steps": [
-       {
-        "color": "red",
-        "value": null
-       },
-       {
-        "color": "green",
-        "value": 1
-       }
-      ]
-     },
-     "mappings": [
-      {
-       "type": "value",
-       "options": {
-        "1": {
-         "text": "up",
-         "color": "green"
+  ],
+  "panels": [
+    {
+      "id": 1,
+      "type": "row",
+      "title": "Internet / WAN",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Internet",
+      "description": "",
+      "gridPos": {
+        "x": 0,
+        "y": 1,
+        "w": 3,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "avg(probe_success{job=\"wan\"})",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 0.67
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "mappings": [],
+          "color": {
+            "mode": "thresholds"
+          }
         },
-        "0": {
-         "text": "DOWN",
-         "color": "red"
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
         }
-       }
       }
-     ],
-     "color": {
-      "mode": "thresholds"
-     }
     },
-    "overrides": []
-   },
-   "options": {
-    "colorMode": "background",
-    "graphMode": "none",
-    "textMode": "value",
-    "justifyMode": "center",
-    "reduceOptions": {
-     "calcs": [
-      "lastNotNull"
-     ],
-     "fields": "",
-     "values": false
-    }
-   }
-  },
-  {
-   "id": 4,
-   "type": "stat",
-   "title": "Backup WAN",
-   "description": "",
-   "gridPos": {
-    "x": 6,
-    "y": 1,
-    "w": 3,
-    "h": 4
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "targets": [
     {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "unpoller_wan_interface_state{wan_networkgroup=\"WAN2\"}",
-     "refId": "A",
-     "instant": true,
-     "range": false
-    }
-   ],
-   "fieldConfig": {
-    "defaults": {
-     "unit": "none",
-     "thresholds": {
-      "mode": "absolute",
-      "steps": [
-       {
-        "color": "green",
-        "value": null
-       },
-       {
-        "color": "orange",
-        "value": 1
-       }
-      ]
-     },
-     "mappings": [
-      {
-       "type": "value",
-       "options": {
-        "0": {
-         "text": "standby",
-         "color": "green"
+      "id": 3,
+      "type": "stat",
+      "title": "Primary WAN",
+      "description": "",
+      "gridPos": {
+        "x": 3,
+        "y": 1,
+        "w": 3,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "unpoller_wan_interface_state{wan_networkgroup=\"WAN\"}",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "1": {
+                  "text": "up",
+                  "color": "green"
+                },
+                "0": {
+                  "text": "DOWN",
+                  "color": "red"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          }
         },
-        "1": {
-         "text": "IN USE",
-         "color": "orange"
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
         }
-       }
       }
-     ],
-     "color": {
-      "mode": "thresholds"
-     }
-    },
-    "overrides": []
-   },
-   "options": {
-    "colorMode": "background",
-    "graphMode": "none",
-    "textMode": "value",
-    "justifyMode": "center",
-    "reduceOptions": {
-     "calcs": [
-      "lastNotNull"
-     ],
-     "fields": "",
-     "values": false
-    }
-   }
-  },
-  {
-   "id": 5,
-   "type": "stat",
-   "title": "Latency",
-   "description": "",
-   "gridPos": {
-    "x": 9,
-    "y": 1,
-    "w": 3,
-    "h": 4
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "targets": [
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "avg(avg_over_time(probe_icmp_duration_seconds{job=\"wan\", phase=\"rtt\"}[5m]))",
-     "refId": "A",
-     "instant": true,
-     "range": false
-    }
-   ],
-   "fieldConfig": {
-    "defaults": {
-     "unit": "s",
-     "thresholds": {
-      "mode": "absolute",
-      "steps": [
-       {
-        "color": "green",
-        "value": null
-       },
-       {
-        "color": "orange",
-        "value": 0.08
-       },
-       {
-        "color": "red",
-        "value": 0.15
-       }
-      ]
-     },
-     "mappings": [],
-     "color": {
-      "mode": "thresholds"
-     }
-    },
-    "overrides": []
-   },
-   "options": {
-    "colorMode": "background",
-    "graphMode": "none",
-    "textMode": "value",
-    "justifyMode": "center",
-    "reduceOptions": {
-     "calcs": [
-      "lastNotNull"
-     ],
-     "fields": "",
-     "values": false
-    }
-   }
-  },
-  {
-   "id": 6,
-   "type": "stat",
-   "title": "Interruptions (7 d)",
-   "description": "",
-   "gridPos": {
-    "x": 12,
-    "y": 1,
-    "w": 3,
-    "h": 4
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "targets": [
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "ceil(changes(((count(probe_success{job=\"wan\"}==0) or vector(0)) >= bool 2)[7d:15s]) / 2)",
-     "refId": "A",
-     "instant": true,
-     "range": false
-    }
-   ],
-   "fieldConfig": {
-    "defaults": {
-     "unit": "none",
-     "thresholds": {
-      "mode": "absolute",
-      "steps": [
-       {
-        "color": "green",
-        "value": null
-       },
-       {
-        "color": "orange",
-        "value": 1
-       },
-       {
-        "color": "red",
-        "value": 5
-       }
-      ]
-     },
-     "mappings": [],
-     "color": {
-      "mode": "thresholds"
-     },
-     "decimals": 0
-    },
-    "overrides": []
-   },
-   "options": {
-    "colorMode": "background",
-    "graphMode": "none",
-    "textMode": "value",
-    "justifyMode": "center",
-    "reduceOptions": {
-     "calcs": [
-      "lastNotNull"
-     ],
-     "fields": "",
-     "values": false
-    }
-   }
-  },
-  {
-   "id": 7,
-   "type": "timeseries",
-   "title": "WAN throughput (gateway eth4)",
-   "description": "",
-   "gridPos": {
-    "x": 15,
-    "y": 1,
-    "w": 9,
-    "h": 8
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "targets": [
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "rate(ifHCInOctets{job=\"snmp-gateway\", ifDescr=\"eth4\"}[5m]) * 8",
-     "refId": "A",
-     "instant": false,
-     "range": true,
-     "legendFormat": "download"
     },
     {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "rate(ifHCOutOctets{job=\"snmp-gateway\", ifDescr=\"eth4\"}[5m]) * 8",
-     "refId": "B",
-     "instant": false,
-     "range": true,
-     "legendFormat": "upload"
-    }
-   ],
-   "fieldConfig": {
-    "defaults": {
-     "unit": "bps",
-     "custom": {
-      "lineWidth": 1,
-      "fillOpacity": 10,
-      "showPoints": "never",
-      "stacking": {
-       "mode": "none"
+      "id": 4,
+      "type": "stat",
+      "title": "Backup WAN",
+      "description": "",
+      "gridPos": {
+        "x": 6,
+        "y": 1,
+        "w": 3,
+        "h": 4
       },
-      "thresholdsStyle": {
-       "mode": "off"
-      }
-     }
-    },
-    "overrides": []
-   },
-   "options": {
-    "legend": {
-     "displayMode": "list",
-     "placement": "bottom",
-     "showLegend": true
-    },
-    "tooltip": {
-     "mode": "multi",
-     "sort": "desc"
-    }
-   }
-  },
-  {
-   "id": 8,
-   "type": "timeseries",
-   "title": "Internet latency & interruptions",
-   "description": "",
-   "gridPos": {
-    "x": 0,
-    "y": 5,
-    "w": 15,
-    "h": 4
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "targets": [
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "probe_icmp_duration_seconds{job=\"wan\", phase=\"rtt\"}",
-     "refId": "A",
-     "instant": false,
-     "range": true,
-     "legendFormat": "{{instance}} rtt"
-    },
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "max_over_time((count(probe_success{job=\"wan\"}==0) or vector(0))[$__interval:15s])",
-     "refId": "B",
-     "instant": false,
-     "range": true,
-     "interval": "15s",
-     "legendFormat": "anchors failing (of 3)"
-    }
-   ],
-   "fieldConfig": {
-    "defaults": {
-     "unit": "s",
-     "custom": {
-      "lineWidth": 1,
-      "fillOpacity": 10,
-      "showPoints": "never",
-      "stacking": {
-       "mode": "none"
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
       },
-      "thresholdsStyle": {
-       "mode": "off"
-      }
-     }
-    },
-    "overrides": [
-     {
-      "matcher": {
-       "id": "byName",
-       "options": "anchors failing (of 3)"
-      },
-      "properties": [
-       {
-        "id": "unit",
-        "value": "none"
-       },
-       {
-        "id": "decimals",
-        "value": 0
-       },
-       {
-        "id": "min",
-        "value": 0
-       },
-       {
-        "id": "max",
-        "value": 3
-       },
-       {
-        "id": "custom.axisPlacement",
-        "value": "right"
-       },
-       {
-        "id": "custom.drawStyle",
-        "value": "bars"
-       },
-       {
-        "id": "custom.fillOpacity",
-        "value": 80
-       },
-       {
-        "id": "custom.lineWidth",
-        "value": 1
-       },
-       {
-        "id": "color",
-        "value": {
-         "mode": "fixed",
-         "fixedColor": "red"
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "unpoller_wan_interface_state{wan_networkgroup=\"WAN2\"}",
+          "refId": "A",
+          "instant": true,
+          "range": false
         }
-       }
-      ]
-     }
-    ]
-   },
-   "options": {
-    "legend": {
-     "displayMode": "list",
-     "placement": "bottom",
-     "showLegend": true
-    },
-    "tooltip": {
-     "mode": "multi",
-     "sort": "desc"
-    }
-   }
-  },
-  {
-   "id": 9,
-   "type": "row",
-   "title": "Site-to-site connectivity (tailnet overlay, measured from each site)",
-   "gridPos": {
-    "x": 0,
-    "y": 9,
-    "w": 24,
-    "h": 1
-   },
-   "collapsed": false,
-   "panels": []
-  },
-  {
-   "id": 10,
-   "type": "table",
-   "title": "Link quality matrix",
-   "description": "Each row is one direction of one link. 'From' is the site doing the measuring.",
-   "gridPos": {
-    "x": 0,
-    "y": 10,
-    "w": 12,
-    "h": 8
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "targets": [
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "avg by (host, to) (rl_mesh_rtt_seconds{stat=\"avg\", path=\"overlay\"})",
-     "refId": "A",
-     "instant": true,
-     "range": false,
-     "format": "table"
-    },
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "avg by (host, to) (rl_mesh_loss_ratio{path=\"overlay\"})",
-     "refId": "B",
-     "instant": true,
-     "range": false,
-     "format": "table"
-    },
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "avg by (host, to) (rl_mesh_rtt_seconds{stat=\"jitter\", path=\"overlay\"})",
-     "refId": "C",
-     "instant": true,
-     "range": false,
-     "format": "table"
-    }
-   ],
-   "fieldConfig": {
-    "defaults": {
-     "custom": {
-      "align": "auto",
-      "cellOptions": {
-       "type": "auto"
-      },
-      "filterable": true
-     }
-    },
-    "overrides": [
-     {
-      "matcher": {
-       "id": "byName",
-       "options": "Latency"
-      },
-      "properties": [
-       {
-        "id": "unit",
-        "value": "s"
-       },
-       {
-        "id": "thresholds",
-        "value": {
-         "mode": "absolute",
-         "steps": [
-          {
-           "color": "green",
-           "value": null
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1
+              }
+            ]
           },
-          {
-           "color": "orange",
-           "value": 0.12
-          },
-          {
-           "color": "red",
-           "value": 0.25
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "standby",
+                  "color": "green"
+                },
+                "1": {
+                  "text": "IN USE",
+                  "color": "orange"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
           }
-         ]
-        }
-       },
-       {
-        "id": "custom.cellOptions",
-        "value": {
-         "type": "color-background",
-         "mode": "basic"
-        }
-       },
-       {
-        "id": "decimals",
-        "value": 3
-       }
-      ]
-     },
-     {
-      "matcher": {
-       "id": "byName",
-       "options": "Loss"
+        },
+        "overrides": []
       },
-      "properties": [
-       {
-        "id": "unit",
-        "value": "percentunit"
-       },
-       {
-        "id": "thresholds",
-        "value": {
-         "mode": "absolute",
-         "steps": [
-          {
-           "color": "green",
-           "value": null
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Latency",
+      "description": "",
+      "gridPos": {
+        "x": 9,
+        "y": 1,
+        "w": 3,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
           },
-          {
-           "color": "orange",
-           "value": 0.02
+          "expr": "avg(avg_over_time(probe_icmp_duration_seconds{job=\"wan\", phase=\"rtt\"}[5m]))",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 0.08
+              },
+              {
+                "color": "red",
+                "value": 0.15
+              }
+            ]
           },
-          {
-           "color": "red",
-           "value": 0.1
+          "mappings": [],
+          "color": {
+            "mode": "thresholds"
           }
-         ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
         }
-       },
-       {
-        "id": "custom.cellOptions",
-        "value": {
-         "type": "color-background",
-         "mode": "basic"
-        }
-       },
-       {
-        "id": "decimals",
-        "value": 1
-       }
-      ]
-     },
-     {
-      "matcher": {
-       "id": "byName",
-       "options": "Jitter"
-      },
-      "properties": [
-       {
-        "id": "unit",
-        "value": "s"
-       },
-       {
-        "id": "decimals",
-        "value": 4
-       }
-      ]
-     }
-    ]
-   },
-   "options": {
-    "showHeader": true,
-    "cellHeight": "sm"
-   },
-   "transformations": [
-    {
-     "id": "merge",
-     "options": {}
-    },
-    {
-     "id": "organize",
-     "options": {
-      "excludeByName": {
-       "Time": true
-      },
-      "renameByName": {
-       "host": "From",
-       "to": "To",
-       "Value #A": "Latency",
-       "Value #B": "Loss",
-       "Value #C": "Jitter"
-      },
-      "indexByName": {
-       "host": 0,
-       "to": 1,
-       "Value #A": 2,
-       "Value #B": 3,
-       "Value #C": 4
       }
-     }
-    }
-   ]
-  },
-  {
-   "id": 11,
-   "type": "timeseries",
-   "title": "Packet loss per link",
-   "description": "",
-   "gridPos": {
-    "x": 12,
-    "y": 10,
-    "w": 12,
-    "h": 8
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "targets": [
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "rl_mesh_loss_ratio{path=\"overlay\"}",
-     "refId": "A",
-     "instant": false,
-     "range": true,
-     "legendFormat": "{{host}} -> {{to}}"
-    }
-   ],
-   "fieldConfig": {
-    "defaults": {
-     "unit": "percentunit",
-     "custom": {
-      "lineWidth": 1,
-      "fillOpacity": 10,
-      "showPoints": "never",
-      "stacking": {
-       "mode": "none"
-      },
-      "thresholdsStyle": {
-       "mode": "line"
-      }
-     },
-     "thresholds": {
-      "mode": "absolute",
-      "steps": [
-       {
-        "color": "green",
-        "value": null
-       },
-       {
-        "color": "red",
-        "value": 0.1
-       }
-      ]
-     },
-     "max": 1
-    },
-    "overrides": []
-   },
-   "options": {
-    "legend": {
-     "displayMode": "list",
-     "placement": "bottom",
-     "showLegend": true
-    },
-    "tooltip": {
-     "mode": "multi",
-     "sort": "desc"
-    }
-   }
-  },
-  {
-   "id": 12,
-   "type": "timeseries",
-   "title": "Latency per link",
-   "description": "",
-   "gridPos": {
-    "x": 0,
-    "y": 18,
-    "w": 12,
-    "h": 8
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "targets": [
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "rl_mesh_rtt_seconds{stat=\"avg\", path=\"overlay\"}",
-     "refId": "A",
-     "instant": false,
-     "range": true,
-     "legendFormat": "{{host}} -> {{to}}"
-    }
-   ],
-   "fieldConfig": {
-    "defaults": {
-     "unit": "s",
-     "custom": {
-      "lineWidth": 1,
-      "fillOpacity": 10,
-      "showPoints": "never",
-      "stacking": {
-       "mode": "none"
-      },
-      "thresholdsStyle": {
-       "mode": "off"
-      }
-     }
-    },
-    "overrides": []
-   },
-   "options": {
-    "legend": {
-     "displayMode": "list",
-     "placement": "bottom",
-     "showLegend": true
-    },
-    "tooltip": {
-     "mode": "multi",
-     "sort": "desc"
-    }
-   }
-  },
-  {
-   "id": 13,
-   "type": "timeseries",
-   "title": "Underlay (plain internet) to sjc",
-   "description": "If overlay is bad but this is fine, the tailnet (Headscale/DERP) is the problem, not the internet.",
-   "gridPos": {
-    "x": 12,
-    "y": 18,
-    "w": 12,
-    "h": 8
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "targets": [
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "rl_mesh_rtt_seconds{stat=\"avg\", path=\"underlay\"}",
-     "refId": "A",
-     "instant": false,
-     "range": true,
-     "legendFormat": "{{host}} -> {{to}} (public IP)"
-    }
-   ],
-   "fieldConfig": {
-    "defaults": {
-     "unit": "s",
-     "custom": {
-      "lineWidth": 1,
-      "fillOpacity": 10,
-      "showPoints": "never",
-      "stacking": {
-       "mode": "none"
-      },
-      "thresholdsStyle": {
-       "mode": "off"
-      }
-     }
-    },
-    "overrides": []
-   },
-   "options": {
-    "legend": {
-     "displayMode": "list",
-     "placement": "bottom",
-     "showLegend": true
-    },
-    "tooltip": {
-     "mode": "multi",
-     "sort": "desc"
-    }
-   }
-  },
-  {
-   "id": 14,
-   "type": "row",
-   "title": "DNS",
-   "gridPos": {
-    "x": 0,
-    "y": 26,
-    "w": 24,
-    "h": 1
-   },
-   "collapsed": false,
-   "panels": []
-  },
-  {
-   "id": 15,
-   "type": "table",
-   "title": "Resolver health",
-   "description": "Real queries: dns_internal asks for a name only our zone knows; dns_recursive asks for a public name.",
-   "gridPos": {
-    "x": 0,
-    "y": 27,
-    "w": 12,
-    "h": 8
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "targets": [
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "probe_success{job=\"dns\"}",
-     "refId": "A",
-     "instant": true,
-     "range": false,
-     "format": "table"
     },
     {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "probe_duration_seconds{job=\"dns\"}",
-     "refId": "B",
-     "instant": true,
-     "range": false,
-     "format": "table"
-    }
-   ],
-   "fieldConfig": {
-    "defaults": {
-     "custom": {
-      "align": "auto",
-      "cellOptions": {
-       "type": "auto"
+      "id": 6,
+      "type": "stat",
+      "title": "Interruptions (7 d)",
+      "description": "",
+      "gridPos": {
+        "x": 12,
+        "y": 1,
+        "w": 3,
+        "h": 4
       },
-      "filterable": true
-     }
-    },
-    "overrides": [
-     {
-      "matcher": {
-       "id": "byName",
-       "options": "Result"
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
       },
-      "properties": [
-       {
-        "id": "thresholds",
-        "value": {
-         "mode": "absolute",
-         "steps": [
-          {
-           "color": "red",
-           "value": null
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
           },
+          "expr": "ceil(changes(((count(probe_success{job=\"wan\"}==0) or vector(0)) >= bool 2)[7d:15s]) / 2)",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 5
+              }
+            ]
+          },
+          "mappings": [],
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "WAN throughput (gateway eth4)",
+      "description": "",
+      "gridPos": {
+        "x": 15,
+        "y": 1,
+        "w": 9,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "rate(ifHCInOctets{job=\"snmp-gateway\", ifDescr=\"eth4\"}[5m]) * 8",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "legendFormat": "download"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "rate(ifHCOutOctets{job=\"snmp-gateway\", ifDescr=\"eth4\"}[5m]) * 8",
+          "refId": "B",
+          "instant": false,
+          "range": true,
+          "legendFormat": "upload"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bps",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Internet latency & interruptions",
+      "description": "",
+      "gridPos": {
+        "x": 0,
+        "y": 5,
+        "w": 15,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "probe_icmp_duration_seconds{job=\"wan\", phase=\"rtt\"}",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "legendFormat": "{{instance}} rtt"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max_over_time((count(probe_success{job=\"wan\"}==0) or vector(0))[$__interval:15s])",
+          "refId": "B",
+          "instant": false,
+          "range": true,
+          "interval": "15s",
+          "legendFormat": "anchors failing (of 3)"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          }
+        },
+        "overrides": [
           {
-           "color": "green",
-           "value": 1
+            "matcher": {
+              "id": "byName",
+              "options": "anchors failing (of 3)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 3
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.drawStyle",
+                "value": "bars"
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 80
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 1
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              }
+            ]
           }
-         ]
-        }
-       },
-       {
-        "id": "custom.cellOptions",
-        "value": {
-         "type": "color-background",
-         "mode": "basic"
-        }
-       },
-       {
-        "id": "mappings",
-        "value": [
-         {
-          "type": "value",
-          "options": {
-           "1": {
-            "text": "OK",
-            "color": "green"
-           },
-           "0": {
-            "text": "FAIL",
-            "color": "red"
-           }
-          }
-         }
         ]
-       }
-      ]
-     },
-     {
-      "matcher": {
-       "id": "byName",
-       "options": "Latency"
       },
-      "properties": [
-       {
-        "id": "unit",
-        "value": "s"
-       },
-       {
-        "id": "decimals",
-        "value": 3
-       }
-      ]
-     }
-    ]
-   },
-   "options": {
-    "showHeader": true,
-    "cellHeight": "sm"
-   },
-   "transformations": [
-    {
-     "id": "merge",
-     "options": {}
-    },
-    {
-     "id": "organize",
-     "options": {
-      "excludeByName": {
-       "Time": true,
-       "__name__": true,
-       "job": true,
-       "instance": true,
-       "site": true,
-       "critical_group": true
-      },
-      "renameByName": {
-       "host": "Resolver",
-       "module": "Test",
-       "service": "Role",
-       "Value #A": "Result",
-       "Value #B": "Latency"
-      },
-      "indexByName": {
-       "host": 0,
-       "module": 1,
-       "Value #A": 2,
-       "Value #B": 3
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       }
-     }
-    }
-   ]
-  },
-  {
-   "id": 16,
-   "type": "table",
-   "title": "Zone sync (does every resolver serve the same zone version?)",
-   "description": "SOA serial each server reports (only changes when the zone changes). For 'every server' zones all four numbers must match; blank = that server does not serve our copy. The 'dns1 only' zones are informational: dns2/pi-pcb/vps-sjc do not carry them.",
-   "gridPos": {
-    "x": 12,
-    "y": 27,
-    "w": 12,
-    "h": 8
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "targets": [
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "max by (zone, sync) (rl_dns_zone_present{server=\"dns1\"})",
-     "refId": "A",
-     "instant": true,
-     "range": false,
-     "format": "table"
     },
     {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "max by (zone) (rl_dns_zone_serial{server=\"dns1\"})",
-     "refId": "B",
-     "instant": true,
-     "range": false,
-     "format": "table"
-    },
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "max by (zone) (rl_dns_zone_serial{server=\"dns2\"})",
-     "refId": "C",
-     "instant": true,
-     "range": false,
-     "format": "table"
-    },
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "max by (zone) (rl_dns_zone_serial{server=\"pi-pcb\"})",
-     "refId": "D",
-     "instant": true,
-     "range": false,
-     "format": "table"
-    },
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "max by (zone) (rl_dns_zone_serial{server=\"vps-sjc\"})",
-     "refId": "E",
-     "instant": true,
-     "range": false,
-     "format": "table"
-    }
-   ],
-   "fieldConfig": {
-    "defaults": {
-     "custom": {
-      "align": "auto",
-      "cellOptions": {
-       "type": "auto"
+      "id": 9,
+      "type": "row",
+      "title": "Site-to-site connectivity (tailnet overlay, measured from each site)",
+      "gridPos": {
+        "x": 0,
+        "y": 9,
+        "w": 24,
+        "h": 1
       },
-      "filterable": true
-     }
+      "collapsed": false,
+      "panels": []
     },
-    "overrides": [
-     {
-      "matcher": {
-       "id": "byName",
-       "options": "Zone"
+    {
+      "id": 10,
+      "type": "table",
+      "title": "Link quality matrix",
+      "description": "Each row is one direction of one link. 'From' is the site doing the measuring.",
+      "gridPos": {
+        "x": 0,
+        "y": 10,
+        "w": 12,
+        "h": 8
       },
-      "properties": [
-       {
-        "id": "custom.width",
-        "value": 170
-       }
-      ]
-     },
-     {
-      "matcher": {
-       "id": "byName",
-       "options": "Expected on"
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
       },
-      "properties": [
-       {
-        "id": "mappings",
-        "value": [
-         {
-          "type": "value",
-          "options": {
-           "all": {
-            "text": "every server"
-           },
-           "primary": {
-            "text": "dns1 only"
-           }
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "avg by (host, to) (rl_mesh_rtt_seconds{stat=\"avg\", path=\"overlay\"})",
+          "refId": "A",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "avg by (host, to) (rl_mesh_loss_ratio{path=\"overlay\"})",
+          "refId": "B",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "avg by (host, to) (rl_mesh_rtt_seconds{stat=\"jitter\", path=\"overlay\"})",
+          "refId": "C",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true
           }
-         }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Latency"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 0.12
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.25
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              },
+              {
+                "id": "decimals",
+                "value": 3
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Loss"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 0.02
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.1
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              },
+              {
+                "id": "decimals",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Jitter"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "decimals",
+                "value": 4
+              }
+            ]
+          }
         ]
-       },
-       {
-        "id": "custom.width",
-        "value": 95
-       }
-      ]
-     },
-     {
-      "matcher": {
-       "id": "byName",
-       "options": "dns1"
       },
-      "properties": [
-       {
-        "id": "thresholds",
-        "value": {
-         "mode": "absolute",
-         "steps": [
-          {
-           "color": "#6b7280",
-           "value": null
-          }
-         ]
-        }
-       },
-       {
-        "id": "custom.cellOptions",
-        "value": {
-         "type": "color-background",
-         "mode": "basic"
-        }
-       }
-      ]
-     },
-     {
-      "matcher": {
-       "id": "byName",
-       "options": "dns2"
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm"
       },
-      "properties": [
-       {
-        "id": "thresholds",
-        "value": {
-         "mode": "absolute",
-         "steps": [
-          {
-           "color": "#6b7280",
-           "value": null
-          }
-         ]
-        }
-       },
-       {
-        "id": "custom.cellOptions",
-        "value": {
-         "type": "color-background",
-         "mode": "basic"
-        }
-       }
-      ]
-     },
-     {
-      "matcher": {
-       "id": "byName",
-       "options": "pi-pcb"
-      },
-      "properties": [
-       {
-        "id": "thresholds",
-        "value": {
-         "mode": "absolute",
-         "steps": [
-          {
-           "color": "#6b7280",
-           "value": null
-          }
-         ]
-        }
-       },
-       {
-        "id": "custom.cellOptions",
-        "value": {
-         "type": "color-background",
-         "mode": "basic"
-        }
-       }
-      ]
-     },
-     {
-      "matcher": {
-       "id": "byName",
-       "options": "vps-sjc"
-      },
-      "properties": [
-       {
-        "id": "thresholds",
-        "value": {
-         "mode": "absolute",
-         "steps": [
-          {
-           "color": "#6b7280",
-           "value": null
-          }
-         ]
-        }
-       },
-       {
-        "id": "custom.cellOptions",
-        "value": {
-         "type": "color-background",
-         "mode": "basic"
-        }
-       }
-      ]
-     }
-    ]
-   },
-   "options": {
-    "showHeader": true,
-    "cellHeight": "sm"
-   },
-   "transformations": [
-    {
-     "id": "joinByField",
-     "options": {
-      "byField": "zone",
-      "mode": "outer"
-     }
-    },
-    {
-     "id": "organize",
-     "options": {
-      "excludeByName": {
-       "Time": true,
-       "Value #A": true
-      },
-      "renameByName": {
-       "zone": "Zone",
-       "sync": "Expected on",
-       "Value #B": "dns1",
-       "Value #C": "dns2",
-       "Value #D": "pi-pcb",
-       "Value #E": "vps-sjc"
-      },
-      "indexByName": {
-       "zone": 0,
-       "sync": 1,
-       "Value #B": 2,
-       "Value #C": 3,
-       "Value #D": 4,
-       "Value #E": 5
-      }
-     }
-    }
-   ]
-  },
-  {
-   "id": 17,
-   "type": "row",
-   "title": "Tailnet & agents",
-   "gridPos": {
-    "x": 0,
-    "y": 35,
-    "w": 24,
-    "h": 1
-   },
-   "collapsed": false,
-   "panels": []
-  },
-  {
-   "id": 18,
-   "type": "timeseries",
-   "title": "Hosts whose agent is unreachable",
-   "description": "",
-   "gridPos": {
-    "x": 0,
-    "y": 36,
-    "w": 8,
-    "h": 6
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "targets": [
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "count(up{job=\"node\"} == 0) or vector(0)",
-     "refId": "A",
-     "instant": false,
-     "range": true,
-     "legendFormat": "agents down"
-    }
-   ],
-   "fieldConfig": {
-    "defaults": {
-     "unit": "none",
-     "custom": {
-      "lineWidth": 1,
-      "fillOpacity": 10,
-      "showPoints": "never",
-      "stacking": {
-       "mode": "none"
-      },
-      "thresholdsStyle": {
-       "mode": "off"
-      }
-     }
-    },
-    "overrides": []
-   },
-   "options": {
-    "legend": {
-     "displayMode": "list",
-     "placement": "bottom",
-     "showLegend": true
-    },
-    "tooltip": {
-     "mode": "multi",
-     "sort": "desc"
-    }
-   }
-  },
-  {
-   "id": 19,
-   "type": "table",
-   "title": "Host reachability by site",
-   "description": "",
-   "gridPos": {
-    "x": 8,
-    "y": 36,
-    "w": 16,
-    "h": 6
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "targets": [
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "max by (host, site, kind, role) (probe_success{job=\"icmp-hosts\"})",
-     "refId": "A",
-     "instant": true,
-     "range": false,
-     "format": "table"
-    },
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "max by (host) (probe_duration_seconds{job=\"icmp-hosts\"})",
-     "refId": "B",
-     "instant": true,
-     "range": false,
-     "format": "table"
-    }
-   ],
-   "fieldConfig": {
-    "defaults": {
-     "custom": {
-      "align": "auto",
-      "cellOptions": {
-       "type": "auto"
-      },
-      "filterable": true
-     }
-    },
-    "overrides": [
-     {
-      "matcher": {
-       "id": "byName",
-       "options": "Ping"
-      },
-      "properties": [
-       {
-        "id": "thresholds",
-        "value": {
-         "mode": "absolute",
-         "steps": [
-          {
-           "color": "#6b7280",
-           "value": null
-          },
-          {
-           "color": "green",
-           "value": 1
-          }
-         ]
-        }
-       },
-       {
-        "id": "custom.cellOptions",
-        "value": {
-         "type": "color-background",
-         "mode": "basic"
-        }
-       },
-       {
-        "id": "mappings",
-        "value": [
-         {
-          "type": "value",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
           "options": {
-           "1": {
-            "text": "OK",
-            "color": "green"
-           },
-           "0": {
-            "text": "FAIL",
-            "color": "red"
-           }
+            "excludeByName": {
+              "Time": true
+            },
+            "renameByName": {
+              "host": "From",
+              "to": "To",
+              "Value #A": "Latency",
+              "Value #B": "Loss",
+              "Value #C": "Jitter"
+            },
+            "indexByName": {
+              "host": 0,
+              "to": 1,
+              "Value #A": 2,
+              "Value #B": 3,
+              "Value #C": 4
+            }
           }
-         }
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Packet loss per link",
+      "description": "",
+      "gridPos": {
+        "x": 12,
+        "y": 10,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "rl_mesh_loss_ratio{path=\"overlay\"}",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "legendFormat": "{{host}} -> {{to}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0.1
+              }
+            ]
+          },
+          "max": 1
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "Latency per link",
+      "description": "",
+      "gridPos": {
+        "x": 0,
+        "y": 18,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "rl_mesh_rtt_seconds{stat=\"avg\", path=\"overlay\"}",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "legendFormat": "{{host}} -> {{to}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 13,
+      "type": "timeseries",
+      "title": "Underlay (plain internet) to sjc",
+      "description": "If overlay is bad but this is fine, the tailnet (Headscale/DERP) is the problem, not the internet.",
+      "gridPos": {
+        "x": 12,
+        "y": 18,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "rl_mesh_rtt_seconds{stat=\"avg\", path=\"underlay\"}",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "legendFormat": "{{host}} -> {{to}} (public IP)"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 14,
+      "type": "row",
+      "title": "DNS",
+      "gridPos": {
+        "x": 0,
+        "y": 26,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 15,
+      "type": "table",
+      "title": "Resolver health",
+      "description": "Real queries: dns_internal asks for a name only our zone knows; dns_recursive asks for a public name.",
+      "gridPos": {
+        "x": 0,
+        "y": 27,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "probe_success{job=\"dns\"}",
+          "refId": "A",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "probe_duration_seconds{job=\"dns\"}",
+          "refId": "B",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Result"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "green",
+                      "value": 1
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "1": {
+                        "text": "OK",
+                        "color": "green"
+                      },
+                      "0": {
+                        "text": "FAIL",
+                        "color": "red"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Latency"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "decimals",
+                "value": 3
+              }
+            ]
+          }
         ]
-       },
-       {
-        "id": "custom.width",
-        "value": 70
-       }
-      ]
-     },
-     {
-      "matcher": {
-       "id": "byName",
-       "options": "RTT"
       },
-      "properties": [
-       {
-        "id": "unit",
-        "value": "s"
-       },
-       {
-        "id": "decimals",
-        "value": 4
-       }
-      ]
-     }
-    ]
-   },
-   "options": {
-    "showHeader": true,
-    "cellHeight": "sm",
-    "sortBy": [
-     {
-      "displayName": "Site",
-      "desc": false
-     }
-    ]
-   },
-   "transformations": [
-    {
-     "id": "joinByField",
-     "options": {
-      "byField": "host",
-      "mode": "outer"
-     }
-    },
-    {
-     "id": "organize",
-     "options": {
-      "excludeByName": {
-       "Time": true,
-       "__name__": true,
-       "job": true,
-       "instance": true,
-       "ts_ip": true,
-       "addr": true,
-       "critical": true,
-       "agent": true,
-       "parent": true
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm"
       },
-      "renameByName": {
-       "host": "Host",
-       "site": "Site",
-       "kind": "Kind",
-       "role": "Role",
-       "Value #A": "Ping",
-       "Value #B": "RTT"
-      },
-      "indexByName": {
-       "site": 0,
-       "host": 1,
-       "Value #A": 2
-      }
-     }
-    }
-   ]
-  },
-  {
-   "id": 20,
-   "type": "row",
-   "title": "UniFi devices",
-   "gridPos": {
-    "x": 0,
-    "y": 42,
-    "w": 24,
-    "h": 1
-   },
-   "collapsed": false,
-   "panels": []
-  },
-  {
-   "id": 21,
-   "type": "stat",
-   "title": "Wi-Fi/LAN clients",
-   "description": "",
-   "gridPos": {
-    "x": 0,
-    "y": 43,
-    "w": 4,
-    "h": 4
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "targets": [
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "count(unpoller_client_uptime_seconds)",
-     "refId": "A",
-     "instant": true,
-     "range": false
-    }
-   ],
-   "fieldConfig": {
-    "defaults": {
-     "unit": "none",
-     "thresholds": {
-      "mode": "absolute",
-      "steps": [
-       {
-        "color": "#6b7280",
-        "value": null
-       }
-      ]
-     },
-     "mappings": [],
-     "color": {
-      "mode": "thresholds"
-     }
-    },
-    "overrides": []
-   },
-   "options": {
-    "colorMode": "background",
-    "graphMode": "none",
-    "textMode": "value",
-    "justifyMode": "center",
-    "reduceOptions": {
-     "calcs": [
-      "lastNotNull"
-     ],
-     "fields": "",
-     "values": false
-    }
-   }
-  },
-  {
-   "id": 22,
-   "type": "stat",
-   "title": "Devices needing firmware",
-   "description": "Informational: not alerted.",
-   "gridPos": {
-    "x": 4,
-    "y": 43,
-    "w": 4,
-    "h": 4
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "targets": [
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "count(unpoller_device_upgradable == 1) or vector(0)",
-     "refId": "A",
-     "instant": true,
-     "range": false
-    }
-   ],
-   "fieldConfig": {
-    "defaults": {
-     "unit": "none",
-     "thresholds": {
-      "mode": "absolute",
-      "steps": [
-       {
-        "color": "green",
-        "value": null
-       },
-       {
-        "color": "orange",
-        "value": 1
-       }
-      ]
-     },
-     "mappings": [
-      {
-       "type": "value",
-       "options": {
-        "0": {
-         "text": "None",
-         "color": "green"
-        }
-       }
-      }
-     ],
-     "color": {
-      "mode": "thresholds"
-     }
-    },
-    "overrides": []
-   },
-   "options": {
-    "colorMode": "background",
-    "graphMode": "none",
-    "textMode": "value",
-    "justifyMode": "center",
-    "reduceOptions": {
-     "calcs": [
-      "lastNotNull"
-     ],
-     "fields": "",
-     "values": false
-    }
-   }
-  },
-  {
-   "id": 23,
-   "type": "table",
-   "title": "UniFi devices",
-   "description": "",
-   "gridPos": {
-    "x": 8,
-    "y": 43,
-    "w": 16,
-    "h": 8
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "targets": [
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "max by (name, type, version) (unpoller_device_info)",
-     "refId": "A",
-     "instant": true,
-     "range": false,
-     "format": "table"
-    },
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "max by (name) (unpoller_device_uptime_seconds)",
-     "refId": "B",
-     "instant": true,
-     "range": false,
-     "format": "table"
-    },
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "max by (name) (unpoller_device_cpu_utilization_ratio)",
-     "refId": "C",
-     "instant": true,
-     "range": false,
-     "format": "table"
-    },
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "max by (name) (unpoller_device_memory_utilization_ratio)",
-     "refId": "D",
-     "instant": true,
-     "range": false,
-     "format": "table"
-    },
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "expr": "max by (name) (unpoller_device_upgradable)",
-     "refId": "E",
-     "instant": true,
-     "range": false,
-     "format": "table"
-    }
-   ],
-   "fieldConfig": {
-    "defaults": {
-     "custom": {
-      "align": "auto",
-      "cellOptions": {
-       "type": "auto"
-      },
-      "filterable": true
-     }
-    },
-    "overrides": [
-     {
-      "matcher": {
-       "id": "byName",
-       "options": "Uptime"
-      },
-      "properties": [
-       {
-        "id": "unit",
-        "value": "dtdurations"
-       }
-      ]
-     },
-     {
-      "matcher": {
-       "id": "byName",
-       "options": "CPU"
-      },
-      "properties": [
-       {
-        "id": "unit",
-        "value": "percentunit"
-       },
-       {
-        "id": "thresholds",
-        "value": {
-         "mode": "absolute",
-         "steps": [
-          {
-           "color": "green",
-           "value": null
-          },
-          {
-           "color": "orange",
-           "value": 0.7
-          },
-          {
-           "color": "red",
-           "value": 0.9
-          }
-         ]
-        }
-       },
-       {
-        "id": "custom.cellOptions",
-        "value": {
-         "type": "gauge",
-         "mode": "basic",
-         "valueDisplayMode": "text"
-        }
-       },
-       {
-        "id": "decimals",
-        "value": 0
-       },
-       {
-        "id": "min",
-        "value": 0
-       },
-       {
-        "id": "max",
-        "value": 1
-       }
-      ]
-     },
-     {
-      "matcher": {
-       "id": "byName",
-       "options": "Memory"
-      },
-      "properties": [
-       {
-        "id": "unit",
-        "value": "percentunit"
-       },
-       {
-        "id": "thresholds",
-        "value": {
-         "mode": "absolute",
-         "steps": [
-          {
-           "color": "green",
-           "value": null
-          },
-          {
-           "color": "orange",
-           "value": 0.8
-          },
-          {
-           "color": "red",
-           "value": 0.92
-          }
-         ]
-        }
-       },
-       {
-        "id": "custom.cellOptions",
-        "value": {
-         "type": "gauge",
-         "mode": "basic",
-         "valueDisplayMode": "text"
-        }
-       },
-       {
-        "id": "decimals",
-        "value": 0
-       },
-       {
-        "id": "min",
-        "value": 0
-       },
-       {
-        "id": "max",
-        "value": 1
-       }
-      ]
-     },
-     {
-      "matcher": {
-       "id": "byName",
-       "options": "Update?"
-      },
-      "properties": [
-       {
-        "id": "thresholds",
-        "value": {
-         "mode": "absolute",
-         "steps": [
-          {
-           "color": "green",
-           "value": null
-          },
-          {
-           "color": "orange",
-           "value": 1
-          }
-         ]
-        }
-       },
-       {
-        "id": "custom.cellOptions",
-        "value": {
-         "type": "color-background",
-         "mode": "basic"
-        }
-       },
-       {
-        "id": "mappings",
-        "value": [
-         {
-          "type": "value",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
           "options": {
-           "0": {
-            "text": "current"
-           },
-           "1": {
-            "text": "available",
-            "color": "orange"
-           }
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "job": true,
+              "instance": true,
+              "site": true,
+              "critical_group": true
+            },
+            "renameByName": {
+              "host": "Resolver",
+              "module": "Test",
+              "service": "Role",
+              "Value #A": "Result",
+              "Value #B": "Latency"
+            },
+            "indexByName": {
+              "host": 0,
+              "module": 1,
+              "Value #A": 2,
+              "Value #B": 3
+            }
           }
-         }
-        ]
-       }
+        }
       ]
-     }
-    ]
-   },
-   "options": {
-    "showHeader": true,
-    "cellHeight": "sm",
-    "sortBy": [
-     {
-      "displayName": "Device",
-      "desc": false
-     }
-    ]
-   },
-   "transformations": [
-    {
-     "id": "joinByField",
-     "options": {
-      "byField": "name",
-      "mode": "outer"
-     }
     },
     {
-     "id": "organize",
-     "options": {
-      "excludeByName": {
-       "Time": true,
-       "__name__": true,
-       "job": true,
-       "instance": true,
-       "host": true,
-       "site": true,
-       "site_name": true,
-       "source": true,
-       "subsystem": true,
-       "Value #A": true
+      "id": 16,
+      "type": "table",
+      "title": "Zone sync (does every resolver serve the same zone version?)",
+      "description": "SOA serial each server reports (only changes when the zone changes). For 'every server' zones all four numbers must match; blank = that server does not serve our copy. The 'dns1 only' zones are informational: dns2/pi-pcb/vps-sjc do not carry them.",
+      "gridPos": {
+        "x": 12,
+        "y": 27,
+        "w": 12,
+        "h": 8
       },
-      "renameByName": {
-       "name": "Device",
-       "type": "Type",
-       "version": "Firmware",
-       "Value #B": "Uptime",
-       "Value #C": "CPU",
-       "Value #D": "Memory",
-       "Value #E": "Update?"
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
       },
-      "indexByName": {
-       "name": 0,
-       "type": 1,
-       "Value #B": 2,
-       "Value #C": 3,
-       "Value #D": 4,
-       "version": 5,
-       "Value #E": 6
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max by (zone, sync) (rl_dns_zone_present{server=\"dns1\"})",
+          "refId": "A",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max by (zone) (rl_dns_zone_serial{server=\"dns1\"})",
+          "refId": "B",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max by (zone) (rl_dns_zone_serial{server=\"dns2\"})",
+          "refId": "C",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max by (zone) (rl_dns_zone_serial{server=\"pi-pcb\"})",
+          "refId": "D",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max by (zone) (rl_dns_zone_serial{server=\"vps-sjc\"})",
+          "refId": "E",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max by (zone) (rl_dns_zone_serial{server=\"pi-pdx\"})",
+          "refId": "F",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Zone"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 170
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Expected on"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "all": {
+                        "text": "every server"
+                      },
+                      "primary": {
+                        "text": "dns1 only"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.width",
+                "value": 95
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "dns1"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#6b7280",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "dns2"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#6b7280",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pi-pcb"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#6b7280",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vps-sjc"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#6b7280",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pi-pdx"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#6b7280",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm"
+      },
+      "transformations": [
+        {
+          "id": "joinByField",
+          "options": {
+            "byField": "zone",
+            "mode": "outer"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value #A": true
+            },
+            "renameByName": {
+              "zone": "Zone",
+              "sync": "Expected on",
+              "Value #B": "dns1",
+              "Value #C": "dns2",
+              "Value #D": "pi-pcb",
+              "Value #E": "vps-sjc",
+              "Value #F": "pi-pdx"
+            },
+            "indexByName": {
+              "zone": 0,
+              "sync": 1,
+              "Value #B": 2,
+              "Value #C": 3,
+              "Value #D": 5,
+              "Value #E": 6,
+              "Value #F": 4
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "type": "row",
+      "title": "Tailnet & agents",
+      "gridPos": {
+        "x": 0,
+        "y": 35,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 18,
+      "type": "timeseries",
+      "title": "Hosts whose agent is unreachable",
+      "description": "",
+      "gridPos": {
+        "x": 0,
+        "y": 36,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "count(up{job=\"node\"} == 0) or vector(0)",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "legendFormat": "agents down"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       }
-     }
+    },
+    {
+      "id": 19,
+      "type": "table",
+      "title": "Host reachability by site",
+      "description": "",
+      "gridPos": {
+        "x": 8,
+        "y": 36,
+        "w": 16,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max by (host, site, kind, role) (probe_success{job=\"icmp-hosts\"})",
+          "refId": "A",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max by (host) (probe_duration_seconds{job=\"icmp-hosts\"})",
+          "refId": "B",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Ping"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#6b7280",
+                      "value": null
+                    },
+                    {
+                      "color": "green",
+                      "value": 1
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "1": {
+                        "text": "OK",
+                        "color": "green"
+                      },
+                      "0": {
+                        "text": "FAIL",
+                        "color": "red"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.width",
+                "value": 70
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "RTT"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "decimals",
+                "value": 4
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "sortBy": [
+          {
+            "displayName": "Site",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "joinByField",
+          "options": {
+            "byField": "host",
+            "mode": "outer"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "job": true,
+              "instance": true,
+              "ts_ip": true,
+              "addr": true,
+              "critical": true,
+              "agent": true,
+              "parent": true
+            },
+            "renameByName": {
+              "host": "Host",
+              "site": "Site",
+              "kind": "Kind",
+              "role": "Role",
+              "Value #A": "Ping",
+              "Value #B": "RTT"
+            },
+            "indexByName": {
+              "site": 0,
+              "host": 1,
+              "Value #A": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "type": "row",
+      "title": "UniFi devices",
+      "gridPos": {
+        "x": 0,
+        "y": 42,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 21,
+      "type": "stat",
+      "title": "Wi-Fi/LAN clients",
+      "description": "",
+      "gridPos": {
+        "x": 0,
+        "y": 43,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "count(unpoller_client_uptime_seconds)",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#6b7280",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [],
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 22,
+      "type": "stat",
+      "title": "Devices needing firmware",
+      "description": "Informational: not alerted.",
+      "gridPos": {
+        "x": 4,
+        "y": 43,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "count(unpoller_device_upgradable == 1) or vector(0)",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "None",
+                  "color": "green"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 23,
+      "type": "table",
+      "title": "UniFi devices",
+      "description": "",
+      "gridPos": {
+        "x": 8,
+        "y": 43,
+        "w": 16,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max by (name, type, version) (unpoller_device_info)",
+          "refId": "A",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max by (name) (unpoller_device_uptime_seconds)",
+          "refId": "B",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max by (name) (unpoller_device_cpu_utilization_ratio)",
+          "refId": "C",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max by (name) (unpoller_device_memory_utilization_ratio)",
+          "refId": "D",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max by (name) (unpoller_device_upgradable)",
+          "refId": "E",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Uptime"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dtdurations"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 0.7
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "gauge",
+                  "mode": "basic",
+                  "valueDisplayMode": "text"
+                }
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 0.8
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.92
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "gauge",
+                  "mode": "basic",
+                  "valueDisplayMode": "text"
+                }
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Update?"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 1
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "current"
+                      },
+                      "1": {
+                        "text": "available",
+                        "color": "orange"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "sortBy": [
+          {
+            "displayName": "Device",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "joinByField",
+          "options": {
+            "byField": "name",
+            "mode": "outer"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "job": true,
+              "instance": true,
+              "host": true,
+              "site": true,
+              "site_name": true,
+              "source": true,
+              "subsystem": true,
+              "Value #A": true
+            },
+            "renameByName": {
+              "name": "Device",
+              "type": "Type",
+              "version": "Firmware",
+              "Value #B": "Uptime",
+              "Value #C": "CPU",
+              "Value #D": "Memory",
+              "Value #E": "Update?"
+            },
+            "indexByName": {
+              "name": 0,
+              "type": 1,
+              "Value #B": 2,
+              "Value #C": 3,
+              "Value #D": 4,
+              "version": 5,
+              "Value #E": 6
+            }
+          }
+        }
+      ]
     }
-   ]
+  ],
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": []
   }
- ],
- "templating": {
-  "list": []
- },
- "annotations": {
-  "list": []
- }
 }
