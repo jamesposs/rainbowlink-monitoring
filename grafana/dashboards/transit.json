@@ -79,7 +79,7 @@
      "refId": "A",
      "instant": true,
      "range": false,
-     "format": "table",
+     "format": "time_series",
      "legendFormat": "{{name}} \u00b7 {{line}} to {{destination}}"
     }
    ],
@@ -151,7 +151,7 @@
      "refId": "A",
      "instant": true,
      "range": false,
-     "format": "table",
+     "format": "time_series",
      "legendFormat": "{{name}}"
     }
    ],
@@ -209,7 +209,7 @@
    "gridPos": {
     "x": 0,
     "y": 6,
-    "w": 16,
+    "w": 14,
     "h": 11
    },
    "description": "Every arrival Home Assistant knows about, soonest first. 'Catchable' = you can still walk to the stop in time.",
@@ -429,9 +429,9 @@
     "uid": "prometheus"
    },
    "gridPos": {
-    "x": 16,
+    "x": 14,
     "y": 6,
-    "w": 8,
+    "w": 10,
     "h": 11
    },
    "targets": [
@@ -555,9 +555,9 @@
      },
      "expr": "rl_ha_transit_next_catchable_minutes * on(entity) group_left(name, stop) rl_ha_transit_info",
      "refId": "A",
-     "instant": true,
-     "range": false,
-     "format": "table",
+     "instant": false,
+     "range": true,
+     "format": "time_series",
      "legendFormat": "{{name}}"
     }
    ],
@@ -608,9 +608,9 @@
      },
      "expr": "rl_ha_transit_next_delay_minutes * on(entity) group_left(name, stop) rl_ha_transit_info",
      "refId": "A",
-     "instant": true,
-     "range": false,
-     "format": "table",
+     "instant": false,
+     "range": true,
+     "format": "time_series",
      "legendFormat": "{{name}}"
     }
    ],

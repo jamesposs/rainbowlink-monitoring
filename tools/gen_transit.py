@@ -12,7 +12,7 @@ GREEN, ORANGE, RED = "#22C55E", "#FFA726", "#EF4444"
 
 def stat(pid, title, expr, unit, x, w, steps, desc="", legend=TILE_NAME):
     return {"id": pid, "type": "stat", "title": title, "description": desc, "datasource": DS, "gridPos": {"x": x, "y": 0, "w": w, "h": 6},
-            "targets": [{**tgt(expr, "A"), "legendFormat": legend}],
+            "targets": [{**tgt(expr, "A"), "format": "time_series", "legendFormat": legend}],
             "fieldConfig": {"defaults": {"unit": unit, "decimals": 0, "noValue": "no service", "color": {"mode": "thresholds"},
                                          "thresholds": {"mode": "absolute", "steps": steps}}, "overrides": []},
             "options": {"colorMode": "background", "graphMode": "none", "textMode": "value_and_name", "justifyMode": "center", "orientation": "auto",
@@ -21,7 +21,7 @@ def stat(pid, title, expr, unit, x, w, steps, desc="", legend=TILE_NAME):
 
 def arrivals_table():
     hide = ["Time", "__name__", "entity", "idx", "job", "instance", "host", "kind", "parent", "role", "site"]
-    return {"id": 3, "type": "table", "title": "Upcoming arrivals", "datasource": DS, "gridPos": {"x": 0, "y": 6, "w": 16, "h": 11},
+    return {"id": 3, "type": "table", "title": "Upcoming arrivals", "datasource": DS, "gridPos": {"x": 0, "y": 6, "w": 14, "h": 11},
             "description": "Every arrival Home Assistant knows about, soonest first. 'Catchable' = you can still walk to the stop in time.",
             "targets": [{**tgt("rl_ha_transit_arrival_minutes" + INFO.replace(", line, destination", ""), "A"), "instant": True, "range": False, "format": "table"}],
             "transformations": [{"id": "organize", "options": {"excludeByName": {k: True for k in hide},
@@ -47,7 +47,7 @@ def arrivals_table():
 
 def stops_table():
     hide = ["Time", "__name__", "entity", "job", "instance", "host", "kind", "parent", "role", "site", "summary", "line", "destination", "vehicle"]
-    return {"id": 4, "type": "table", "title": "Stops", "datasource": DS, "gridPos": {"x": 16, "y": 6, "w": 8, "h": 11},
+    return {"id": 4, "type": "table", "title": "Stops", "datasource": DS, "gridPos": {"x": 14, "y": 6, "w": 10, "h": 11},
             "targets": [{**tgt("rl_ha_transit_approach_minutes * on(entity) group_left(name, stop, stop_id, service) rl_ha_transit_info", "A"), "instant": True, "range": False, "format": "table"}],
             "transformations": [{"id": "organize", "options": {"excludeByName": {k: True for k in hide},
                                  "renameByName": {"name": "Sensor", "stop": "Stop", "stop_id": "ID", "Value": "Walk (min)", "service": "In service"},
@@ -60,7 +60,7 @@ def stops_table():
 
 def series(pid, title, expr, unit, x, y, desc=""):
     return {"id": pid, "type": "timeseries", "title": title, "description": desc, "datasource": DS, "gridPos": {"x": x, "y": y, "w": 12, "h": 8},
-            "targets": [{**tgt(expr, "A"), "legendFormat": "{{name}}"}],
+            "targets": [{**tgt(expr, "A"), "instant": False, "range": True, "format": "time_series", "legendFormat": "{{name}}"}],
             "fieldConfig": {"defaults": {"unit": unit, "decimals": 0, "custom": {"lineWidth": 2, "fillOpacity": 8, "showPoints": "never", "spanNulls": False}}, "overrides": []},
             "options": {"legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi", "sort": "none"}}}
 
