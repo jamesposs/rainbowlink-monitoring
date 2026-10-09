@@ -11,8 +11,8 @@ PROM = os.environ.get("PROM", "http://127.0.0.1:9090")
 CREDS = os.environ.get("CREDENTIALS_DIRECTORY", "/opt/monitoring/secrets")
 DASH = "https://grafana.rainbowlink.org/d/rl-status"
 HOURS, STEP = 24, 60
-# Which label names the alert (first two present are shown). Order matters.
-SUBJECT = ["server", "service", "trunk", "tunnel", "repo", "zone", "name", "storage", "ext", "to", "host", "id", "site"]
+# Which label names the thing an alert is about (the first one present is used). Order matters.
+SUBJECT = ["server", "service", "trunk", "tunnel", "repo", "zone", "name", "to", "host", "id", "site"]
 LIMIT = 1000      # Pushover allows 1024 characters
 
 
@@ -28,7 +28,7 @@ series = prom("/api/v1/query_range", query='ALERTS{alertstate="firing", severity
 inc = {}
 for s in series:
     m = s["metric"]
-    subject = " ".join([m[k] for k in SUBJECT if k in m][:2])
+    subject = next((m[k] for k in SUBJECT if k in m), "")
     ts = [float(t) for t, _ in s["values"]]
     key = (m["alertname"], subject)
     start, end = min(ts), max(ts)
@@ -71,11 +71,18 @@ def when(ts):
     return d.strftime("%H:%M") if d.date() == datetime.now().date() else d.strftime("%a %H:%M")
 
 
-def line(n, subj, v):
-    who = f"{n} {subj}".strip()
-    if v["firing"]:
-        return f"• {who} since {when(v['start'])}"
-    return f"• {who} {when(v['start'])}-{when(v['end'])}"
+def lines(group):
+    """One line per alert name: 'AlertName: thing, thing (since ... | start-end)'."""
+    by = {}
+    for n, subj, v in group:
+        by.setdefault(n, []).append((subj, v))
+    res = []
+    for n, lst in by.items():
+        things = ", ".join(sorted({subj for subj, _ in lst if subj}))
+        start, end = min(v["start"] for _, v in lst), max(v["end"] for _, v in lst)
+        span = f"since {when(start)}" if lst[0][1]["firing"] else f"{when(start)}-{when(end)}"
+        res.append(f"• {n}{': ' + things if things else ''} ({span})")
+    return res
 
 
 still = [(n, s, v) for n, s, v in items if v["firing"]]
@@ -83,11 +90,11 @@ done = [(n, s, v) for n, s, v in items if not v["firing"]]
 
 out = []
 if still:
-    out.append(f"STILL FIRING ({len(still)}):")
-    out += [line(*i) for i in still]
+    out.append(f"STILL FIRING ({len({n for n, _, _ in still})}):")
+    out += lines(still)
 if done:
-    out.append(f"RESOLVED ({len(done)}):")
-    out += [line(*i) for i in done]
+    out.append(f"RESOLVED ({len({n for n, _, _ in done})}):")
+    out += lines(done)
 if not out:
     out.append("Nothing fired in the last 24 hours.")
 msg, extra = "", 0
@@ -98,7 +105,7 @@ for i, l in enumerate(out):
     msg += l + "\n"
 if extra:
     msg += f"...and {extra} more (see the Status dashboard)"
-title = ("☀️ All quiet for 24 h" if not items else f"☀️ 24 h: {len(still)} still firing, {len(done)} resolved")
+title = ("☀️ All quiet for 24 h" if not items else f"☀️ 24 h: {len({n for n, _, _ in still})} still firing, {len({n for n, _, _ in done})} resolved")
 
 if "--dry-run" in sys.argv:
     print(title + "\n" + msg)
