@@ -178,3 +178,22 @@ tests:
             exp_annotations:
               summary: "Resolver dns2 is not giving tailnet clients tailnet addresses"
               description: "A tailnet-only host (vps-sjc) asked 100.64.0.18 for ha.rainbowlink.org and did not get 100.64.0.27. Check the Split Horizon app (enabled, config present) on that Technitium node. Home clients are unaffected."
+
+  # IP phones: a phone that stays unregistered for 20 minutes is reported; one that comes back (or a reboot blip) is not.
+  - interval: 1m
+    input_series:
+      - series: 'rl_asterisk_extension_up{ext="96111", name="Office"}'
+        values: '1x5 0x40'                      # drops at t=5m, never returns
+      - series: 'rl_asterisk_extension_up{ext="96121", name="Living Room"}'
+        values: '1x5 0x10 1x30'                 # 10 minute outage (reboot): below the 20 minute grace
+    alert_rule_test:
+      - eval_time: 15m
+        alertname: PhoneNotRegistered
+        exp_alerts: []
+      - eval_time: 30m
+        alertname: PhoneNotRegistered
+        exp_alerts:
+          - exp_labels: {severity: warning, host: vps-bos, site: bos, ext: "96111", name: Office}
+            exp_annotations:
+              summary: "Phone 96111 (Office) is not registered with the PBX"
+              description: "Calls to it will not ring. Check that the phone is powered and on the network, then look at Reports > Asterisk Info > Peers in FreePBX. If it is meant to be offline, add the extension to the ext!~ list on this rule (prometheus/rules/50-pbx-nas-gateway.yml)."

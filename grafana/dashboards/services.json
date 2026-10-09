@@ -631,8 +631,8 @@
   {
    "id": 9,
    "type": "stat",
-   "title": "Phones registered",
-   "description": "Endpoints currently registered and reachable.",
+   "title": "Phones not registered",
+   "description": "IP phones (extensions) the PBX cannot reach right now. See the IP phones table below.",
    "gridPos": {
     "x": 8,
     "y": 26,
@@ -649,7 +649,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "rl_asterisk_contacts_available",
+     "expr": "count(rl_asterisk_extension_up == 0) or vector(0)",
      "refId": "A",
      "instant": true,
      "range": false
@@ -657,24 +657,24 @@
    ],
    "fieldConfig": {
     "defaults": {
-     "unit": "none",
+     "unit": "short",
      "thresholds": {
       "mode": "absolute",
       "steps": [
        {
-        "color": "orange",
+        "color": "green",
         "value": null
        },
        {
-        "color": "green",
+        "color": "red",
         "value": 1
        }
       ]
      },
-     "mappings": [],
      "color": {
       "mode": "thresholds"
-     }
+     },
+     "decimals": 0
     },
     "overrides": []
    },
@@ -909,11 +909,11 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "rl_asterisk_contacts_available",
+     "expr": "sum(rl_asterisk_extension_up)",
      "refId": "B",
      "instant": false,
      "range": true,
-     "legendFormat": "phones"
+     "legendFormat": "Phones registered"
     }
    ],
    "fieldConfig": {
@@ -951,7 +951,7 @@
    "title": "Home Assistant & identity",
    "gridPos": {
     "x": 0,
-    "y": 36,
+    "y": 43,
     "w": 24,
     "h": 1
    },
@@ -965,7 +965,7 @@
    "description": "",
    "gridPos": {
     "x": 0,
-    "y": 37,
+    "y": 44,
     "w": 4,
     "h": 4
    },
@@ -1043,7 +1043,7 @@
    "description": "",
    "gridPos": {
     "x": 4,
-    "y": 37,
+    "y": 44,
     "w": 4,
     "h": 4
    },
@@ -1103,7 +1103,7 @@
    "description": "Entities Home Assistant reports as unavailable (devices offline).",
    "gridPos": {
     "x": 8,
-    "y": 37,
+    "y": 44,
     "w": 4,
     "h": 4
    },
@@ -1171,7 +1171,7 @@
    "description": "Home Assistant's VoIP voice assistant, which answers calls from the PBX for voice commands.",
    "gridPos": {
     "x": 0,
-    "y": 41,
+    "y": 48,
     "w": 4,
     "h": 4
    },
@@ -1249,7 +1249,7 @@
    "description": "",
    "gridPos": {
     "x": 4,
-    "y": 41,
+    "y": 48,
     "w": 4,
     "h": 4
    },
@@ -1327,7 +1327,7 @@
    "description": "",
    "gridPos": {
     "x": 12,
-    "y": 37,
+    "y": 44,
     "w": 12,
     "h": 8
    },
@@ -1450,6 +1450,207 @@
      }
     }
    ]
+  },
+  {
+   "id": 30,
+   "type": "table",
+   "title": "IP phones",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 36,
+    "w": 24,
+    "h": 7
+   },
+   "description": "Every extension in FreePBX. 'Registered' = the PBX can reach the phone (it pings each one every 30-60 s). Round trip is PBX to phone; the phones at home are reached over the VPN, so tens to a few hundred ms is normal.",
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rl_asterisk_extension_up * on(ext) group_left(ip) rl_asterisk_extension_info",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rl_asterisk_extension_rtt_seconds",
+     "refId": "B",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    }
+   ],
+   "transformations": [
+    {
+     "id": "joinByField",
+     "options": {
+      "byField": "ext",
+      "mode": "outer"
+     }
+    },
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {
+       "Time": true,
+       "Time 1": true,
+       "Time 2": true,
+       "__name__": true,
+       "__name__ 1": true,
+       "__name__ 2": true,
+       "job": true,
+       "job 1": true,
+       "job 2": true,
+       "instance": true,
+       "instance 1": true,
+       "instance 2": true,
+       "host": true,
+       "host 1": true,
+       "host 2": true,
+       "site": true,
+       "site 1": true,
+       "site 2": true,
+       "kind": true,
+       "kind 1": true,
+       "kind 2": true,
+       "parent": true,
+       "parent 1": true,
+       "parent 2": true,
+       "role": true,
+       "role 1": true,
+       "role 2": true,
+       "critical": true,
+       "critical 1": true,
+       "critical 2": true,
+       "addr": true,
+       "addr 1": true,
+       "addr 2": true,
+       "ts_ip": true,
+       "ts_ip 1": true,
+       "ts_ip 2": true
+      },
+      "renameByName": {
+       "ext": "Extension",
+       "name": "Name",
+       "ip": "Phone address",
+       "Value #A": "Registered",
+       "Value #B": "Round trip"
+      },
+      "indexByName": {
+       "ext": 0,
+       "name": 1,
+       "Value #A": 2,
+       "ip": 3,
+       "Value #B": 4
+      }
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "auto"
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Registered"
+      },
+      "properties": [
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-text"
+        }
+       },
+       {
+        "id": "mappings",
+        "value": [
+         {
+          "type": "value",
+          "options": {
+           "1": {
+            "text": "yes",
+            "color": "green",
+            "index": 0
+           },
+           "0": {
+            "text": "NOT REGISTERED",
+            "color": "red",
+            "index": 1
+           }
+          }
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Round trip"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "s"
+       },
+       {
+        "id": "decimals",
+        "value": 2
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-text"
+        }
+       },
+       {
+        "id": "thresholds",
+        "value": {
+         "mode": "absolute",
+         "steps": [
+          {
+           "color": "green",
+           "value": null
+          },
+          {
+           "color": "orange",
+           "value": 0.4
+          },
+          {
+           "color": "red",
+           "value": 0.8
+          }
+         ]
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm",
+    "sortBy": [
+     {
+      "displayName": "Registered",
+      "desc": false
+     }
+    ]
+   }
   }
  ],
  "templating": {

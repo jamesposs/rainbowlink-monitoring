@@ -69,6 +69,7 @@ groups:
           or (vector(1) and on() (
                  (min(max_over_time(rl_asterisk_registration_up{trunk!="HomeAssistant"}[5m])) == 0)     # one carrier trunk down (the other still works)
               or (max_over_time(probe_success{job="http", service="PBX admin UI"}[3m]) == 0)
+              or (ALERTS{alertname="PhoneNotRegistered", alertstate="firing"})                         # an IP phone is offline
               or (homeassistant_entity_available{entity="assist_satellite.72_61_72_237"} == 0)          # Home Assistant voice satellite
               or (homeassistant_switch_state{entity="switch.72_61_72_237_allow_calls"} == 0)
               or absent(rl_sip_options_up)))

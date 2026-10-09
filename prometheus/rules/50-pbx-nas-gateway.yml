@@ -26,6 +26,16 @@ groups:
         annotations:
           summary: "PBX has NO carrier trunk registered (BulkVS and voip.ms both down)"
           description: "No inbound or outbound external calls are possible."
+      - alert: PhoneNotRegistered
+        # Every extension in FreePBX is watched (Asterisk pings each phone every 30-60 s; a phone that is unplugged, off the network or
+        # has lost its registration reads "Unavailable"). To stop watching a phone that is meant to be offline, add it to the ext!~ list.
+        expr: rl_asterisk_extension_up{ext!~"NONE"} == 0
+        for: 20m
+        labels: {severity: warning, host: vps-bos, site: bos}
+        annotations:
+          summary: "Phone {{ $labels.ext }} ({{ $labels.name }}) is not registered with the PBX"
+          description: "Calls to it will not ring. Check that the phone is powered and on the network, then look at Reports > Asterisk Info > Peers in FreePBX. If it is meant to be offline, add the extension to the ext!~ list on this rule (prometheus/rules/50-pbx-nas-gateway.yml)."
+
       - alert: PbxCollectorStale
         expr: time() - rl_asterisk_metrics_last_run_timestamp_seconds > 600 or time() - rl_sip_probe_last_run_timestamp_seconds > 600
         for: 5m

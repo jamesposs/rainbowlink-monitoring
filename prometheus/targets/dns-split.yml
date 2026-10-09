@@ -6,4 +6,3 @@
 - {targets: ['100.64.0.18'], labels: {module: dns_split_tailnet, host: dns2,    site: pdx, service: dns-split}}
 - {targets: ['100.64.0.11'], labels: {module: dns_split_tailnet, host: pi-pcb,  site: pcb, service: dns-split}}
 - {targets: ['100.64.0.1'],  labels: {module: dns_split_tailnet, host: vps-sjc, site: sjc, service: dns-split}}
-- {targets: ['100.64.0.30'], labels: {module: dns_split_tailnet, host: pi-pdx, site: pdx, service: dns-split}}

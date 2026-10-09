@@ -14,7 +14,7 @@ import os, random, socket, struct, sys, time
 
 OUT = os.environ.get("OUT", "/var/lib/prometheus/node-exporter/rl_dns_sync.prom")
 PRIMARY_NAME = "dns1.rainbowlink.org"          # SOA MNAME of our zones; anything else is someone else's zone
-SERVERS = {"dns1": "172.20.2.221", "dns2": "172.20.2.222", "pi-pdx": "172.20.1.37", "pi-pcb": "100.64.0.11", "vps-sjc": "100.64.0.1"}
+SERVERS = {"dns1": "172.20.2.221", "dns2": "172.20.2.222", "pi-pcb": "100.64.0.11", "vps-sjc": "100.64.0.1"}
 ZONES = {
     "rainbowlink.org": "all",
     "dns.rainbowlink.org": "all",
