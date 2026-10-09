@@ -24,6 +24,13 @@
    "targetBlank": false
   },
   {
+   "title": "Status",
+   "type": "link",
+   "url": "/d/rl-status",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
    "title": "Network",
    "type": "link",
    "url": "/d/rl-network",

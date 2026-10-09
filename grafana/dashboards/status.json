@@ -1,0 +1,737 @@
+{
+ "uid": "rl-status",
+ "title": "Status",
+ "tags": [
+  "rainbowlink",
+  "status"
+ ],
+ "timezone": "browser",
+ "schemaVersion": 39,
+ "version": 1,
+ "editable": true,
+ "graphTooltip": 0,
+ "refresh": "30s",
+ "time": {
+  "from": "now-24h",
+  "to": "now"
+ },
+ "links": [
+  {
+   "title": "Overview",
+   "type": "link",
+   "url": "/d/rl-overview",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "Site map",
+   "type": "link",
+   "url": "/d/rl-map",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "Network",
+   "type": "link",
+   "url": "/d/rl-network",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "Servers & storage",
+   "type": "link",
+   "url": "/d/rl-servers",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "Services",
+   "type": "link",
+   "url": "/d/rl-services",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "Transit",
+   "type": "link",
+   "url": "/d/rl-transit",
+   "icon": "dashboard",
+   "targetBlank": false
+  }
+ ],
+ "description": "One tile per service: No Issues, Degraded or Outage. What each state means is defined in prometheus/rules/70-service-status.yml.",
+ "panels": [
+  {
+   "id": 1,
+   "type": "stat",
+   "title": "",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 0,
+    "w": 24,
+    "h": 4
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "max(rl_service_status)",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "time_series"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "mappings": [
+      {
+       "type": "value",
+       "options": {
+        "0": {
+         "text": "All systems operational",
+         "color": "#22C55E",
+         "index": 0
+        },
+        "1": {
+         "text": "Some services are degraded",
+         "color": "#FFA726",
+         "index": 1
+        },
+        "2": {
+         "text": "Service outage",
+         "color": "#EF4444",
+         "index": 2
+        }
+       }
+      }
+     ],
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#22C55E",
+        "value": null
+       },
+       {
+        "color": "#FFA726",
+        "value": 1
+       },
+       {
+        "color": "#EF4444",
+        "value": 2
+       }
+      ]
+     },
+     "noValue": "Status unknown"
+    },
+    "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "text": {
+     "valueSize": 40
+    },
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   }
+  },
+  {
+   "id": 10,
+   "type": "stat",
+   "title": "Core network",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 4,
+    "w": 16,
+    "h": 6
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rl_service_status{group=\"Core network\"}",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "time_series",
+     "legendFormat": "{{service}}"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "mappings": [
+      {
+       "type": "value",
+       "options": {
+        "0": {
+         "text": "No Issues",
+         "color": "#22C55E",
+         "index": 0
+        },
+        "1": {
+         "text": "Degraded",
+         "color": "#FFA726",
+         "index": 1
+        },
+        "2": {
+         "text": "Outage",
+         "color": "#EF4444",
+         "index": 2
+        }
+       }
+      }
+     ],
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#22C55E",
+        "value": null
+       },
+       {
+        "color": "#FFA726",
+        "value": 1
+       },
+       {
+        "color": "#EF4444",
+        "value": 2
+       }
+      ]
+     },
+     "noValue": "unknown"
+    },
+    "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value_and_name",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 14,
+     "valueSize": 22
+    },
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   }
+  },
+  {
+   "id": 11,
+   "type": "stat",
+   "title": "Communications",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 16,
+    "y": 4,
+    "w": 8,
+    "h": 6
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rl_service_status{group=\"Communications\"}",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "time_series",
+     "legendFormat": "{{service}}"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "mappings": [
+      {
+       "type": "value",
+       "options": {
+        "0": {
+         "text": "No Issues",
+         "color": "#22C55E",
+         "index": 0
+        },
+        "1": {
+         "text": "Degraded",
+         "color": "#FFA726",
+         "index": 1
+        },
+        "2": {
+         "text": "Outage",
+         "color": "#EF4444",
+         "index": 2
+        }
+       }
+      }
+     ],
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#22C55E",
+        "value": null
+       },
+       {
+        "color": "#FFA726",
+        "value": 1
+       },
+       {
+        "color": "#EF4444",
+        "value": 2
+       }
+      ]
+     },
+     "noValue": "unknown"
+    },
+    "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value_and_name",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 14,
+     "valueSize": 22
+    },
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   }
+  },
+  {
+   "id": 12,
+   "type": "stat",
+   "title": "Platform",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 10,
+    "w": 10,
+    "h": 6
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rl_service_status{group=\"Platform\"}",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "time_series",
+     "legendFormat": "{{service}}"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "mappings": [
+      {
+       "type": "value",
+       "options": {
+        "0": {
+         "text": "No Issues",
+         "color": "#22C55E",
+         "index": 0
+        },
+        "1": {
+         "text": "Degraded",
+         "color": "#FFA726",
+         "index": 1
+        },
+        "2": {
+         "text": "Outage",
+         "color": "#EF4444",
+         "index": 2
+        }
+       }
+      }
+     ],
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#22C55E",
+        "value": null
+       },
+       {
+        "color": "#FFA726",
+        "value": 1
+       },
+       {
+        "color": "#EF4444",
+        "value": 2
+       }
+      ]
+     },
+     "noValue": "unknown"
+    },
+    "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value_and_name",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 14,
+     "valueSize": 22
+    },
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   }
+  },
+  {
+   "id": 13,
+   "type": "stat",
+   "title": "Applications",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 10,
+    "y": 10,
+    "w": 14,
+    "h": 6
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rl_service_status{group=\"Applications\"}",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "time_series",
+     "legendFormat": "{{service}}"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "mappings": [
+      {
+       "type": "value",
+       "options": {
+        "0": {
+         "text": "No Issues",
+         "color": "#22C55E",
+         "index": 0
+        },
+        "1": {
+         "text": "Degraded",
+         "color": "#FFA726",
+         "index": 1
+        },
+        "2": {
+         "text": "Outage",
+         "color": "#EF4444",
+         "index": 2
+        }
+       }
+      }
+     ],
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#22C55E",
+        "value": null
+       },
+       {
+        "color": "#FFA726",
+        "value": 1
+       },
+       {
+        "color": "#EF4444",
+        "value": 2
+       }
+      ]
+     },
+     "noValue": "unknown"
+    },
+    "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value_and_name",
+    "justifyMode": "center",
+    "orientation": "auto",
+    "text": {
+     "titleSize": 14,
+     "valueSize": 22
+    },
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   }
+  },
+  {
+   "id": 20,
+   "type": "table",
+   "title": "What is firing right now",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 16,
+    "w": 24,
+    "h": 7
+   },
+   "description": "Alerts that have waited out their own delay. A tile can be Degraded before anything shows here (it reacts after ~3 minutes; alerts after 5-15).",
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "ALERTS{alertstate=\"firing\", alertname!=\"Watchdog\"}",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    }
+   ],
+   "transformations": [
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {
+       "Time": true,
+       "__name__": true,
+       "alertstate": true,
+       "job": true,
+       "instance": true,
+       "kind": true,
+       "parent": true,
+       "role": true,
+       "monitor": true
+      },
+      "renameByName": {
+       "alertname": "Alert",
+       "severity": "Severity",
+       "host": "Host",
+       "site": "Site",
+       "service": "Service"
+      }
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "noValue": "Nothing is firing",
+     "custom": {
+      "align": "auto"
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Severity"
+      },
+      "properties": [
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-text"
+        }
+       },
+       {
+        "id": "mappings",
+        "value": [
+         {
+          "type": "value",
+          "options": {
+           "critical": {
+            "color": "#EF4444",
+            "index": 0
+           },
+           "warning": {
+            "color": "#FFA726",
+            "index": 1
+           }
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm"
+   }
+  },
+  {
+   "id": 21,
+   "type": "state-timeline",
+   "title": "Status history",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 23,
+    "w": 24,
+    "h": 11
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rl_service_status",
+     "refId": "A",
+     "instant": false,
+     "range": true,
+     "format": "time_series",
+     "legendFormat": "{{service}}",
+     "interval": "1m"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "mappings": [
+      {
+       "type": "value",
+       "options": {
+        "0": {
+         "text": "No Issues",
+         "color": "#22C55E",
+         "index": 0
+        },
+        "1": {
+         "text": "Degraded",
+         "color": "#FFA726",
+         "index": 1
+        },
+        "2": {
+         "text": "Outage",
+         "color": "#EF4444",
+         "index": 2
+        }
+       }
+      }
+     ],
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#22C55E",
+        "value": null
+       },
+       {
+        "color": "#FFA726",
+        "value": 1
+       },
+       {
+        "color": "#EF4444",
+        "value": 2
+       }
+      ]
+     },
+     "custom": {
+      "fillOpacity": 85,
+      "lineWidth": 0
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "mergeValues": true,
+    "showValue": "never",
+    "rowHeight": 0.85,
+    "alignValue": "center",
+    "legend": {
+     "showLegend": false
+    },
+    "tooltip": {
+     "mode": "single",
+     "sort": "none"
+    }
+   }
+  }
+ ],
+ "templating": {
+  "list": []
+ },
+ "annotations": {
+  "list": []
+ }
+}

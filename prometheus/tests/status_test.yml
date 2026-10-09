@@ -1,0 +1,76 @@
+# Unit tests for the service status rules (rl_service_status): 0 No Issues, 1 Degraded, 2 Outage.
+rule_files:
+  - ../rules/70-service-status.yml
+evaluation_interval: 1m
+
+tests:
+  # DNS: one resolver failing = Degraded; both = Outage; all good = No Issues.
+  - interval: 1m
+    input_series:
+      - series: 'probe_success{job="dns", critical_group="dns", host="dns1", module="dns_internal"}'
+        values: '1x10 0x20 0x20'
+      - series: 'probe_success{job="dns", critical_group="dns", host="dns2", module="dns_internal"}'
+        values: '1x10 1x20 0x20'
+      - series: 'probe_success{job="dns", host="dns1", module="dns_recursive"}'
+        values: '1x50'
+    promql_expr_test:
+      - expr: rl_service_status{service="DNS"}
+        eval_time: 5m
+        exp_samples:
+          - labels: 'rl_service_status{service="DNS", group="Core network"}'
+            value: 0
+      - expr: rl_service_status{service="DNS"}
+        eval_time: 20m
+        exp_samples:
+          - labels: 'rl_service_status{service="DNS", group="Core network"}'
+            value: 1
+      - expr: rl_service_status{service="DNS"}
+        eval_time: 45m
+        exp_samples:
+          - labels: 'rl_service_status{service="DNS", group="Core network"}'
+            value: 2
+
+  # VoIP: PBX answering with both carrier trunks = fine; one carrier trunk down = Degraded; PBX silent = Outage. HomeAssistant trunk is ignored.
+  - interval: 1m
+    input_series:
+      - series: 'rl_sip_options_up{target="pbx2"}'
+        values: '1x30 0x30'
+      - series: 'rl_asterisk_registration_up{trunk="BulkVS"}'
+        values: '1x60'
+      - series: 'rl_asterisk_registration_up{trunk="voipms"}'
+        values: '1x10 0x20 1x30'
+      - series: 'rl_asterisk_registration_up{trunk="HomeAssistant"}'
+        values: '0x60'
+    promql_expr_test:
+      - expr: rl_service_status{service="VoIP phone system"}
+        eval_time: 5m
+        exp_samples:
+          - labels: 'rl_service_status{service="VoIP phone system", group="Communications"}'
+            value: 0
+      - expr: rl_service_status{service="VoIP phone system"}
+        eval_time: 20m
+        exp_samples:
+          - labels: 'rl_service_status{service="VoIP phone system", group="Communications"}'
+            value: 1
+      - expr: rl_service_status{service="VoIP phone system"}
+        eval_time: 50m
+        exp_samples:
+          - labels: 'rl_service_status{service="VoIP phone system", group="Communications"}'
+            value: 2
+
+  # Backups never go past Degraded, and a metric that does not exist is not an outage.
+  - interval: 1m
+    input_series:
+      - series: 'ALERTS{alertname="HyperBackupStale", alertstate="firing"}'
+        values: '_x5 1x10'
+    promql_expr_test:
+      - expr: rl_service_status{service="Backups"}
+        eval_time: 2m
+        exp_samples:
+          - labels: 'rl_service_status{service="Backups", group="Platform"}'
+            value: 0
+      - expr: rl_service_status{service="Backups"}
+        eval_time: 10m
+        exp_samples:
+          - labels: 'rl_service_status{service="Backups", group="Platform"}'
+            value: 1

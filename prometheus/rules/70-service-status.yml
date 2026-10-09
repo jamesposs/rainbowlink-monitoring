@@ -1,0 +1,160 @@
+# Service status board (dashboard "Status"). One recording rule per service -> rl_service_status{service, group} =
+#     0 No Issues   1 Degraded   2 Outage
+# This is the ONE place that defines what "Degraded" and "Outage" mean for each service.
+#   Outage   = the service cannot do its job right now.
+#   Degraded = it works, but with a part missing, a backup in use, or something failing that needs attention.
+# Each rule has the same shape: an OUTAGE condition, then a DEGRADED condition; either one is true when its expression returns anything.
+# Probe-based conditions use max_over_time(...[3m]) so a single failed probe does not flash red; it takes ~3 minutes of failure.
+# Alert-based conditions (ALERTS{...}) reuse alerts that already waited out their own `for:` time.
+# Add a service = copy a rule, change `labels` and the two conditions. It appears on the dashboard by itself (group = the row it is in).
+groups:
+  - name: service-status
+    rules:
+      # ---- Core network --------------------------------------------------------------------------------------------
+      - record: rl_service_status
+        labels: {service: Internet (home), group: Core network}
+        expr: |
+          (vector(2) and on() (sum(max_over_time(probe_success{job="wan"}[3m])) == 0))
+          or (vector(1) and on() (
+                 (unpoller_wan_interface_state{wan_networkgroup="WAN2"} == 1)                   # running on the T-Mobile backup
+              or (unpoller_wan_interface_state{wan_networkgroup="WAN"} == 0)                    # primary line down
+              or ((sum(avg_over_time(probe_success{job="wan"}[10m])) / count(probe_success{job="wan"})) < 0.9)
+              or (avg(avg_over_time(probe_icmp_duration_seconds{job="wan", phase="rtt"}[15m])) > 0.15)
+              or absent(unpoller_wan_interface_state)))
+          or vector(0)
+
+      - record: rl_service_status
+        labels: {service: Tailscale backbone, group: Core network}
+        expr: |
+          (vector(2) and on() (
+                 count(min_over_time(rl_mesh_loss_ratio{path="overlay"}[3m]) >= 0.9)
+                 == count(rl_mesh_loss_ratio{path="overlay"})))                                # every site-to-site path is dead
+          or (vector(1) and on() (
+                 (avg_over_time(rl_mesh_loss_ratio{path="overlay"}[5m]) > 0.1)                  # any path lossy or down (a site is unreachable)
+              or (max_over_time(probe_success{job="http-public", service=~"Headscale.*|Headplane.*"}[3m]) == 0)   # control plane / admin
+              or (max_over_time(probe_success{service=~"DERP relay.*"}[3m]) == 0)
+              or (ALERTS{alertname=~"SiteLinkSlow|TailnetDegraded|SiteDown", alertstate="firing"})
+              or absent(rl_mesh_loss_ratio{path="overlay"})))
+          or vector(0)
+
+      - record: rl_service_status
+        labels: {service: DNS, group: Core network}
+        expr: |
+          (vector(2) and on() (
+                 (sum(max_over_time(probe_success{job="dns", critical_group="dns"}[3m])) == 0)          # both home resolvers failing
+              or (sum(max_over_time(probe_success{job="dns", module="dns_recursive"}[3m])) == 0)))       # nothing can look up the internet
+          or (vector(1) and on() (
+                 (min(max_over_time(probe_success{job=~"dns|dns-split"}[3m])) == 0)                     # any resolver (incl. remote sites) failing
+              or (ALERTS{alertname=~"DnsZone.*|DnsSyncCheckStale", alertstate="firing"})                # zones out of sync between resolvers
+              or absent(probe_success{job="dns"})))
+          or vector(0)
+
+      - record: rl_service_status
+        labels: {service: Local network (UniFi), group: Core network}
+        expr: |
+          (vector(2) and on() (max_over_time(probe_success{job="icmp-hosts", host="gateway"}[3m]) == 0))
+          or (vector(1) and on() (
+                 (max_over_time(up{job=~"unifi|snmp-gateway"}[3m]) == 0)
+              or (max_over_time(probe_success{job="http", service="UniFi gateway UI"}[3m]) == 0)
+              or (ALERTS{alertname=~"Unifi.*", alertstate="firing"})))
+          or vector(0)
+
+      # ---- Communications ------------------------------------------------------------------------------------------
+      - record: rl_service_status
+        labels: {service: VoIP phone system, group: Communications}
+        expr: |
+          (vector(2) and on() (
+                 (max_over_time(rl_sip_options_up[3m]) == 0)                                            # PBX does not answer SIP
+              or (sum(max_over_time(rl_asterisk_registration_up{trunk=~"BulkVS|voipms"}[5m])) == 0)))   # no carrier trunk = no outside calls
+          or (vector(1) and on() (
+                 (min(max_over_time(rl_asterisk_registration_up{trunk!="HomeAssistant"}[5m])) == 0)     # one carrier trunk down (the other still works)
+              or (max_over_time(probe_success{job="http", service="PBX admin UI"}[3m]) == 0)
+              or (homeassistant_entity_available{entity="assist_satellite.72_61_72_237"} == 0)          # Home Assistant voice satellite
+              or (homeassistant_switch_state{entity="switch.72_61_72_237_allow_calls"} == 0)
+              or absent(rl_sip_options_up)))
+          or vector(0)
+
+      - record: rl_service_status
+        labels: {service: SMS gateway, group: Communications}
+        expr: |
+          (vector(2) and on() (max_over_time(probe_success{job="http", service="SMS gateway"}[3m]) == 0))
+          or vector(0)
+
+      # ---- Platform -------------------------------------------------------------------------------------------------
+      - record: rl_service_status
+        labels: {service: Compute (Proxmox), group: Platform}
+        expr: |
+          (vector(2) and on() (max_over_time(probe_success{job="icmp-hosts", host="pve0"}[3m]) == 0))
+          or (vector(1) and on() (
+                 (max_over_time(up{job="pve"}[3m]) == 0)
+              or (max_over_time(probe_success{job="http", service="Proxmox UI"}[3m]) == 0)
+              or (ALERTS{alertname=~"ProxmoxGuestStoppedUnexpectedly|ProxmoxStorageFull|LvmThinPoolFull|Nvme.*|PveDisk.*", alertstate="firing"})))
+          or vector(0)
+
+      - record: rl_service_status
+        labels: {service: Storage (NAS), group: Platform}
+        expr: |
+          (vector(2) and on() (
+                 (raidStatus{job="snmp-nas"} == 12)                                                      # RAID crashed
+              or (sum(max_over_time(probe_success{job="tcp", host="nas"}[3m])) == 0)))                   # neither SMB nor NFS answers
+          or (vector(1) and on() (
+                 (raidStatus{job="snmp-nas"} != 1)                                                       # degraded / rebuilding
+              or (min(max_over_time(probe_success{job="tcp", host="nas"}[3m])) == 0)
+              or (max_over_time(up{job="snmp-nas"}[3m]) == 0)
+              or (ALERTS{alertname=~"Nas.*", alertname!="NasRaidCrashed", alertstate="firing"})))        # disks, fans, space, heat
+          or vector(0)
+
+      - record: rl_service_status
+        labels: {service: Backups, group: Platform}
+        # Backups are never an "outage": a missed backup is a next-day job, not a wake-up.
+        expr: |
+          (vector(1) and on() (ALERTS{alertname=~"Backup.*|HyperBackup.*", alertstate="firing"}))
+          or vector(0)
+
+      # ---- Applications ---------------------------------------------------------------------------------------------
+      - record: rl_service_status
+        labels: {service: Login (Authentik), group: Applications}
+        expr: |
+          (vector(2) and on() (max_over_time(probe_success{job="http", service="Authentik SSO"}[3m]) == 0))
+          or (vector(1) and on() (
+                 (max_over_time(probe_success{job="http-public", service="login.rainbowlink.org"}[3m]) == 0)     # fine inside, unreachable from outside
+              or (max_over_time(probe_success{job="tcp", service="LDAPS (Authentik)"}[3m]) == 0)))
+          or vector(0)
+
+      - record: rl_service_status
+        labels: {service: Home Assistant, group: Applications}
+        expr: |
+          (vector(2) and on() (
+                 (max_over_time(probe_success{job="http", service="Home Assistant"}[3m]) == 0)
+              or (max_over_time(up{job="homeassistant"}[3m]) == 0)))
+          or (vector(1) and on() (
+                 (max_over_time(probe_success{job="http-public", service="ha.rainbowlink.org"}[3m]) == 0)
+              or (max_over_time(probe_success{job="tcp", service="MQTT broker"}[3m]) == 0)))
+          or vector(0)
+
+      - record: rl_service_status
+        labels: {service: Public websites, group: Applications}
+        expr: |
+          (vector(2) and on() (
+                 (sum(max_over_time(rl_cloudflare_tunnel_healthy[5m])) == 0)                             # every Cloudflare tunnel down
+              or (sum(max_over_time(probe_success{job="http-public", service!~"Headscale.*|Headplane.*|DERP.*"}[3m])) == 0)))
+          or (vector(1) and on() (
+                 (min(max_over_time(probe_success{job="http-public", service!~"Headscale.*|Headplane.*|DERP.*"}[3m])) == 0)
+              or (rl_cloudflare_tunnel_healthy == 0)
+              or ((probe_ssl_earliest_cert_expiry{job="http-public"} - time()) < 7 * 86400)))
+          or vector(0)
+
+      - record: rl_service_status
+        labels: {service: Media (Plex, Channels), group: Applications}
+        expr: |
+          (vector(2) and on() (max_over_time(probe_success{job="tcp", service="Plex"}[3m]) == 0))
+          or (vector(1) and on() (
+                 (max_over_time(probe_success{job="http", service=~"Channels DVR|Tautulli|Stash"}[3m]) == 0)))
+          or vector(0)
+
+      - record: rl_service_status
+        labels: {service: Monitoring, group: Applications}
+        # The monitor watching itself: failing collectors/targets/alert delivery mean other statuses may be blind.
+        expr: |
+          (vector(1) and on() (ALERTS{alertname=~".*CollectorStale|MonitoringTargetDown|AlertDeliveryFailing|RuleEvaluationFailing|MeshProbeStale", alertstate="firing"}))
+          or vector(0)

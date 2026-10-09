@@ -17,6 +17,13 @@
  },
  "links": [
   {
+   "title": "Status",
+   "type": "link",
+   "url": "/d/rl-status",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
    "title": "Site map",
    "type": "link",
    "url": "/d/rl-map",
