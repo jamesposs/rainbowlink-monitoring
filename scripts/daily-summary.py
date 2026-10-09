@@ -78,10 +78,18 @@ def lines(group):
         by.setdefault(n, []).append((subj, v))
     res = []
     for n, lst in by.items():
-        things = ", ".join(sorted({subj for subj, _ in lst if subj}))
-        start, end = min(v["start"] for _, v in lst), max(v["end"] for _, v in lst)
-        span = f"since {when(start)}" if lst[0][1]["firing"] else f"{when(start)}-{when(end)}"
-        res.append(f"• {n}{': ' + things if things else ''} ({span})")
+        lst.sort(key=lambda x: x[1]["start"])
+        clusters = []                      # instances that started within 30 minutes of each other read as one event
+        for subj, v in lst:
+            if clusters and v["start"] - clusters[-1][0][1]["start"] < 1800:
+                clusters[-1].append((subj, v))
+            else:
+                clusters.append([(subj, v)])
+        for c in clusters:
+            things = ", ".join(sorted({subj for subj, _ in c if subj}))
+            start, end = min(v["start"] for _, v in c), max(v["end"] for _, v in c)
+            span = f"since {when(start)}" if c[0][1]["firing"] else f"{when(start)}-{when(end)}"
+            res.append(f"• {n}{': ' + things if things else ''} ({span})")
     return res
 
 

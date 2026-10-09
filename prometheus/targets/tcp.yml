@@ -5,3 +5,4 @@
 - {targets: ['172.20.1.10:445'],    labels: {module: tcp_connect, host: nas, site: pdx, service: NAS SMB}}
 - {targets: ['172.20.1.13:1883'],   labels: {module: tcp_connect, host: homeassistant, site: pdx, service: MQTT broker}}
 - {targets: ['100.64.0.11:2049'],   labels: {module: tcp_connect, host: pi-pcb, site: pcb, service: Backup NFS (pcb)}}
+- {targets: ['172.20.2.114:443'], labels: {module: tcp_connect, host: arr, site: pdx, service: Request portal}}
