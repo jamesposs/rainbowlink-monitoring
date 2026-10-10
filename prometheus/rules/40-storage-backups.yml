@@ -50,12 +50,15 @@ groups:
       # NAS -> pi-pcb Hyper Backup runs once a day (~09:35 PT). 28h = one day plus 4h grace.
       # A failed/skipped run commits no new version, so staleness is the right signal.
       - alert: HyperBackupStale
-        expr: (time() - rl_hyperbackup_last_commit_timestamp_seconds) > 28 * 3600
+        # The backup is observed from its destination (pi-pcb). last_over_time keeps the last known commit for 30 days, so if pi-pcb goes
+        # offline the age keeps growing and this still fires after 28 h (a dead site cannot hide a missing backup).
+        # Labelled with the NAS (where the backup comes from), not pi-pcb, so a site/host outage does not silence it.
+        expr: (time() - last_over_time(rl_hyperbackup_last_commit_timestamp_seconds[30d])) > 28 * 3600
         for: 30m
-        labels: {severity: warning, site: pcb}
+        labels: {severity: warning, site: pdx, host: nas}
         annotations:
           summary: "No NAS Hyper Backup ({{ $labels.repo }}) has completed for {{ $value | humanizeDuration }}"
-          description: "Expected daily around 09:35. Check Hyper Backup on the NAS (task log) and the rsync link to pi-pcb."
+          description: "Expected daily around 09:35. Check Hyper Backup on the NAS (task log) and the rsync link to pi-pcb. If Panama City Beach is offline (power or internet), the backup cannot run: this is a consequence of that outage."
       - alert: HyperBackupStuck
         expr: min_over_time(rl_hyperbackup_running[12h]) == 1
         labels: {severity: warning, site: pcb}
@@ -67,30 +70,3 @@ groups:
         for: 10m
         labels: {severity: warning}
         annotations: {summary: "Hyper Backup freshness check on {{ $labels.host }} stopped reporting (that alert is blind)"}
-
-  - name: node_backups
-    rules:
-      # rl-backup on each remote node (pi-pcb, vps-sjc, vps-bos/pbx2, pi-pdx): nightly encrypted config backup to the
-      # NAS Backups share (+ monthly full-card image on pi-pcb). Metrics come from the node_exporter textfile collector.
-      # 30h = one night plus 6h grace. A node that is simply offline is HostDown's job, so a missing series only fires
-      # while the node is up.
-      - alert: NodeBackupStale
-        expr: (time() - rl_backup_last_success_timestamp_seconds{backup="config"}) > 30 * 3600
-        for: 30m
-        labels: {severity: warning}
-        annotations:
-          summary: "{{ $labels.host }}: no successful config backup for {{ $value | humanizeDuration }}"
-          description: "Nightly rl-backup to the NAS Backups share. On the node: journalctl -u rl-backup -n 50 (NAS reachable? SMB password changed? share full?)."
-      - alert: NodeImageBackupStale
-        expr: (time() - rl_backup_last_success_timestamp_seconds{backup="image"}) > 35 * 86400
-        for: 1h
-        labels: {severity: warning}
-        annotations:
-          summary: "{{ $labels.host }}: no successful full-card image for {{ $value | humanizeDuration }}"
-          description: "Monthly image on the 1st. On the node: journalctl -u rl-backup-image -n 50."
-      - alert: NodeBackupMissing
-        expr: (up{job="node", host=~"pi-pcb|vps-sjc|vps-bos|pi-pdx"} == 1) unless on(host) rl_backup_last_attempt_timestamp_seconds{backup="config"}
-        for: 2h
-        labels: {severity: warning}
-        annotations:
-          summary: "{{ $labels.host }} is up but reports no backup metrics (rl-backup not installed or never ran)"
