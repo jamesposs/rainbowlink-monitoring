@@ -197,3 +197,26 @@ tests:
             exp_annotations:
               summary: "Phone 96111 (Office) is not registered with the PBX"
               description: "Calls to it will not ring. Check that the phone is powered and on the network, then look at Reports > Asterisk Info > Peers in FreePBX. If it is meant to be offline, add the extension to the ext!~ list on this rule (prometheus/rules/50-pbx-nas-gateway.yml)."
+
+  # A brand-new guest with no backup yet is NOT reported until a full backup cycle (30 h for the nightly job) has passed; then it is.
+  - interval: 1m
+    input_series:
+      - series: 'rl_pve_backup_expected{vmid="136", name="tdarr", storage="nas-pdx"}'
+        values: '1x3000'
+      - series: 'rl_pve_backup_expected_since_timestamp_seconds{vmid="136", name="tdarr", storage="nas-pdx"}'
+        values: '0x3000'
+      - series: 'rl_pve_backup_max_age_seconds{storage="nas-pdx"}'
+        values: '108000x3000'
+    alert_rule_test:
+      - eval_time: 20h
+        alertname: BackupNeverRan
+        exp_alerts: []
+      - eval_time: 30h30m
+        alertname: BackupNeverRan
+        exp_alerts: []
+      - eval_time: 33h
+        alertname: BackupNeverRan
+        exp_alerts:
+          - exp_labels: {severity: warning, site: pdx, vmid: "136", name: tdarr, storage: nas-pdx}
+            exp_annotations:
+              summary: "Guest tdarr (id 136) has never been backed up to nas-pdx, though a full backup cycle has passed"

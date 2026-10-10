@@ -13,10 +13,15 @@ groups:
         annotations:
           summary: "No recent backup of {{ $labels.name }} on {{ $labels.storage }} (last one {{ $value | humanizeDuration }} ago)"
       - alert: BackupNeverRan
-        expr: rl_pve_backup_expected == 1 unless on(vmid, storage) rl_pve_backup_last_success_timestamp_seconds
-        for: 2h
+        # A guest with no backup at all, but only once it has been expected for a full backup cycle (30 h for the nightly NAS job,
+        # 17 days for the 1st/15th Panama City job). A brand-new guest is simply waiting for its first scheduled run.
+        expr: |
+          (rl_pve_backup_expected == 1 unless on(vmid, storage) rl_pve_backup_last_success_timestamp_seconds)
+            and on(vmid, storage)
+          ((time() - rl_pve_backup_expected_since_timestamp_seconds) > on(storage) group_left rl_pve_backup_max_age_seconds)
+        for: 1h
         labels: {severity: warning, site: pdx}
-        annotations: {summary: "Guest {{ $labels.name }} should be backed up to {{ $labels.storage }} but no backup exists"}
+        annotations: {summary: "Guest {{ $labels.name }} (id {{ $labels.vmid }}) has never been backed up to {{ $labels.storage }}, though a full backup cycle has passed"}
       - alert: BackupJobFailed
         expr: rl_pve_vzdump_last_ok == 0
         for: 10m

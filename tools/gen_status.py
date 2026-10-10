@@ -34,13 +34,25 @@ def group_panel(pid, title, x, y, w):
                         "text": {"titleSize": 14, "valueSize": 22}, "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": False}}}
 
 
+DETAIL_KEYS = ["service", "name", "storage", "zone", "server", "ext", "trunk", "tunnel", "to", "repo", "id", "vmid"]
+
+
+def detail_expr():
+    """ALERTS plus a `detail` label that says what the alert is about (guest, zone, extension, ...), built from whichever labels exist."""
+    keys = ", ".join(f'"{k}"' for k in DETAIL_KEYS)
+    joined = f'label_join(ALERTS{{alertstate="firing", alertname!="Watchdog"}}, "detail", " · ", {keys})'
+    collapse = f'label_replace({joined}, "detail", "$1 · $2", "detail", "^(.*?)(?: · ){{2,}}(.*)$")'
+    collapse2 = f'label_replace({collapse}, "detail", "$1 · $2", "detail", "^(.*?)(?: · ){{2,}}(.*)$")'
+    return f'label_replace({collapse2}, "detail", "$1", "detail", "^(?: · )*(.*?)(?: · )*$")'
+
+
 def issues():
-    hide = ["Time", "__name__", "alertstate", "job", "instance", "kind", "parent", "role", "monitor"]
     return {"id": 20, "type": "table", "title": "What is firing right now", "datasource": DS, "gridPos": {"x": 0, "y": 16, "w": 24, "h": 7},
-            "description": "Alerts that have waited out their own delay. A tile can be Degraded before anything shows here (it reacts after ~3 minutes; alerts after 5-15).",
-            "targets": [{**tgt('ALERTS{alertstate="firing", alertname!="Watchdog"}', "A"), "format": "table"}],
-            "transformations": [{"id": "organize", "options": {"excludeByName": {k: True for k in hide},
-                                 "renameByName": {"alertname": "Alert", "severity": "Severity", "host": "Host", "site": "Site", "service": "Service"}}}],
+            "description": "Alerts that have waited out their own delay. 'About' says which guest, zone, phone, link... it is for. A tile can be Degraded before anything shows here (it reacts after ~3 minutes; alerts after 5-60).",
+            "targets": [{**tgt(detail_expr(), "A"), "format": "table"}],
+            "transformations": [{"id": "filterFieldsByName", "options": {"include": {"names": ["alertname", "detail", "severity", "host", "site"]}}},
+                                {"id": "organize", "options": {"renameByName": {"alertname": "Alert", "detail": "About", "severity": "Severity", "host": "Host", "site": "Site"},
+                                                               "indexByName": {"alertname": 0, "detail": 1, "severity": 2, "host": 3, "site": 4}}}],
             "fieldConfig": {"defaults": {"noValue": "Nothing is firing", "custom": {"align": "auto"}}, "overrides": [
                 {"matcher": {"id": "byName", "options": "Severity"}, "properties": [{"id": "custom.cellOptions", "value": {"type": "color-text"}}, {"id": "mappings", "value": [
                     {"type": "value", "options": {"critical": {"color": RED, "index": 0}, "warning": {"color": ORANGE, "index": 1}}}]}]}]},

@@ -13,6 +13,8 @@ needs no change here.
 Emits:
   rl_pve_backup_expected{vmid,name,storage}                       1 for every (guest, storage) a job should cover
   rl_pve_backup_last_success_timestamp_seconds{vmid,name,storage} when that guest last backed up OK to that storage
+  rl_pve_backup_expected_since_timestamp_seconds{vmid,name,storage} when this script first saw the guest as expected on that storage
+                                                                  (a NEW guest only counts as 'never backed up' after one full backup cycle)
   rl_pve_backup_max_age_seconds{storage}                          how old the newest backup may be before alerting
   rl_pve_vzdump_last_ok{storage,status}                           outcome of the most recent backup run per storage
 """
@@ -56,6 +58,19 @@ for j in get("/cluster/backup"):
     else:
         ids = [int(x) for x in str(j.get("vmid", "")).split(",") if x.strip()]
     expected.update((v, j["storage"]) for v in ids if v in guests)
+
+# ---- when each (guest, storage) was first expected (so brand-new guests get one backup cycle of grace) ----
+SEEN = os.path.join(os.path.dirname(STATE), "pve_backup_first_seen.json")
+try:
+    seen = json.load(open(SEEN))
+except Exception:
+    seen = {}
+now = time.time()
+for v, st in expected:
+    seen.setdefault(f"{v}|{st}", now)
+seen = {k: t for k, t in seen.items() if tuple([int(k.split("|")[0]), k.split("|", 1)[1]]) in expected}
+os.makedirs(os.path.dirname(SEEN), exist_ok=True)
+json.dump(seen, open(SEEN + ".tmp", "w")); os.replace(SEEN + ".tmp", SEEN)
 
 # ---- what actually happened, from task logs (cached) ----------------------------------
 try:
@@ -104,12 +119,13 @@ for upid, c in sorted(cache.items(), key=lambda kv: kv[1]["end"]):
         last_run[st] = (c["end"], c["status"])
 
 lines = ["# TYPE rl_pve_backup_expected gauge", "# TYPE rl_pve_backup_last_success_timestamp_seconds gauge",
-         "# TYPE rl_pve_backup_max_age_seconds gauge", "# TYPE rl_pve_vzdump_last_ok gauge"]
+         "# TYPE rl_pve_backup_max_age_seconds gauge", "# TYPE rl_pve_vzdump_last_ok gauge", "# TYPE rl_pve_backup_expected_since_timestamp_seconds gauge"]
 for st in sorted({s for _, s in expected}):
     lines.append(f'rl_pve_backup_max_age_seconds{{storage="{esc(st)}"}} {MAX_AGE.get(st, DEFAULT_MAX_AGE)}')
 for (v, st) in sorted(expected):
     lab = f'vmid="{v}",name="{esc(guests[v].get("name", v))}",storage="{esc(st)}"'
     lines.append(f"rl_pve_backup_expected{{{lab}}} 1")
+    lines.append(f"rl_pve_backup_expected_since_timestamp_seconds{{{lab}}} {int(seen[f'{v}|{st}'])}")
     if (v, st) in last_ok:
         lines.append(f"rl_pve_backup_last_success_timestamp_seconds{{{lab}}} {last_ok[(v, st)]}")
 for st, (end, status) in sorted(last_run.items()):

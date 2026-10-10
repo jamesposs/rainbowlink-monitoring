@@ -547,14 +547,14 @@
     "w": 24,
     "h": 7
    },
-   "description": "Alerts that have waited out their own delay. A tile can be Degraded before anything shows here (it reacts after ~3 minutes; alerts after 5-15).",
+   "description": "Alerts that have waited out their own delay. 'About' says which guest, zone, phone, link... it is for. A tile can be Degraded before anything shows here (it reacts after ~3 minutes; alerts after 5-60).",
    "targets": [
     {
      "datasource": {
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "ALERTS{alertstate=\"firing\", alertname!=\"Watchdog\"}",
+     "expr": "label_replace(label_replace(label_replace(label_join(ALERTS{alertstate=\"firing\", alertname!=\"Watchdog\"}, \"detail\", \" \u00b7 \", \"service\", \"name\", \"storage\", \"zone\", \"server\", \"ext\", \"trunk\", \"tunnel\", \"to\", \"repo\", \"id\", \"vmid\"), \"detail\", \"$1 \u00b7 $2\", \"detail\", \"^(.*?)(?: \u00b7 ){2,}(.*)$\"), \"detail\", \"$1 \u00b7 $2\", \"detail\", \"^(.*?)(?: \u00b7 ){2,}(.*)$\"), \"detail\", \"$1\", \"detail\", \"^(?: \u00b7 )*(.*?)(?: \u00b7 )*$\")",
      "refId": "A",
      "instant": true,
      "range": false,
@@ -563,25 +563,35 @@
    ],
    "transformations": [
     {
+     "id": "filterFieldsByName",
+     "options": {
+      "include": {
+       "names": [
+        "alertname",
+        "detail",
+        "severity",
+        "host",
+        "site"
+       ]
+      }
+     }
+    },
+    {
      "id": "organize",
      "options": {
-      "excludeByName": {
-       "Time": true,
-       "__name__": true,
-       "alertstate": true,
-       "job": true,
-       "instance": true,
-       "kind": true,
-       "parent": true,
-       "role": true,
-       "monitor": true
-      },
       "renameByName": {
        "alertname": "Alert",
+       "detail": "About",
        "severity": "Severity",
        "host": "Host",
-       "site": "Site",
-       "service": "Service"
+       "site": "Site"
+      },
+      "indexByName": {
+       "alertname": 0,
+       "detail": 1,
+       "severity": 2,
+       "host": 3,
+       "site": 4
       }
      }
     }
