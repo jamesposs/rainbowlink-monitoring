@@ -7,7 +7,7 @@ groups:
       - alert: VpnCritical
         expr: max by (host) (rl_vpn_state_code) == 2
         for: 1m
-        labels: {severity: critical, site: pdx}
+        labels: {severity: warning, site: pdx}      # was critical; James 2026-10-09: only crippling issues page, everything else is in the 08:00 summary
         annotations:
           summary: "DOWNLOADER: possible NON-Mullvad Internet path on {{ $labels.host }} (qBittorrent stopped)"
           description: "The kill-switch watchdog found evidence the download client could reach the Internet outside the Mullvad tunnel (kill switch missing/weakened, a direct probe succeeded, IPv6 present, or a non-Mullvad resolver). qBittorrent was stopped. See /run/rl-vpn/state.json and 'journalctl -u rl-vpn-watchdog' on dl."
@@ -23,7 +23,7 @@ groups:
       - alert: VpnDownLong
         expr: max by (host) (rl_vpn_state_code) == 1
         for: 3h
-        labels: {severity: critical, site: pdx}
+        labels: {severity: warning, site: pdx}      # was critical; James 2026-10-09: only crippling issues page, everything else is in the 08:00 summary
         annotations:
           summary: "Mullvad tunnel on {{ $labels.host }} has been down for 3+ hours"
           description: "No relay worked for hours. Account expired/out of devices, or Mullvad blocked? Downloads are paused (fail closed)."
