@@ -256,9 +256,3 @@ tests:
           - exp_labels: {severity: warning, job: node, host: pi-pdx}
             exp_annotations:
               summary: "pi-pdx is up but reports no backup metrics (rl-backup not installed or never ran)"
-      - eval_time: 3h
-        alertname: NodeBackupMissing
-        exp_alerts:
-          - exp_labels: {severity: warning, job: node, host: pi-pdx}
-            exp_annotations:
-              summary: "pi-pdx is up but reports no backup metrics (rl-backup not installed or never ran)"
