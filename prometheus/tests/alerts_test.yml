@@ -220,3 +220,45 @@ tests:
           - exp_labels: {severity: warning, site: pdx, vmid: "136", name: tdarr, storage: nas-pdx}
             exp_annotations:
               summary: "Guest tdarr (id 136) has never been backed up to nas-pdx, though a full backup cycle has passed"
+
+  # rl-backup: nightly config backup per remote node. Stale after 30h (+30m grace).
+  - interval: 1m
+    input_series:
+      - series: 'rl_backup_last_success_timestamp_seconds{backup="config", host="pi-pcb"}'
+        values: '0x3000'                        # never advances = stuck at epoch
+    alert_rule_test:
+      - eval_time: 32h
+        alertname: NodeBackupStale
+        exp_alerts:
+          - exp_labels: {severity: warning, backup: config, host: pi-pcb}
+            exp_annotations:
+              summary: "pi-pcb: no successful config backup for 1d 8h 0m 0s"
+              description: "Nightly rl-backup to the NAS Backups share. On the node: journalctl -u rl-backup -n 50 (NAS reachable? SMB password changed? share full?)."
+
+  # Fresh backups never alert; a node that is up but exports no backup series does (after 2h).
+  - interval: 1m
+    input_series:
+      - series: 'rl_backup_last_success_timestamp_seconds{backup="config", host="vps-sjc"}'
+        values: '0+60x6000'
+      - series: 'rl_backup_last_attempt_timestamp_seconds{backup="config", host="vps-sjc"}'
+        values: '0+60x6000'
+      - series: 'up{job="node", host="vps-sjc"}'
+        values: '1x6000'
+      - series: 'up{job="node", host="pi-pdx"}'
+        values: '1x6000'
+    alert_rule_test:
+      - eval_time: 40h
+        alertname: NodeBackupStale
+        exp_alerts: []
+      - eval_time: 3h
+        alertname: NodeBackupMissing
+        exp_alerts:
+          - exp_labels: {severity: warning, job: node, host: pi-pdx}
+            exp_annotations:
+              summary: "pi-pdx is up but reports no backup metrics (rl-backup not installed or never ran)"
+      - eval_time: 3h
+        alertname: NodeBackupMissing
+        exp_alerts:
+          - exp_labels: {severity: warning, job: node, host: pi-pdx}
+            exp_annotations:
+              summary: "pi-pdx is up but reports no backup metrics (rl-backup not installed or never ran)"

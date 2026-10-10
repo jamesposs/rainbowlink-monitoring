@@ -67,3 +67,30 @@ groups:
         for: 10m
         labels: {severity: warning}
         annotations: {summary: "Hyper Backup freshness check on {{ $labels.host }} stopped reporting (that alert is blind)"}
+
+  - name: node_backups
+    rules:
+      # rl-backup on each remote node (pi-pcb, vps-sjc, vps-bos/pbx2, pi-pdx): nightly encrypted config backup to the
+      # NAS Backups share (+ monthly full-card image on pi-pcb). Metrics come from the node_exporter textfile collector.
+      # 30h = one night plus 6h grace. A node that is simply offline is HostDown's job, so a missing series only fires
+      # while the node is up.
+      - alert: NodeBackupStale
+        expr: (time() - rl_backup_last_success_timestamp_seconds{backup="config"}) > 30 * 3600
+        for: 30m
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.host }}: no successful config backup for {{ $value | humanizeDuration }}"
+          description: "Nightly rl-backup to the NAS Backups share. On the node: journalctl -u rl-backup -n 50 (NAS reachable? SMB password changed? share full?)."
+      - alert: NodeImageBackupStale
+        expr: (time() - rl_backup_last_success_timestamp_seconds{backup="image"}) > 35 * 86400
+        for: 1h
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.host }}: no successful full-card image for {{ $value | humanizeDuration }}"
+          description: "Monthly image on the 1st. On the node: journalctl -u rl-backup-image -n 50."
+      - alert: NodeBackupMissing
+        expr: (up{job="node", host=~"pi-pcb|vps-sjc|vps-bos|pi-pdx"} == 1) unless on(host) rl_backup_last_attempt_timestamp_seconds{backup="config"}
+        for: 2h
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.host }} is up but reports no backup metrics (rl-backup not installed or never ran)"
