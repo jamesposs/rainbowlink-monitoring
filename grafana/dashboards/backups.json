@@ -301,8 +301,8 @@
   {
    "id": 5,
    "type": "stat",
-   "title": "Oldest good copy",
-   "description": "Age of the stalest backup among jobs that report. Jobs with nothing reported are in the table as NO DATA.",
+   "title": "Closest to its limit",
+   "description": "The job nearest to (or past) its own allowed age, as a share of that limit. 100% or more = overdue. Jobs with nothing reported are NO DATA in the table.",
    "gridPos": {
     "x": 12,
     "y": 3,
@@ -319,7 +319,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "max(rl:backup_job_age_seconds < 5e9)",
+     "expr": "max(rl:backup_job_age_ratio < 1000)",
      "refId": "A",
      "instant": true,
      "range": false
@@ -327,7 +327,7 @@
    ],
    "fieldConfig": {
     "defaults": {
-     "unit": "s",
+     "unit": "percentunit",
      "mappings": [],
      "color": {
       "mode": "thresholds"
@@ -341,11 +341,11 @@
        },
        {
         "color": "orange",
-        "value": 172800
+        "value": 0.7
        },
        {
         "color": "red",
-        "value": 604800
+        "value": 1
        }
       ]
      }
@@ -528,7 +528,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "rl:backup_job_age_seconds",
+     "expr": "max by (Order, Job, Protects, Stored_at, Schedule) (rl:backup_job_age_seconds)",
      "refId": "A",
      "instant": true,
      "range": false,
@@ -539,7 +539,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "rl:backup_job_age_ratio",
+     "expr": "max by (Order, Job, Protects, Stored_at, Schedule) (rl:backup_job_age_ratio)",
      "refId": "B",
      "instant": true,
      "range": false,

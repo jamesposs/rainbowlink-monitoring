@@ -160,9 +160,9 @@ def build():
         'count(ALERTS{alertname=~"(Backup|HyperBackup|NodeBackup|NodeImageBackup).*", alertstate="firing"}) or vector(0)',
         8, y, 4, 4, unit="suffix: firing", steps=[{"color": "green", "value": None}, {"color": "orange", "value": 1}],
         mappings=[{"type": "value", "options": {"0": {"text": "none", "color": "green", "index": 0}}}]))
-    panels.append(stat("Oldest good copy", "max(rl:backup_job_age_seconds < 5e9)", 12, y, 4, 4, unit="s",
-        steps=[{"color": "green", "value": None}, {"color": "orange", "value": 172800}, {"color": "red", "value": 604800}],
-        desc="Age of the stalest backup among jobs that report. Jobs with nothing reported are in the table as NO DATA."))
+    panels.append(stat("Closest to its limit", "max(rl:backup_job_age_ratio < 1000)", 12, y, 4, 4, unit="percentunit",
+        steps=[{"color": "green", "value": None}, {"color": "orange", "value": 0.7}, {"color": "red", "value": 1}],
+        desc="The job nearest to (or past) its own allowed age, as a share of that limit. 100% or more = overdue. Jobs with nothing reported are NO DATA in the table."))
     panels.append(gauge("NAS volume used",
         'pve_disk_usage_bytes{id="storage/pve0/nas-pdx"} / pve_disk_size_bytes{id="storage/pve0/nas-pdx"}', 16, y, 4, 4,
         desc="The NAS volume that holds the first copy of everything (and all Proxmox dumps)."))
@@ -176,7 +176,8 @@ def build():
     tbl = {"id": nid(), "type": "table", "title": "Backup jobs: status and coverage",
            "description": "One row per backup job. Source of truth: scripts/gen-backups.py (CATALOG).",
            "gridPos": {"x": 0, "y": y, "w": 24, "h": 14}, "datasource": DS,
-           "targets": [tgt("rl:backup_job_age_seconds", "A", table=True), tgt("rl:backup_job_age_ratio", "B", table=True)],
+           "targets": [tgt("max by (Order, Job, Protects, Stored_at, Schedule) (rl:backup_job_age_seconds)", "A", table=True),
+                       tgt("max by (Order, Job, Protects, Stored_at, Schedule) (rl:backup_job_age_ratio)", "B", table=True)],
            "fieldConfig": {"defaults": {"custom": {"align": "auto", "cellOptions": {"type": "auto"}, "filterable": True}},
              "overrides": [
                {"matcher": {"id": "byName", "options": "Status"}, "properties": [
