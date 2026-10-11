@@ -56,7 +56,7 @@ CATALOG = [
      "NAS share Backups/channelsdvr, then off-site by nas_hq", "Nightly about 21:00", artifact("channelsdvr-nas")),
     ("Paperless export",
      "Paperless database and document export (restore aid)",
-     "NAS share Poss/paperless/export, off-site with Poss", "NO SCHEDULE yet - last run by hand; flagged after 35 days", artifact("paperless-export")),
+     "NAS share Poss/paperless/export, off-site with Poss", "Weekly, Sundays 03:00 (systemd timer in the Paperless container) - flagged after 9 days", artifact("paperless-export")),
     ("Node pi-pcb -> NAS",
      "pi-pcb settings, keys and state (age-encrypted); card image monthly from Nov 1",
      "NAS share Backups/pi-pcb", "Nightly 03:10 - keeps 7 daily, 4 weekly, 6 monthly", artifact("rl-backup-pi-pcb-nas")),
@@ -220,7 +220,7 @@ def build():
         "| **VMs and containers** | NAS dumps, nightly (3 daily + 3 weekly) | Proxmox dumps, 1st and 15th (last 2) | Guests in no job are listed on the right |\n"
         "| **Home Assistant** | Its own backup to the NAS, nightly | Same backup copied to pi-pcb | The VM is also in the nightly NAS dump (not off-site) |\n"
         "| **Paperless documents, home folders** | NAS shares *Poss*, *homes* | Hyper Backup *nas_hq_set2*, daily, versioned | Not encrypted |\n"
-        "| **Paperless export** | NAS *Poss/paperless/export* | Included with *Poss* | No schedule exists; last run by hand |\n"
+        "| **Paperless export** | NAS *Poss/paperless/export* | Included with *Poss* | Weekly, Sundays 03:00. Holds settings and tokens in plaintext |\n"
         "| **MemoryVault** (family photos, videos) | NAS | Hyper Backup *nas_hq*, daily, plain copy | No old versions |\n"
         "| **Home Videos, Books** | NAS *Media* | Hyper Backup *nas_hq* | Rest of *Media* is not copied |\n"
         "| **FreePBX (pbx2), ChannelsDVR** | NAS *Backups* share, nightly | Copied by *nas_hq* with the *Backups* share | |\n"
