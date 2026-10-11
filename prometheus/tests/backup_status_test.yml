@@ -13,12 +13,12 @@ tests:
       - expr: count(rl:backup_job_age_ratio)
         eval_time: 30h
         exp_samples:
-          - {labels: '{}', value: 13}
-      - expr: count(rl:backup_job_age_ratio{Order="03"} > 1.15 and rl:backup_job_age_ratio{Order="03"} < 1.16)
+          - {labels: '{}', value: 14}
+      - expr: count(rl:backup_job_age_ratio{Order="04"} > 1.15 and rl:backup_job_age_ratio{Order="04"} < 1.16)
         eval_time: 30h
         exp_samples:
           - {labels: '{}', value: 1}            # 30 h / 26 h = 1.154 -> OVERDUE
-      - expr: count(rl:backup_job_age_ratio{Order="09"} > 1e6)
+      - expr: count(rl:backup_job_age_ratio{Order="10"} > 1e6)
         eval_time: 30h
         exp_samples:
           - {labels: '{}', value: 1}            # no data for the Paperless export -> NO DATA, not hidden
@@ -34,7 +34,7 @@ tests:
       - series: 'rl_backup_artifact_max_age_seconds{artifact="ha-native-nas"}'
         values: '100800x3000'
     promql_expr_test:
-      - expr: count(rl:backup_job_age_ratio{Order="05"} < 0.01)
+      - expr: count(rl:backup_job_age_ratio{Order="06"} < 0.01)
         eval_time: 5h
         exp_samples:
           - {labels: '{}', value: 1}

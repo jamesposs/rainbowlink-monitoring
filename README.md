@@ -49,8 +49,12 @@ The **Backups** dashboard (`/d/rl-backups`) lists every backup job: what it prot
 plus what is covered by what, guests that are in no job, live backup alerts and space on the targets. It is generated from ONE catalog:
 `scripts/gen-backups.py` (CATALOG) writes both `prometheus/rules/45-backup-status.yml` (records `rl:backup_job_age_seconds` / `rl:backup_job_age_ratio`)
 and `grafana/dashboards/backups.json`. **To add a backup: add a CATALOG entry, `python3 scripts/gen-backups.py`, then `sudo ./scripts/apply.sh`.**
-* **Proxmox guests** (nightly 20:00 to the NAS, 1st/15th to pi-pcb): freshness per guest per target, expected set derived from the backup jobs.
-  `BackupJobFailed` fires ~10 min after a run with errors, `BackupMissing` when a guest is past the allowed age (`MAX_AGE`).
+* **Proxmox guests**, three jobs: nightly 20:00 to the NAS (7 daily + 4 weekly + 3 monthly), weekly Sundays 05:00 to the NAS for the heavy guests
+  (Home Assistant VM, Plex, stash, stopped VMs; keeps 2), weekly Sundays 00:00 to pi-pcb (4 weekly + 3 monthly). Freshness per guest per target;
+  the expected set AND each guest's allowed age (30 h nightly, 9 days weekly, 17 days 1st+15th) are derived from the backup jobs themselves
+  (`pve-backup-metrics.py` reads each job's schedule), so changing a job needs no monitoring change. `BackupJobFailed` fires ~10 min after a
+  run with errors, `BackupMissing` when a guest is past its job's allowed age. NOTE: Proxmox allows ONE vzdump at a time (global lock); keep
+  job schedules from overlapping or the second one fails.
 * **NAS Hyper Backup**, two daily tasks to pi-pcb (`nas_hq` 06:00 folder copy of Backups/Media/MemoryVault, `nas_hq_set2` 09:30 versioned Poss/homes):
   read from the *destination* on pi-pcb, so the NAS needs no credentials or SSH (`rl-hyperbackup-metrics.sh`, Ansible role monitoring_agent).
   Versioned repos: mtime of `Config/version_info.db.<N>`; folder repos: mtime of `synobkpinfo.db` (rewritten only when a run completes).
@@ -130,7 +134,7 @@ server's page and tests the SSO server, not your app. Public checks run on vps-s
 * A host's down-alert becomes critical with `critical: "true"` in `hosts.yml`.
 * Promote/demote any alert: change its `severity:` label to `critical` or `warning`.
 * Known-benign failed systemd units are excluded in `rules/10-hosts.yml` (`SystemdUnitFailed`).
-* Backup allowed age per target: `MAX_AGE` in `scripts/pve-backup-metrics.py`; for files other systems write: `monitoring_backup_artifacts` in Ansible host_vars; Hyper Backup: `26 * 3600` in `HyperBackupStale`.
+* Backup allowed age per job cadence: `MAX_AGE` in `scripts/pve-backup-metrics.py` (set by the job's schedule); for files other systems write: `monitoring_backup_artifacts` in Ansible host_vars; Hyper Backup: `26 * 3600` in `HyperBackupStale`.
 * Maintenance window: `sudo ./scripts/silence.sh <host> 2h "reason"`.
 * Test the notification path: `sudo ./scripts/test-notify.sh critical` (it will keep buzzing until you acknowledge).
 

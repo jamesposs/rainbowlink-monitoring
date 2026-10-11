@@ -840,7 +840,7 @@
    },
    "options": {
     "mode": "markdown",
-    "content": "| What | Copy at home | Copy off-site (pi-pcb) | Notes |\n|---|---|---|---|\n| **VMs and containers** | NAS dumps, nightly (3 daily + 3 weekly) | Proxmox dumps, 1st and 15th (last 2) | Guests in no job are listed on the right |\n| **Home Assistant** | Its own backup to the NAS, nightly | Same backup copied to pi-pcb | The VM is also in the nightly NAS dump (not off-site) |\n| **Paperless documents, home folders** | NAS shares *Poss*, *homes* | Hyper Backup *nas_hq_set2*, daily, versioned | Not encrypted |\n| **Paperless export** | NAS *Poss/paperless/export* | Included with *Poss* | Weekly, Sundays 03:00. Holds settings and tokens in plaintext |\n| **MemoryVault** (family photos, videos) | NAS | Hyper Backup *nas_hq*, daily, plain copy | No old versions |\n| **Home Videos, Books** | NAS *Media* | Hyper Backup *nas_hq* | Rest of *Media* is not copied |\n| **FreePBX (pbx2), ChannelsDVR** | NAS *Backups* share, nightly | Copied by *nas_hq* with the *Backups* share | |\n| **Remote nodes** (pi-pcb, pi-pdx, vps-sjc, pbx2) | NAS *Backups/<node>*, nightly, encrypted | *nas_hq* copies the *Backups* share | Folders are new: first off-site copy not yet confirmed |\n| **Not backed up** | | | *Movies*, *TV Shows*, *Other* (about 7.6 TB, replaceable) \u00b7 shares *Public*, *Surveillance*, *Time Machine*, *Encypted* (in neither Hyper Backup task) |\n\nBoth off-site copies live on one disk at one site. Nothing is in the cloud, and nothing is immutable."
+    "content": "| What | Copy at home | Copy off-site (pi-pcb) | Notes |\n|---|---|---|---|\n| **VMs and containers** | NAS dumps, nightly (7 daily + 4 weekly + 3 monthly) | Proxmox dumps, weekly (4 weekly + 3 monthly) | Home Assistant VM, Plex, stash weekly (last 2), NAS only. Guests in no job are listed on the right |\n| **Home Assistant** | Its own backup to the NAS, nightly | Same backup copied to pi-pcb | The VM is also in the nightly NAS dump (not off-site) |\n| **Paperless documents, home folders** | NAS shares *Poss*, *homes* | Hyper Backup *nas_hq_set2*, daily, versioned | Not encrypted |\n| **Paperless export** | NAS *Poss/paperless/export* | Included with *Poss* | Weekly, Sundays 03:00. Holds settings and tokens in plaintext |\n| **MemoryVault** (family photos, videos) | NAS | Hyper Backup *nas_hq*, daily, plain copy | No old versions |\n| **Home Videos, Books** | NAS *Media* | Hyper Backup *nas_hq* | Rest of *Media* is not copied |\n| **FreePBX (pbx2), ChannelsDVR** | NAS *Backups* share, nightly | Copied by *nas_hq* with the *Backups* share | |\n| **Remote nodes** (pi-pcb, pi-pdx, vps-sjc, pbx2) | NAS *Backups/<node>*, nightly, encrypted | *nas_hq* copies the *Backups* share | Folders are new: first off-site copy not yet confirmed |\n| **Not backed up** | | | *Movies*, *TV Shows*, *Other* (about 7.6 TB, replaceable) \u00b7 shares *Public*, *Surveillance*, *Time Machine*, *Encypted* (in neither Hyper Backup task) |\n\nBoth off-site copies live on one disk at one site. Nothing is in the cloud, and nothing is immutable."
    }
   },
   {
@@ -963,7 +963,7 @@
    "id": 14,
    "type": "table",
    "title": "Guests NOT copied off-site",
-   "description": "These exist only at home (plus the nightly NAS dump if they are in that job).",
+   "description": "These exist only at home. Home Assistant has its own off-site backup; Plex and stash can be rebuilt.",
    "gridPos": {
     "x": 16,
     "y": 37,
@@ -1092,7 +1092,7 @@
    "id": 16,
    "type": "table",
    "title": "Backup freshness (per guest, per target)",
-   "description": "Allowed age: 30 h for the nightly NAS job, 17 days for the twice-monthly off-site copy. Red = overdue.",
+   "description": "Allowed age follows each guest's job: 30 h nightly, 9 days weekly. Red = overdue.",
    "gridPos": {
     "x": 0,
     "y": 44,
@@ -1120,7 +1120,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "max by (name, storage) ((time() - rl_pve_backup_last_success_timestamp_seconds) / on(storage) group_left max by (storage) (rl_pve_backup_max_age_seconds))",
+     "expr": "max by (name, storage) ((time() - rl_pve_backup_last_success_timestamp_seconds) / on(vmid, storage) rl_pve_backup_max_age_seconds)",
      "refId": "B",
      "instant": true,
      "range": false,
@@ -1386,8 +1386,8 @@
   {
    "id": 19,
    "type": "timeseries",
-   "title": "Backup age by target (oldest guest)",
-   "description": "",
+   "title": "Backup age vs allowed (worst guest per target)",
+   "description": "1.0 (100%) = overdue. Each guest is judged against its own job: nightly, weekly heavy, weekly off-site.",
    "gridPos": {
     "x": 14,
     "y": 48,
@@ -1404,7 +1404,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "max by (storage) (time() - rl_pve_backup_last_success_timestamp_seconds)",
+     "expr": "max by (storage) ((time() - rl_pve_backup_last_success_timestamp_seconds) / on(vmid, storage) rl_pve_backup_max_age_seconds)",
      "refId": "A",
      "instant": false,
      "range": true,
@@ -1413,7 +1413,7 @@
    ],
    "fieldConfig": {
     "defaults": {
-     "unit": "s",
+     "unit": "percentunit",
      "custom": {
       "lineWidth": 1,
       "fillOpacity": 10,
@@ -1633,7 +1633,7 @@
    },
    "options": {
     "mode": "markdown",
-    "content": "A failed or overdue backup sends a phone notice between **07:00 and 22:00**, repeated every 6 hours until fixed. Nothing overnight: a problem found at night goes out when the window opens at 07:00 (and is in the 08:00 summary).\n\n| Alert | Raised when |\n|---|---|\n| *BackupJobFailed* | the last Proxmox backup run reported errors (about 10 minutes after the run) |\n| *BackupMissing / NeverRan* | a guest has no good copy within the job's allowed age (30 h NAS, 17 d off-site) |\n| *HyperBackupStale* | no Hyper Backup commit for 26 h (daily tasks) |\n| *NodeBackupFailed / Stale* | a node's nightly backup failed (10 min) or none for 27 h |\n| *BackupArtifactStale* | Home Assistant, FreePBX, ChannelsDVR, a node's file on the NAS, or the Paperless export is older than its limit |\n| *...CollectorStale* | a checker stopped reporting, so its alerts are blind |\n\nJob limits live next to each backup: Proxmox in `pve-backup-metrics.py`, files in Ansible `monitoring_backup_artifacts`."
+    "content": "A failed or overdue backup sends a phone notice between **07:00 and 22:00**, repeated every 6 hours until fixed. Nothing overnight: a problem found at night goes out when the window opens at 07:00 (and is in the 08:00 summary).\n\n| Alert | Raised when |\n|---|---|\n| *BackupJobFailed* | the last Proxmox backup run reported errors (about 10 minutes after the run) |\n| *BackupMissing / NeverRan* | a guest has no good copy within its job's allowed age (30 h nightly, 9 days weekly) |\n| *HyperBackupStale* | no Hyper Backup commit for 26 h (daily tasks) |\n| *NodeBackupFailed / Stale* | a node's nightly backup failed (10 min) or none for 27 h |\n| *BackupArtifactStale* | Home Assistant, FreePBX, ChannelsDVR, a node's file on the NAS, or the Paperless export is older than its limit |\n| *...CollectorStale* | a checker stopped reporting, so its alerts are blind |\n\nJob limits live next to each backup: Proxmox in `pve-backup-metrics.py`, files in Ansible `monitoring_backup_artifacts`."
    }
   },
   {

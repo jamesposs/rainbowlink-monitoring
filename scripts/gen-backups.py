@@ -15,10 +15,10 @@ import copy, json, os, sys
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 SENTINEL = "9e9"          # "no data" age: far larger than any real age, shown as NO DATA
 
-def pve(storage):
+def pve(storage, cadence):
     return (f'max((time() - rl_pve_backup_last_success_timestamp_seconds{{storage="{storage}"}}) '
-            f'and on(vmid, storage) rl_pve_backup_expected == 1)',
-            f'max(rl_pve_backup_max_age_seconds{{storage="{storage}"}})')
+            f'and on(vmid, storage) rl_pve_backup_expected{{cadence="{cadence}"}} == 1)',
+            f'max(rl_pve_backup_max_age_seconds{{storage="{storage}", cadence="{cadence}"}})')
 
 def hyper(repo, limit_seconds):
     return (f'time() - max(last_over_time(rl_hyperbackup_last_commit_timestamp_seconds{{repo="{repo}"}}[30d]))',
@@ -30,12 +30,15 @@ def artifact(name):
 
 # (job, what it protects, where the copy lives, schedule and retention, (age expr, allowed-age expr))
 CATALOG = [
-    ("Proxmox guests -> NAS",
-     "Every VM and container except the ones listed under 'not covered'",
-     "NAS share Backups/proxmox (nas-pdx)", "Nightly 20:00 - keeps 3 daily + 3 weekly", pve("nas-pdx")),
-    ("Proxmox guests -> off-site",
-     "The same guests, except Home Assistant's VM, ChannelsDVR and dns2",
-     "pi-pcb disk (Panama City Beach)", "1st and 15th, 00:00 - keeps the last 2", pve("pi-pcb")),
+    ("Proxmox guests -> NAS (nightly)",
+     "Every VM and container except the heavy ones in the next row and the ones listed under 'not covered'",
+     "NAS share Backups/proxmox (nas-pdx)", "Nightly 20:00 - keeps 7 daily, 4 weekly, 3 monthly", pve("nas-pdx", "nightly")),
+    ("Proxmox heavy guests -> NAS (weekly)",
+     "Home Assistant VM, Plex, stash, and the stopped VMs omr-server and food",
+     "NAS share Backups/proxmox (nas-pdx)", "Sundays 05:00 - keeps the last 2", pve("nas-pdx", "weekly")),
+    ("Proxmox guests -> off-site (weekly)",
+     "The nightly guests, minus the heavy ones above, ChannelsDVR and dns2",
+     "pi-pcb disk (Panama City Beach)", "Sundays 00:00 - keeps 4 weekly + 3 monthly", pve("pi-pcb", "weekly")),
     ("NAS folders -> off-site (nas_hq)",
      "MemoryVault (photos, videos), the Backups share, Media: Home Videos and Books only",
      "pi-pcb: plain folder copy, no old versions, not encrypted", "Hyper Backup, daily 06:00", hyper("nas_hq", 93600)),
@@ -217,7 +220,7 @@ def build():
     panels.append(row("What is covered by what", y)); y += 1
     panels.append(text("Coverage map",
         "| What | Copy at home | Copy off-site (pi-pcb) | Notes |\n|---|---|---|---|\n"
-        "| **VMs and containers** | NAS dumps, nightly (3 daily + 3 weekly) | Proxmox dumps, 1st and 15th (last 2) | Guests in no job are listed on the right |\n"
+        "| **VMs and containers** | NAS dumps, nightly (7 daily + 4 weekly + 3 monthly) | Proxmox dumps, weekly (4 weekly + 3 monthly) | Home Assistant VM, Plex, stash weekly (last 2), NAS only. Guests in no job are listed on the right |\n"
         "| **Home Assistant** | Its own backup to the NAS, nightly | Same backup copied to pi-pcb | The VM is also in the nightly NAS dump (not off-site) |\n"
         "| **Paperless documents, home folders** | NAS shares *Poss*, *homes* | Hyper Backup *nas_hq_set2*, daily, versioned | Not encrypted |\n"
         "| **Paperless export** | NAS *Poss/paperless/export* | Included with *Poss* | Weekly, Sundays 03:00. Holds settings and tokens in plaintext |\n"
@@ -232,7 +235,7 @@ def build():
             'unless on(vmid) rl_pve_backup_expected{storage="%s"}')
     for k, (title, storage, yy, hh, desc) in enumerate([
             ("Guests in NO nightly NAS job", "nas-pdx", y, 6, "Running ones are a risk: nothing is copying them. Stopped ones may be intentional."),
-            ("Guests NOT copied off-site", "pi-pcb", y + 6, 6, "These exist only at home (plus the nightly NAS dump if they are in that job).")]):
+            ("Guests NOT copied off-site", "pi-pcb", y + 6, 6, "These exist only at home. Home Assistant has its own off-site backup; Plex and stash can be rebuilt.")]):
         panels.append({"id": nid(), "type": "table", "title": title, "description": desc,
             "gridPos": {"x": 16, "y": yy, "w": 8, "h": hh}, "datasource": DS,
             "targets": [tgt(base % storage, "A", table=True)],
@@ -262,7 +265,16 @@ def move_from_servers(servers, y):
         p["id"] = nid()
         p["gridPos"] = {"x": x, "y": y + dy, "w": w, "h": h}
         if old == 19:
-            p["description"] = "Allowed age: 30 h for the nightly NAS job, 17 days for the twice-monthly off-site copy. Red = overdue."
+            p["description"] = "Allowed age follows each guest's job: 30 h nightly, 9 days weekly. Red = overdue."
+            p["targets"][1]["expr"] = ("max by (name, storage) ((time() - rl_pve_backup_last_success_timestamp_seconds) "
+                                       "/ on(vmid, storage) rl_pve_backup_max_age_seconds)")
+            p["targets"][0]["expr"] = "max by (name, storage) (time() - rl_pve_backup_last_success_timestamp_seconds)"
+        if old == 22:
+            p["title"] = "Backup age vs allowed (worst guest per target)"
+            p["description"] = "1.0 (100%) = overdue. Each guest is judged against its own job: nightly, weekly heavy, weekly off-site."
+            p["targets"][0]["expr"] = ("max by (storage) ((time() - rl_pve_backup_last_success_timestamp_seconds) "
+                                       "/ on(vmid, storage) rl_pve_backup_max_age_seconds)")
+            p.setdefault("fieldConfig", {}).setdefault("defaults", {})["unit"] = "percentunit"
         out.append(p)
     return out, y + 15
 
@@ -287,7 +299,7 @@ def tail(y):
         "a problem found at night goes out when the window opens at 07:00 (and is in the 08:00 summary).\n\n"
         "| Alert | Raised when |\n|---|---|\n"
         "| *BackupJobFailed* | the last Proxmox backup run reported errors (about 10 minutes after the run) |\n"
-        "| *BackupMissing / NeverRan* | a guest has no good copy within the job's allowed age (30 h NAS, 17 d off-site) |\n"
+        "| *BackupMissing / NeverRan* | a guest has no good copy within its job's allowed age (30 h nightly, 9 days weekly) |\n"
         "| *HyperBackupStale* | no Hyper Backup commit for 26 h (daily tasks) |\n"
         "| *NodeBackupFailed / Stale* | a node's nightly backup failed (10 min) or none for 27 h |\n"
         "| *BackupArtifactStale* | Home Assistant, FreePBX, ChannelsDVR, a node's file on the NAS, or the Paperless export is older than its limit |\n"
