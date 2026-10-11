@@ -1,0 +1,1766 @@
+{
+ "uid": "rl-backups",
+ "title": "Backups",
+ "tags": [
+  "rainbowlink",
+  "backups"
+ ],
+ "timezone": "browser",
+ "schemaVersion": 39,
+ "version": 1,
+ "editable": true,
+ "graphTooltip": 1,
+ "refresh": "1m",
+ "time": {
+  "from": "now-7d",
+  "to": "now"
+ },
+ "links": [
+  {
+   "title": "Overview",
+   "type": "link",
+   "url": "/d/rl-overview",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "Status",
+   "type": "link",
+   "url": "/d/rl-status",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "Servers & storage",
+   "type": "link",
+   "url": "/d/rl-servers",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "Site map",
+   "type": "link",
+   "url": "/d/rl-map",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "Network",
+   "type": "link",
+   "url": "/d/rl-network",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "Services",
+   "type": "link",
+   "url": "/d/rl-services",
+   "icon": "dashboard",
+   "targetBlank": false
+  },
+  {
+   "title": "Transit",
+   "type": "link",
+   "url": "/d/rl-transit",
+   "icon": "dashboard",
+   "targetBlank": false
+  }
+ ],
+ "templating": {
+  "list": []
+ },
+ "annotations": {
+  "list": []
+ },
+ "panels": [
+  {
+   "id": 1,
+   "type": "text",
+   "title": "How to read this page",
+   "gridPos": {
+    "x": 0,
+    "y": 0,
+    "w": 24,
+    "h": 3
+   },
+   "options": {
+    "mode": "markdown",
+    "content": "**Every backup job in one table: what it protects, where the copy lives, and how fresh it is.** Status is the age of the newest good copy against what that job is allowed: **OK** (under 70%) \u00b7 **AGING** (70-100%) \u00b7 **OVERDUE** (past its allowed age, an alert is raised) \u00b7 **NO DATA** (nothing reported at all). A failed or overdue backup sends a phone notice between 07:00 and 22:00 and nothing overnight (the 08:00 summary lists it too). Below the table: what is covered by what, which guests are in no job, the live alerts, and space on the backup targets."
+   }
+  },
+  {
+   "id": 2,
+   "type": "stat",
+   "title": "Backup status",
+   "description": "Jobs past their allowed age or with nothing reported. Zero = every tracked job is within its limit.",
+   "gridPos": {
+    "x": 0,
+    "y": 3,
+    "w": 4,
+    "h": 4
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "count(rl:backup_job_age_ratio >= 1) or vector(0)",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "suffix: overdue",
+     "mappings": [
+      {
+       "type": "value",
+       "options": {
+        "0": {
+         "text": "ALL OK",
+         "color": "green",
+         "index": 0
+        }
+       }
+      }
+     ],
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       },
+       {
+        "color": "red",
+        "value": 1
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   }
+  },
+  {
+   "id": 3,
+   "type": "stat",
+   "title": "Jobs tracked",
+   "description": "Rows in the table below. Add a job by adding a CATALOG entry in scripts/gen-backups.py.",
+   "gridPos": {
+    "x": 4,
+    "y": 3,
+    "w": 4,
+    "h": 4
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "count(rl:backup_job_age_ratio)",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "none",
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "blue",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   }
+  },
+  {
+   "id": 4,
+   "type": "stat",
+   "title": "Backup alerts firing",
+   "description": "",
+   "gridPos": {
+    "x": 8,
+    "y": 3,
+    "w": 4,
+    "h": 4
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "count(ALERTS{alertname=~\"(Backup|HyperBackup|NodeBackup|NodeImageBackup).*\", alertstate=\"firing\"}) or vector(0)",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "suffix: firing",
+     "mappings": [
+      {
+       "type": "value",
+       "options": {
+        "0": {
+         "text": "none",
+         "color": "green",
+         "index": 0
+        }
+       }
+      }
+     ],
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       },
+       {
+        "color": "orange",
+        "value": 1
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   }
+  },
+  {
+   "id": 5,
+   "type": "stat",
+   "title": "Oldest good copy",
+   "description": "Age of the stalest backup among jobs that report. Jobs with nothing reported are in the table as NO DATA.",
+   "gridPos": {
+    "x": 12,
+    "y": 3,
+    "w": 4,
+    "h": 4
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "max(rl:backup_job_age_seconds < 5e9)",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s",
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       },
+       {
+        "color": "orange",
+        "value": 172800
+       },
+       {
+        "color": "red",
+        "value": 604800
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   }
+  },
+  {
+   "id": 6,
+   "type": "gauge",
+   "title": "NAS volume used",
+   "description": "The NAS volume that holds the first copy of everything (and all Proxmox dumps).",
+   "gridPos": {
+    "x": 16,
+    "y": 3,
+    "w": 4,
+    "h": 4
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "pve_disk_usage_bytes{id=\"storage/pve0/nas-pdx\"} / pve_disk_size_bytes{id=\"storage/pve0/nas-pdx\"}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percentunit",
+     "min": 0,
+     "max": 1,
+     "decimals": 0,
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       },
+       {
+        "color": "orange",
+        "value": 0.8
+       },
+       {
+        "color": "red",
+        "value": 0.9
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    },
+    "showThresholdMarkers": true
+   }
+  },
+  {
+   "id": 7,
+   "type": "gauge",
+   "title": "pi-pcb disk used",
+   "description": "The single off-site disk in Panama City Beach.",
+   "gridPos": {
+    "x": 20,
+    "y": 3,
+    "w": 4,
+    "h": 4
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "pve_disk_usage_bytes{id=\"storage/pve0/pi-pcb\"} / pve_disk_size_bytes{id=\"storage/pve0/pi-pcb\"}",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percentunit",
+     "min": 0,
+     "max": 1,
+     "decimals": 0,
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       },
+       {
+        "color": "orange",
+        "value": 0.8
+       },
+       {
+        "color": "red",
+        "value": 0.9
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    },
+    "showThresholdMarkers": true
+   }
+  },
+  {
+   "id": 8,
+   "type": "row",
+   "title": "Every backup job",
+   "gridPos": {
+    "x": 0,
+    "y": 7,
+    "w": 24,
+    "h": 1
+   },
+   "collapsed": false,
+   "panels": []
+  },
+  {
+   "id": 9,
+   "type": "table",
+   "title": "Backup jobs: status and coverage",
+   "description": "One row per backup job. Source of truth: scripts/gen-backups.py (CATALOG).",
+   "gridPos": {
+    "x": 0,
+    "y": 8,
+    "w": 24,
+    "h": 14
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rl:backup_job_age_seconds",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rl:backup_job_age_ratio",
+     "refId": "B",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "auto",
+      "cellOptions": {
+       "type": "auto"
+      },
+      "filterable": true
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Status"
+      },
+      "properties": [
+       {
+        "id": "mappings",
+        "value": [
+         {
+          "type": "range",
+          "options": {
+           "from": 0,
+           "to": 0.7,
+           "result": {
+            "text": "OK",
+            "color": "green",
+            "index": 0
+           }
+          }
+         },
+         {
+          "type": "range",
+          "options": {
+           "from": 0.7,
+           "to": 1,
+           "result": {
+            "text": "AGING",
+            "color": "orange",
+            "index": 1
+           }
+          }
+         },
+         {
+          "type": "range",
+          "options": {
+           "from": 1,
+           "to": 1000,
+           "result": {
+            "text": "OVERDUE",
+            "color": "red",
+            "index": 2
+           }
+          }
+         },
+         {
+          "type": "range",
+          "options": {
+           "from": 1000,
+           "to": 1000000000000000.0,
+           "result": {
+            "text": "NO DATA",
+            "color": "purple",
+            "index": 3
+           }
+          }
+         }
+        ]
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-background",
+         "mode": "basic"
+        }
+       },
+       {
+        "id": "custom.width",
+        "value": 110
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Last good copy (ago)"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "s"
+       },
+       {
+        "id": "mappings",
+        "value": [
+         {
+          "type": "range",
+          "options": {
+           "from": 5000000000.0,
+           "to": 1000000000000000.0,
+           "result": {
+            "text": "nothing reported",
+            "color": "purple",
+            "index": 0
+           }
+          }
+         }
+        ]
+       },
+       {
+        "id": "custom.width",
+        "value": 150
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Job"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 230
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "What it protects"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 380
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Where the copy lives"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 330
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm"
+   },
+   "transformations": [
+    {
+     "id": "merge",
+     "options": {}
+    },
+    {
+     "id": "sortBy",
+     "options": {
+      "sort": [
+       {
+        "field": "Order"
+       }
+      ]
+     }
+    },
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {
+       "Time": true,
+       "Order": true
+      },
+      "renameByName": {
+       "Value #A": "Last good copy (ago)",
+       "Value #B": "Status",
+       "Protects": "What it protects",
+       "Stored_at": "Where the copy lives",
+       "Schedule": "Schedule and retention"
+      },
+      "indexByName": {
+       "Value #B": 0,
+       "Job": 1,
+       "Protects": 2,
+       "Stored_at": 3,
+       "Schedule": 4,
+       "Value #A": 5
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": 10,
+   "type": "timeseries",
+   "title": "How old each backup is, against what it is allowed (1.0 = overdue)",
+   "description": "Each line is a job. A healthy job saw-tooths up toward 1 and drops back after each run. A line that keeps climbing past 1 is a failing job.",
+   "gridPos": {
+    "x": 0,
+    "y": 22,
+    "w": 24,
+    "h": 8
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rl:backup_job_age_ratio < 1000",
+     "refId": "A",
+     "instant": false,
+     "range": true,
+     "legendFormat": "{{Job}}"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "none",
+     "min": 0,
+     "max": 2,
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 0,
+      "thresholdsStyle": {
+       "mode": "line"
+      }
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       },
+       {
+        "color": "red",
+        "value": 1
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "table",
+     "placement": "right",
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "desc"
+    }
+   }
+  },
+  {
+   "id": 11,
+   "type": "row",
+   "title": "What is covered by what",
+   "gridPos": {
+    "x": 0,
+    "y": 30,
+    "w": 24,
+    "h": 1
+   },
+   "collapsed": false,
+   "panels": []
+  },
+  {
+   "id": 12,
+   "type": "text",
+   "title": "Coverage map",
+   "gridPos": {
+    "x": 0,
+    "y": 31,
+    "w": 16,
+    "h": 12
+   },
+   "options": {
+    "mode": "markdown",
+    "content": "| What | Copy at home | Copy off-site (pi-pcb) | Notes |\n|---|---|---|---|\n| **VMs and containers** | NAS dumps, nightly (3 daily + 3 weekly) | Proxmox dumps, 1st and 15th (last 2) | Guests in no job are listed on the right |\n| **Home Assistant** | Its own backup to the NAS, nightly | Same backup copied to pi-pcb | The VM is also in the nightly NAS dump (not off-site) |\n| **Paperless documents, home folders** | NAS shares *Poss*, *homes* | Hyper Backup *nas_hq_set2*, daily, versioned | Not encrypted |\n| **Paperless export** | NAS *Poss/paperless/export* | Included with *Poss* | No schedule exists; last run by hand |\n| **MemoryVault** (family photos, videos) | NAS | Hyper Backup *nas_hq*, daily, plain copy | No old versions |\n| **Home Videos, Books** | NAS *Media* | Hyper Backup *nas_hq* | Rest of *Media* is not copied |\n| **FreePBX (pbx2), ChannelsDVR** | NAS *Backups* share, nightly | Copied by *nas_hq* with the *Backups* share | |\n| **Remote nodes** (pi-pcb, pi-pdx, vps-sjc, pbx2) | NAS *Backups/<node>*, nightly, encrypted | *nas_hq* copies the *Backups* share | Folders are new: first off-site copy not yet confirmed |\n| **Not backed up** | | | *Movies*, *TV Shows*, *Other* (about 7.6 TB, replaceable) \u00b7 shares *Public*, *Surveillance*, *Time Machine*, *Encypted* (in neither Hyper Backup task) |\n\nBoth off-site copies live on one disk at one site. Nothing is in the cloud, and nothing is immutable."
+   }
+  },
+  {
+   "id": 13,
+   "type": "table",
+   "title": "Guests in NO nightly NAS job",
+   "description": "Running ones are a risk: nothing is copying them. Stopped ones may be intentional.",
+   "gridPos": {
+    "x": 16,
+    "y": 31,
+    "w": 8,
+    "h": 6
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(pve_guest_info{template=\"0\"} * on(id) group_left() pve_up, \"vmid\", \"$1\", \"id\", \".*/(.*)\") unless on(vmid) rl_pve_backup_expected{storage=\"nas-pdx\"}",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "auto",
+      "cellOptions": {
+       "type": "auto"
+      }
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "State"
+      },
+      "properties": [
+       {
+        "id": "mappings",
+        "value": [
+         {
+          "type": "value",
+          "options": {
+           "1": {
+            "text": "running",
+            "color": "red",
+            "index": 0
+           },
+           "0": {
+            "text": "stopped",
+            "color": "text",
+            "index": 1
+           }
+          }
+         }
+        ]
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-text"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm",
+    "sortBy": [
+     {
+      "displayName": "State",
+      "desc": true
+     }
+    ]
+   },
+   "transformations": [
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {
+       "Time": true,
+       "host": true,
+       "id": true,
+       "node": true,
+       "site": true,
+       "template": true,
+       "tags": true,
+       "instance": true,
+       "job": true,
+       "critical": true
+      },
+      "renameByName": {
+       "name": "Guest",
+       "vmid": "ID",
+       "type": "Type",
+       "Value": "State"
+      },
+      "indexByName": {
+       "name": 0,
+       "vmid": 1,
+       "type": 2,
+       "Value": 3
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": 14,
+   "type": "table",
+   "title": "Guests NOT copied off-site",
+   "description": "These exist only at home (plus the nightly NAS dump if they are in that job).",
+   "gridPos": {
+    "x": 16,
+    "y": 37,
+    "w": 8,
+    "h": 6
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "label_replace(pve_guest_info{template=\"0\"} * on(id) group_left() pve_up, \"vmid\", \"$1\", \"id\", \".*/(.*)\") unless on(vmid) rl_pve_backup_expected{storage=\"pi-pcb\"}",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "auto",
+      "cellOptions": {
+       "type": "auto"
+      }
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "State"
+      },
+      "properties": [
+       {
+        "id": "mappings",
+        "value": [
+         {
+          "type": "value",
+          "options": {
+           "1": {
+            "text": "running",
+            "color": "red",
+            "index": 0
+           },
+           "0": {
+            "text": "stopped",
+            "color": "text",
+            "index": 1
+           }
+          }
+         }
+        ]
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-text"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm",
+    "sortBy": [
+     {
+      "displayName": "State",
+      "desc": true
+     }
+    ]
+   },
+   "transformations": [
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {
+       "Time": true,
+       "host": true,
+       "id": true,
+       "node": true,
+       "site": true,
+       "template": true,
+       "tags": true,
+       "instance": true,
+       "job": true,
+       "critical": true
+      },
+      "renameByName": {
+       "name": "Guest",
+       "vmid": "ID",
+       "type": "Type",
+       "Value": "State"
+      },
+      "indexByName": {
+       "name": 0,
+       "vmid": 1,
+       "type": 2,
+       "Value": 3
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": 15,
+   "type": "row",
+   "title": "Proxmox guests",
+   "gridPos": {
+    "x": 0,
+    "y": 43,
+    "w": 24,
+    "h": 1
+   },
+   "collapsed": false,
+   "panels": []
+  },
+  {
+   "id": 16,
+   "type": "table",
+   "title": "Backup freshness (per guest, per target)",
+   "description": "Allowed age: 30 h for the nightly NAS job, 17 days for the twice-monthly off-site copy. Red = overdue.",
+   "gridPos": {
+    "x": 0,
+    "y": 44,
+    "w": 14,
+    "h": 11
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "max by (name, storage) (time() - rl_pve_backup_last_success_timestamp_seconds)",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "max by (name, storage) ((time() - rl_pve_backup_last_success_timestamp_seconds) / on(storage) group_left max by (storage) (rl_pve_backup_max_age_seconds))",
+     "refId": "B",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "auto",
+      "cellOptions": {
+       "type": "auto"
+      },
+      "filterable": true
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Last good backup (ago)"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "s"
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "Of allowed age"
+      },
+      "properties": [
+       {
+        "id": "unit",
+        "value": "percentunit"
+       },
+       {
+        "id": "thresholds",
+        "value": {
+         "mode": "absolute",
+         "steps": [
+          {
+           "color": "green",
+           "value": null
+          },
+          {
+           "color": "orange",
+           "value": 0.7
+          },
+          {
+           "color": "red",
+           "value": 1
+          }
+         ]
+        }
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "gauge",
+         "mode": "basic",
+         "valueDisplayMode": "text"
+        }
+       },
+       {
+        "id": "decimals",
+        "value": 0
+       },
+       {
+        "id": "min",
+        "value": 0
+       },
+       {
+        "id": "max",
+        "value": 1
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm",
+    "sortBy": [
+     {
+      "displayName": "Of allowed age",
+      "desc": true
+     }
+    ]
+   },
+   "transformations": [
+    {
+     "id": "merge",
+     "options": {}
+    },
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {
+       "Time": true
+      },
+      "renameByName": {
+       "name": "Guest",
+       "storage": "Target",
+       "Value #A": "Last good backup (ago)",
+       "Value #B": "Of allowed age"
+      },
+      "indexByName": {
+       "name": 0,
+       "storage": 1,
+       "Value #A": 2,
+       "Value #B": 3
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": 17,
+   "type": "stat",
+   "title": "Last backup run",
+   "description": "",
+   "gridPos": {
+    "x": 14,
+    "y": 44,
+    "w": 5,
+    "h": 4
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rl_pve_vzdump_last_ok",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "none",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "red",
+        "value": null
+       },
+       {
+        "color": "green",
+        "value": 1
+       }
+      ]
+     },
+     "mappings": [
+      {
+       "type": "value",
+       "options": {
+        "1": {
+         "text": "OK",
+         "color": "green"
+        },
+        "0": {
+         "text": "ERRORS",
+         "color": "red"
+        }
+       }
+      }
+     ],
+     "color": {
+      "mode": "thresholds"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   }
+  },
+  {
+   "id": 18,
+   "type": "stat",
+   "title": "Unprotected guests",
+   "description": "Guests Proxmox says are in no backup job (stopped ones may be intentional).",
+   "gridPos": {
+    "x": 19,
+    "y": 44,
+    "w": 5,
+    "h": 4
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "pve_not_backed_up_total",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "none",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       },
+       {
+        "color": "orange",
+        "value": 1
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   }
+  },
+  {
+   "id": 19,
+   "type": "timeseries",
+   "title": "Backup age by target (oldest guest)",
+   "description": "",
+   "gridPos": {
+    "x": 14,
+    "y": 48,
+    "w": 10,
+    "h": 7
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "max by (storage) (time() - rl_pve_backup_last_success_timestamp_seconds)",
+     "refId": "A",
+     "instant": false,
+     "range": true,
+     "legendFormat": "{{storage}}"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10,
+      "showPoints": "never",
+      "stacking": {
+       "mode": "none"
+      },
+      "thresholdsStyle": {
+       "mode": "off"
+      }
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom",
+     "showLegend": true
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "desc"
+    }
+   }
+  },
+  {
+   "id": 20,
+   "type": "stat",
+   "title": "HB version",
+   "description": "Newest committed Hyper Backup version number (last value seen, kept up to 30 days).",
+   "gridPos": {
+    "x": 14,
+    "y": 55,
+    "w": 5,
+    "h": 4
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "max(last_over_time(rl_hyperbackup_last_version[30d]))",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "none",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "#6b7280",
+        "value": null
+       }
+      ]
+     },
+     "mappings": [],
+     "color": {
+      "mode": "thresholds"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "justifyMode": "center",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   }
+  },
+  {
+   "id": 21,
+   "type": "row",
+   "title": "Alerts and notifications",
+   "gridPos": {
+    "x": 0,
+    "y": 59,
+    "w": 24,
+    "h": 1
+   },
+   "collapsed": false,
+   "panels": []
+  },
+  {
+   "id": 22,
+   "type": "table",
+   "title": "Backup alerts right now",
+   "description": "Empty = nothing wrong. Pending = noticed, waiting out a short delay before it is raised.",
+   "gridPos": {
+    "x": 0,
+    "y": 60,
+    "w": 12,
+    "h": 8
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "ALERTS{alertname=~\"(Backup|HyperBackup|NodeBackup|NodeImageBackup).*\", alertstate=~\"firing|pending\"}",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "auto",
+      "cellOptions": {
+       "type": "auto"
+      }
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "State"
+      },
+      "properties": [
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-text"
+        }
+       },
+       {
+        "id": "mappings",
+        "value": [
+         {
+          "type": "value",
+          "options": {
+           "firing": {
+            "color": "red",
+            "index": 0
+           },
+           "pending": {
+            "color": "orange",
+            "index": 1
+           }
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm"
+   },
+   "transformations": [
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {
+       "Time": true,
+       "Value": true,
+       "__name__": true,
+       "severity": true,
+       "site": true,
+       "job": true,
+       "instance": true,
+       "alertgroup": true
+      },
+      "renameByName": {
+       "alertname": "Alert",
+       "alertstate": "State",
+       "host": "Host",
+       "repo": "Task",
+       "artifact": "Backup file set",
+       "storage": "Target",
+       "name": "Guest",
+       "backup": "Kind"
+      },
+      "indexByName": {
+       "alertname": 0,
+       "alertstate": 1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": 23,
+   "type": "text",
+   "title": "When you hear about it",
+   "gridPos": {
+    "x": 12,
+    "y": 60,
+    "w": 12,
+    "h": 8
+   },
+   "options": {
+    "mode": "markdown",
+    "content": "A failed or overdue backup sends a phone notice between **07:00 and 22:00**, repeated every 6 hours until fixed. Nothing overnight: a problem found at night goes out when the window opens at 07:00 (and is in the 08:00 summary).\n\n| Alert | Raised when |\n|---|---|\n| *BackupJobFailed* | the last Proxmox backup run reported errors (about 10 minutes after the run) |\n| *BackupMissing / NeverRan* | a guest has no good copy within the job's allowed age (30 h NAS, 17 d off-site) |\n| *HyperBackupStale* | no Hyper Backup commit for 26 h (daily tasks) |\n| *NodeBackupFailed / Stale* | a node's nightly backup failed (10 min) or none for 27 h |\n| *BackupArtifactStale* | Home Assistant, FreePBX, ChannelsDVR, a node's file on the NAS, or the Paperless export is older than its limit |\n| *...CollectorStale* | a checker stopped reporting, so its alerts are blind |\n\nJob limits live next to each backup: Proxmox in `pve-backup-metrics.py`, files in Ansible `monitoring_backup_artifacts`."
+   }
+  },
+  {
+   "id": 24,
+   "type": "row",
+   "title": "Space on the backup targets",
+   "gridPos": {
+    "x": 0,
+    "y": 68,
+    "w": 24,
+    "h": 1
+   },
+   "collapsed": false,
+   "panels": []
+  },
+  {
+   "id": 25,
+   "type": "timeseries",
+   "title": "Space used",
+   "gridPos": {
+    "x": 0,
+    "y": 69,
+    "w": 12,
+    "h": 7
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "pve_disk_usage_bytes{id=~\"storage/pve0/(nas-pdx|pi-pcb)\"} / pve_disk_size_bytes{id=~\"storage/pve0/(nas-pdx|pi-pcb)\"}",
+     "refId": "A",
+     "instant": false,
+     "range": true,
+     "legendFormat": "{{id}}"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percentunit",
+     "min": 0,
+     "max": 1,
+     "custom": {
+      "lineWidth": 2,
+      "fillOpacity": 5,
+      "thresholdsStyle": {
+       "mode": "line"
+      }
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       },
+       {
+        "color": "red",
+        "value": 0.85
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "id": 26,
+   "type": "timeseries",
+   "title": "Free space",
+   "gridPos": {
+    "x": 12,
+    "y": 69,
+    "w": 12,
+    "h": 7
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "pve_disk_size_bytes{id=~\"storage/pve0/(nas-pdx|pi-pcb)\"} - pve_disk_usage_bytes{id=~\"storage/pve0/(nas-pdx|pi-pcb)\"}",
+     "refId": "A",
+     "instant": false,
+     "range": true,
+     "legendFormat": "{{id}}"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "bytes",
+     "min": 0,
+     "custom": {
+      "lineWidth": 2,
+      "fillOpacity": 5
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  }
+ ]
+}

@@ -57,6 +57,13 @@
    "url": "/d/rl-transit",
    "icon": "dashboard",
    "targetBlank": false
+  },
+  {
+   "title": "Backups",
+   "type": "link",
+   "url": "/d/rl-backups",
+   "icon": "dashboard",
+   "targetBlank": false
   }
  ],
  "panels": [
@@ -502,7 +509,7 @@
    "id": 7,
    "type": "stat",
    "title": "Backups",
-   "description": "",
+   "description": "Backup jobs past their allowed age, across every backup (guests, Hyper Backup, Home Assistant, nodes...). Click for the Backups page.",
    "gridPos": {
     "x": 18,
     "y": 0,
@@ -519,7 +526,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "count(((time() - rl_pve_backup_last_success_timestamp_seconds) > on(storage) group_left rl_pve_backup_max_age_seconds) and on(vmid, storage) rl_pve_backup_expected == 1) or vector(0)",
+     "expr": "count(rl:backup_job_age_ratio >= 1) or vector(0)",
      "refId": "A",
      "instant": true,
      "range": false
@@ -527,7 +534,7 @@
    ],
    "fieldConfig": {
     "defaults": {
-     "unit": "none",
+     "unit": "suffix: overdue",
      "thresholds": {
       "mode": "absolute",
       "steps": [
@@ -554,7 +561,13 @@
      ],
      "color": {
       "mode": "thresholds"
-     }
+     },
+     "links": [
+      {
+       "title": "Open the Backups page",
+       "url": "/d/rl-backups"
+      }
+     ]
     },
     "overrides": []
    },

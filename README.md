@@ -28,6 +28,7 @@ things worth investigating.
 |---|---|---|
 | `critical` | crippling, worth waking up | Pushover **emergency** priority: repeats every 5 min until you acknowledge (max 1 h) |
 | `warning` | look at it tomorrow (missed backup, cert expiring, disk 85%, service down at home...) | **no individual message.** Listed in the **08:00 summary** (see below) |
+| `warning` + backup alert (`Backup*`, `HyperBackup*`, `NodeBackup*`) | a backup failed or is overdue | **normal-priority push** 07:00-22:00 PT, repeated every 6 h; overnight it waits for 07:00 / the 08:00 summary |
 | `warning` + `SiteDown` | a whole remote site (Panama City Beach, San Jose) is unreachable | **normal-priority push** 07:00-22:00 PT (and again when it recovers); overnight it waits for 07:00 / the 08:00 summary |
 
 **08:00 summary** (`scripts/daily-summary.py`, timer `rl-daily-summary`): one Pushover message every morning listing every alert that fired in the last
@@ -44,11 +45,22 @@ site; home internet down → all remote/public alerts; gateway down → everythi
 host down → its own services; tailnet trouble → agent-down alerts.
 
 ## Backups covered
-* **Proxmox guests** (nightly to the NAS, 1st/15th to pi-pcb): freshness per guest per target, expected set derived from the backup jobs.
-* **NAS Hyper Backup** (`nas_hq_set2`, daily ~09:35 PT, destination = pi-pcb over rsync): read from the *destination* on pi-pcb, so the
-  NAS needs no credentials or SSH. Each committed backup writes `Config/version_info.db.<N>`; the newest N and its mtime are exported by
-  `rl-hyperbackup-metrics.sh`. `HyperBackupStale` fires after 28 h without a new version, `HyperBackupStuck` after 12 h of continuous running.
-  Other Hyper Backup tasks that write elsewhere (USB, cloud, another host) are NOT visible this way.
+The **Backups** dashboard (`/d/rl-backups`) lists every backup job: what it protects, where the copy lives, its schedule and whether it is fresh,
+plus what is covered by what, guests that are in no job, live backup alerts and space on the targets. It is generated from ONE catalog:
+`scripts/gen-backups.py` (CATALOG) writes both `prometheus/rules/45-backup-status.yml` (records `rl:backup_job_age_seconds` / `rl:backup_job_age_ratio`)
+and `grafana/dashboards/backups.json`. **To add a backup: add a CATALOG entry, `python3 scripts/gen-backups.py`, then `sudo ./scripts/apply.sh`.**
+* **Proxmox guests** (nightly 20:00 to the NAS, 1st/15th to pi-pcb): freshness per guest per target, expected set derived from the backup jobs.
+  `BackupJobFailed` fires ~10 min after a run with errors, `BackupMissing` when a guest is past the allowed age (`MAX_AGE`).
+* **NAS Hyper Backup**, two daily tasks to pi-pcb (`nas_hq` 06:00 folder copy of Backups/Media/MemoryVault, `nas_hq_set2` 09:30 versioned Poss/homes):
+  read from the *destination* on pi-pcb, so the NAS needs no credentials or SSH (`rl-hyperbackup-metrics.sh`, Ansible role monitoring_agent).
+  Versioned repos: mtime of `Config/version_info.db.<N>`; folder repos: mtime of `synobkpinfo.db` (rewritten only when a run completes).
+  `HyperBackupStale` fires after 26 h without a commit, `HyperBackupStuck` after 12 h of continuous running.
+* **Backup files other systems write** (Home Assistant native + its off-site copy, FreePBX, ChannelsDVR, each node's rl-backup as it lands on the NAS,
+  the Paperless export): `rl-backup-artifacts.sh`, driven by `monitoring_backup_artifacts` in Ansible host_vars (pve0, node1-jolly). Each has its own
+  max age; `BackupArtifactStale` / `BackupArtifactMissing` / `BackupArtifactCollectorStale`. Add a line there for a new one (and a CATALOG entry).
+* **Node rl-backup** (pi-pcb, vps-sjc, vps-bos/pbx2, pi-pdx): `NodeBackupStale` after 27 h, `NodeBackupFailed` 10 min after a failed attempt.
+* **Delivery:** alerts named `Backup*`, `HyperBackup*`, `NodeBackup*`, `NodeImageBackup*` are pushed (normal priority) 07:00-22:00 PT and repeated every 6 h
+  until fixed; overnight they wait for 07:00 (and are in the 08:00 summary). Route: `backup-notice` in `alertmanager/alertmanager.yml`.
 * Alert rule unit tests live in `prometheus/tests/` and run on every `apply.sh`.
 
 ## DNS replication
@@ -118,7 +130,7 @@ server's page and tests the SSO server, not your app. Public checks run on vps-s
 * A host's down-alert becomes critical with `critical: "true"` in `hosts.yml`.
 * Promote/demote any alert: change its `severity:` label to `critical` or `warning`.
 * Known-benign failed systemd units are excluded in `rules/10-hosts.yml` (`SystemdUnitFailed`).
-* Backup allowed age per target: `MAX_AGE` in `scripts/pve-backup-metrics.py`.
+* Backup allowed age per target: `MAX_AGE` in `scripts/pve-backup-metrics.py`; for files other systems write: `monitoring_backup_artifacts` in Ansible host_vars; Hyper Backup: `26 * 3600` in `HyperBackupStale`.
 * Maintenance window: `sudo ./scripts/silence.sh <host> 2h "reason"`.
 * Test the notification path: `sudo ./scripts/test-notify.sh critical` (it will keep buzzing until you acknowledge).
 

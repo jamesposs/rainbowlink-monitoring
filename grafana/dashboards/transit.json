@@ -57,6 +57,13 @@
    "url": "/d/rl-services",
    "icon": "dashboard",
    "targetBlank": false
+  },
+  {
+   "title": "Backups",
+   "type": "link",
+   "url": "/d/rl-backups",
+   "icon": "dashboard",
+   "targetBlank": false
   }
  ],
  "description": "Live TriMet arrivals from Home Assistant (sensors with an 'arrivals' attribute are discovered automatically).",
@@ -87,7 +94,7 @@
      "instant": true,
      "range": false,
      "format": "time_series",
-     "legendFormat": "{{name}} \u00b7 {{line}} to {{destination}}"
+     "legendFormat": "{{name}} · {{line}} to {{destination}}"
     }
    ],
    "fieldConfig": {

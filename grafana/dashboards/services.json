@@ -57,6 +57,13 @@
    "url": "/d/rl-transit",
    "icon": "dashboard",
    "targetBlank": false
+  },
+  {
+   "title": "Backups",
+   "type": "link",
+   "url": "/d/rl-backups",
+   "icon": "dashboard",
+   "targetBlank": false
   }
  ],
  "panels": [

@@ -57,6 +57,13 @@
    "url": "/d/rl-transit",
    "icon": "dashboard",
    "targetBlank": false
+  },
+  {
+   "title": "Backups",
+   "type": "link",
+   "url": "/d/rl-backups",
+   "icon": "dashboard",
+   "targetBlank": false
   }
  ],
  "description": "One tile per service: No Issues, Degraded or Outage. What each state means is defined in prometheus/rules/70-service-status.yml.",
@@ -554,7 +561,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace(label_join(ALERTS{alertstate=\"firing\", alertname!=\"Watchdog\"}, \"detail\", \" \u00b7 \", \"service\", \"name\", \"storage\", \"zone\", \"server\", \"ext\", \"trunk\", \"tunnel\", \"to\", \"repo\", \"id\", \"vmid\"), \"detail\", \"$1 \u00b7 $2\", \"detail\", \"^(.*?)(?: \u00b7 ){2,}(.*)$\"), \"detail\", \"$1 \u00b7 $2\", \"detail\", \"^(.*?)(?: \u00b7 ){2,}(.*)$\"), \"detail\", \"$1\", \"detail\", \"^(?: \u00b7 )*(.*?)(?: \u00b7 )*$\")",
+     "expr": "label_replace(label_replace(label_replace(label_join(ALERTS{alertstate=\"firing\", alertname!=\"Watchdog\"}, \"detail\", \" · \", \"service\", \"name\", \"storage\", \"zone\", \"server\", \"ext\", \"trunk\", \"tunnel\", \"to\", \"repo\", \"id\", \"vmid\"), \"detail\", \"$1 · $2\", \"detail\", \"^(.*?)(?: · ){2,}(.*)$\"), \"detail\", \"$1 · $2\", \"detail\", \"^(.*?)(?: · ){2,}(.*)$\"), \"detail\", \"$1\", \"detail\", \"^(?: · )*(.*?)(?: · )*$\")",
      "refId": "A",
      "instant": true,
      "range": false,

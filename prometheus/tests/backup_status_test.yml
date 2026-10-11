@@ -1,0 +1,40 @@
+# Unit tests for the backup status records that feed the Backups dashboard (generated rules: rules/45-backup-status.yml).
+rule_files:
+  - ../rules/45-backup-status.yml
+evaluation_interval: 1m
+
+tests:
+  # Only the nas_hq commit is reported (30 h old; allowed 26 h). Every other job must still appear, as NO DATA, never vanish.
+  - interval: 1m
+    input_series:
+      - series: 'rl_hyperbackup_last_commit_timestamp_seconds{repo="nas_hq"}'
+        values: '0x3000'
+    promql_expr_test:
+      - expr: count(rl:backup_job_age_ratio)
+        eval_time: 30h
+        exp_samples:
+          - {labels: '{}', value: 13}
+      - expr: count(rl:backup_job_age_ratio{Order="03"} > 1.15 and rl:backup_job_age_ratio{Order="03"} < 1.16)
+        eval_time: 30h
+        exp_samples:
+          - {labels: '{}', value: 1}            # 30 h / 26 h = 1.154 -> OVERDUE
+      - expr: count(rl:backup_job_age_ratio{Order="09"} > 1e6)
+        eval_time: 30h
+        exp_samples:
+          - {labels: '{}', value: 1}            # no data for the Paperless export -> NO DATA, not hidden
+      - expr: count(rl:backup_job_age_ratio < 1)
+        eval_time: 30h
+        exp_samples: []                        # nothing reports a healthy age, so nothing is OK
+
+  # A fresh Home Assistant backup (5 h old, allowed 28 h) is OK.
+  - interval: 1m
+    input_series:
+      - series: 'rl_backup_artifact_last_write_timestamp_seconds{artifact="ha-native-nas"}'
+        values: '0+60x3000'                     # always "just now"
+      - series: 'rl_backup_artifact_max_age_seconds{artifact="ha-native-nas"}'
+        values: '100800x3000'
+    promql_expr_test:
+      - expr: count(rl:backup_job_age_ratio{Order="05"} < 0.01)
+        eval_time: 5h
+        exp_samples:
+          - {labels: '{}', value: 1}
