@@ -205,7 +205,7 @@ tests:
         values: '1x3000'
       - series: 'rl_pve_backup_expected_since_timestamp_seconds{vmid="136", name="tdarr", storage="nas-pdx"}'
         values: '0x3000'
-      - series: 'rl_pve_backup_max_age_seconds{storage="nas-pdx"}'
+      - series: 'rl_pve_backup_max_age_seconds{vmid="136", name="tdarr", storage="nas-pdx", cadence="nightly"}'
         values: '108000x3000'
     alert_rule_test:
       - eval_time: 20h
@@ -352,3 +352,36 @@ tests:
           - exp_labels: {severity: warning, host: pve0}
             exp_annotations:
               summary: "Backup-file freshness check on pve0 stopped reporting (those alerts are blind)"
+
+  # The allowed age follows each guest's job: 30 h nightly, 9 days weekly. Same storage, same last-backup age (40 h):
+  # the nightly guest (100) is overdue, the weekly guest (110) is fine until 9 days.
+  - interval: 1m
+    input_series:
+      - series: 'rl_pve_backup_expected{vmid="100", name="web", storage="nas-pdx", cadence="nightly"}'
+        values: '1x15000'
+      - series: 'rl_pve_backup_expected{vmid="110", name="homeassistant", storage="nas-pdx", cadence="weekly"}'
+        values: '1x15000'
+      - series: 'rl_pve_backup_last_success_timestamp_seconds{vmid="100", name="web", storage="nas-pdx"}'
+        values: '0x15000'
+      - series: 'rl_pve_backup_last_success_timestamp_seconds{vmid="110", name="homeassistant", storage="nas-pdx"}'
+        values: '0x15000'
+      - series: 'rl_pve_backup_max_age_seconds{vmid="100", name="web", storage="nas-pdx", cadence="nightly"}'
+        values: '108000x15000'
+      - series: 'rl_pve_backup_max_age_seconds{vmid="110", name="homeassistant", storage="nas-pdx", cadence="weekly"}'
+        values: '777600x15000'
+    alert_rule_test:
+      - eval_time: 40h
+        alertname: BackupMissing
+        exp_alerts:
+          - exp_labels: {severity: warning, site: pdx, vmid: "100", name: web, storage: nas-pdx}
+            exp_annotations:
+              summary: "No recent backup of web on nas-pdx (last one 1d 16h 0m 0s ago)"
+      - eval_time: 10d
+        alertname: BackupMissing
+        exp_alerts:
+          - exp_labels: {severity: warning, site: pdx, vmid: "100", name: web, storage: nas-pdx}
+            exp_annotations:
+              summary: "No recent backup of web on nas-pdx (last one 10d 0h 0m 0s ago)"
+          - exp_labels: {severity: warning, site: pdx, vmid: "110", name: homeassistant, storage: nas-pdx}
+            exp_annotations:
+              summary: "No recent backup of homeassistant on nas-pdx (last one 10d 0h 0m 0s ago)"
