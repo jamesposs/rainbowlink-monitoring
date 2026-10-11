@@ -55,7 +55,7 @@ and `grafana/dashboards/backups.json`. **To add a backup: add a CATALOG entry, `
   (`pve-backup-metrics.py` reads each job's schedule), so changing a job needs no monitoring change. `BackupJobFailed` fires ~10 min after a
   run with errors, `BackupMissing` when a guest is past its job's allowed age. NOTE: Proxmox allows ONE vzdump at a time (global lock); keep
   job schedules from overlapping or the second one fails.
-* **NAS Hyper Backup**, two daily tasks to pi-pcb (`nas_hq` 06:00 folder copy of Backups/Media/MemoryVault, `nas_hq_set2` 09:30 versioned Poss/homes):
+* **NAS Hyper Backup**, two daily tasks to pi-pcb (`nas_hq` 06:00 plain folder copy of MemoryVault, Media (Home Videos, Books) and only some Backups folders (pbx is current; habackup, channelsdvr and the node folders are not copied), `nas_hq_set2` 09:30 versioned Poss/homes):
   read from the *destination* on pi-pcb, so the NAS needs no credentials or SSH (`rl-hyperbackup-metrics.sh`, Ansible role monitoring_agent).
   Versioned repos: mtime of `Config/version_info.db.<N>`; folder repos: mtime of `synobkpinfo.db` (rewritten only when a run completes).
   `HyperBackupStale` fires after 26 h without a commit, `HyperBackupStuck` after 12 h of continuous running.

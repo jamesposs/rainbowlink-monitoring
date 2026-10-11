@@ -40,7 +40,7 @@ CATALOG = [
      "The nightly guests, minus the heavy ones above, ChannelsDVR and dns2",
      "pi-pcb disk (Panama City Beach)", "Sundays 00:00 - keeps 4 weekly + 3 monthly", pve("pi-pcb", "weekly")),
     ("NAS folders -> off-site (nas_hq)",
-     "MemoryVault (photos, videos), the Backups share, Media: Home Videos and Books only",
+     "MemoryVault (photos, videos), Backups/pbx, Media: Home Videos and Books (other Backups folders are NOT copied)",
      "pi-pcb: plain folder copy, no old versions, not encrypted", "Hyper Backup, daily 06:00", hyper("nas_hq", 93600)),
     ("NAS folders -> off-site (nas_hq_set2)",
      "Poss (Paperless documents) and the home folders",
@@ -56,7 +56,7 @@ CATALOG = [
      "NAS share Backups/pbx/pbx2/Daily, then off-site by nas_hq", "Nightly about 03:15", artifact("freepbx-pbx2-nas")),
     ("ChannelsDVR -> NAS",
      "ChannelsDVR settings and database",
-     "NAS share Backups/channelsdvr, then off-site by nas_hq", "Nightly about 21:00", artifact("channelsdvr-nas")),
+     "NAS share Backups/channelsdvr only (the off-site copy stopped in March)", "Nightly about 21:00", artifact("channelsdvr-nas")),
     ("Paperless export",
      "Paperless database and document export (restore aid)",
      "NAS share Poss/paperless/export, off-site with Poss", "Weekly, Sundays 03:00 (systemd timer in the Paperless container) - flagged after 9 days", artifact("paperless-export")),
@@ -226,8 +226,9 @@ def build():
         "| **Paperless export** | NAS *Poss/paperless/export* | Included with *Poss* | Weekly, Sundays 03:00. Holds settings and tokens in plaintext |\n"
         "| **MemoryVault** (family photos, videos) | NAS | Hyper Backup *nas_hq*, daily, plain copy | No old versions |\n"
         "| **Home Videos, Books** | NAS *Media* | Hyper Backup *nas_hq* | Rest of *Media* is not copied |\n"
-        "| **FreePBX (pbx2), ChannelsDVR** | NAS *Backups* share, nightly | Copied by *nas_hq* with the *Backups* share | |\n"
-        "| **Remote nodes** (pi-pcb, pi-pdx, vps-sjc, pbx2) | NAS *Backups/<node>*, nightly, encrypted | *nas_hq* copies the *Backups* share | Folders are new: first off-site copy not yet confirmed |\n"
+        "| **FreePBX (pbx2)** | NAS *Backups/pbx*, nightly | Copied by *nas_hq* (this folder is current) | |\n"
+        "| **ChannelsDVR settings** | NAS *Backups/channelsdvr*, nightly | **None**: the *nas_hq* copy has not updated since March | Gap |\n"
+        "| **Remote nodes** (pi-pcb, pi-pdx, vps-sjc, pbx2) | NAS *Backups/<node>*, nightly, encrypted | **None** (checked 2026-10-11): *nas_hq* does not pick up these folders | Gap for pi-pdx, vps-sjc, pbx2: only on the NAS and the node itself |\n"
         "| **Not backed up** | | | *Movies*, *TV Shows*, *Other* (about 7.6 TB, replaceable) · shares *Public*, *Surveillance*, *Time Machine*, *Encypted* (in neither Hyper Backup task) |\n\n"
         "Both off-site copies live on one disk at one site. Nothing is in the cloud, and nothing is immutable.",
         0, y, 16, 12))
