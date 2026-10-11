@@ -47,18 +47,21 @@ groups:
 
   - name: hyperbackup
     rules:
-      # NAS -> pi-pcb Hyper Backup runs once a day (~09:35 PT). 28h = one day plus 4h grace.
-      # A failed/skipped run commits no new version, so staleness is the right signal.
+      # Two daily NAS -> pi-pcb Hyper Backup tasks: nas_hq (Backups, Media, MemoryVault; 06:00) and nas_hq_set2 (homes, Poss; 09:30).
+      # 26h = one day plus 2h grace, so a missed run is noticed late morning the next day, inside the 07:00-22:00 push window
+      # (see alertmanager.yml: alerts named Backup*/HyperBackup*/NodeBackup* are pushed during the day, never overnight).
+      # A failed/skipped run commits no new version, so staleness is the right signal. For nas_hq the "commit" is the mtime of its
+      # synobkpinfo.db, which Hyper Backup rewrites only when a run succeeds (verified against the DSM task status).
       - alert: HyperBackupStale
         # The backup is observed from its destination (pi-pcb). last_over_time keeps the last known commit for 30 days, so if pi-pcb goes
-        # offline the age keeps growing and this still fires after 28 h (a dead site cannot hide a missing backup).
+        # offline the age keeps growing and this still fires after 26 h (a dead site cannot hide a missing backup).
         # Labelled with the NAS (where the backup comes from), not pi-pcb, so a site/host outage does not silence it.
-        expr: (time() - last_over_time(rl_hyperbackup_last_commit_timestamp_seconds[30d])) > 28 * 3600
+        expr: (time() - last_over_time(rl_hyperbackup_last_commit_timestamp_seconds[30d])) > 26 * 3600
         for: 30m
         labels: {severity: warning, site: pdx, host: nas}
         annotations:
           summary: "No NAS Hyper Backup ({{ $labels.repo }}) has completed for {{ $value | humanizeDuration }}"
-          description: "Expected daily around 09:35. Check Hyper Backup on the NAS (task log) and the rsync link to pi-pcb. If Panama City Beach is offline (power or internet), the backup cannot run: this is a consequence of that outage."
+          description: "Both tasks run daily (nas_hq 06:00, nas_hq_set2 09:30). Open Hyper Backup on the NAS and read the task log: 'Failed to connect' / 'No response' means pi-pcb or the tailnet is down (likely if Panama City Beach lost power or internet). Once pi-pcb answers, press Back Up Now on the task."
       - alert: HyperBackupStuck
         expr: min_over_time(rl_hyperbackup_running[12h]) == 1
         labels: {severity: warning, site: pcb}
@@ -70,3 +73,64 @@ groups:
         for: 10m
         labels: {severity: warning}
         annotations: {summary: "Hyper Backup freshness check on {{ $labels.host }} stopped reporting (that alert is blind)"}
+
+  - name: node_backups
+    rules:
+      # rl-backup on each remote node (pi-pcb, vps-sjc, vps-bos/pbx2, pi-pdx): nightly encrypted config backup to the
+      # NAS Backups share (+ monthly full-card image on pi-pcb). Metrics come from the node_exporter textfile collector.
+      # Timers run 03:10-03:55; 27h = one night plus 3h grace, so a missed night is noticed around 07:00 (push window opens).
+      # A node that is simply offline is HostDown's job, so a missing series only fires while the node is up
+      # (BackupArtifactStale on the NAS side covers the "node is down and nothing landed" case).
+      - alert: NodeBackupStale
+        expr: (time() - rl_backup_last_success_timestamp_seconds{backup="config"}) > 27 * 3600
+        for: 30m
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.host }}: no successful config backup for {{ $value | humanizeDuration }}"
+          description: "Nightly rl-backup to the NAS Backups share. On the node: journalctl -u rl-backup -n 50 (NAS reachable? SMB password changed? share full?)."
+      - alert: NodeBackupFailed
+        # The node knows immediately when an attempt fails; do not wait for the staleness threshold.
+        expr: rl_backup_last_attempt_ok == 0
+        for: 10m
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.host }}: the last {{ $labels.backup }} backup attempt failed"
+          description: "On the node: journalctl -u rl-backup -u rl-backup-image -n 50 (NAS reachable? SMB password changed? share full? age key file present?)."
+      - alert: NodeImageBackupStale
+        expr: (time() - rl_backup_last_success_timestamp_seconds{backup="image"}) > 35 * 86400
+        for: 1h
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.host }}: no successful full-card image for {{ $value | humanizeDuration }}"
+          description: "Monthly image on the 1st. On the node: journalctl -u rl-backup-image -n 50."
+      - alert: NodeBackupMissing
+        expr: (up{job="node", host=~"pi-pcb|vps-sjc|vps-bos|pi-pdx"} == 1) unless on(host) rl_backup_last_attempt_timestamp_seconds{backup="config"}
+        for: 2h
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.host }} is up but reports no backup metrics (rl-backup not installed or never ran)"
+
+  - name: backup_artifacts
+    rules:
+      # Backups that OTHER systems write (Home Assistant, FreePBX, ChannelsDVR, each node's rl-backup landing on the NAS, the Paperless export,
+      # Home Assistant's off-site copy). scripts live in the Ansible role monitoring_agent (rl-backup-artifacts.sh); the list of artifacts and
+      # how old each may get is host_vars (monitoring_backup_artifacts). ADD A BACKUP = add a line there; no rule change.
+      - alert: BackupArtifactStale
+        expr: (time() - rl_backup_artifact_last_write_timestamp_seconds) > on(artifact, host) rl_backup_artifact_max_age_seconds
+        for: 30m
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.artifact }}: newest backup file is {{ $value | humanizeDuration }} old"
+          description: "This backup is written by another system (Home Assistant, FreePBX, ChannelsDVR, a node's rl-backup or the Paperless exporter). Check that system's own backup schedule and log, and that the destination share is reachable and not full."
+      - alert: BackupArtifactMissing
+        expr: rl_backup_artifact_found == 0
+        for: 1h
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.artifact }}: no backup files found at all"
+          description: "The folder is empty, renamed, or the share is not readable from {{ $labels.host }}."
+      - alert: BackupArtifactCollectorStale
+        expr: time() - rl_backup_artifact_run_timestamp_seconds > 1800
+        for: 10m
+        labels: {severity: warning}
+        annotations: {summary: "Backup-file freshness check on {{ $labels.host }} stopped reporting (those alerts are blind)"}

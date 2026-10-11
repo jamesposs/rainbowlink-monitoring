@@ -9,25 +9,25 @@ rule_files:
 evaluation_interval: 1m
 
 tests:
-  # Hyper Backup: daily ~09:35; alert only after 28h + 30m grace.
+  # Hyper Backup: daily tasks (06:00 / 09:30); alert only after 26h + 30m grace.
   - interval: 1m
     input_series:
       - series: 'rl_hyperbackup_last_commit_timestamp_seconds{repo="nas_hq_set2", host="pi-pcb"}'
         values: '0+0x6000'                      # last commit at t=0 and never again
     alert_rule_test:
+      - eval_time: 25h
+        alertname: HyperBackupStale
+        exp_alerts: []                          # 25h old: still within the daily window + grace
+      - eval_time: 26h20m
+        alertname: HyperBackupStale
+        exp_alerts: []                          # over 26h but inside the 30 min "for"
       - eval_time: 27h
-        alertname: HyperBackupStale
-        exp_alerts: []                          # 27h old: still within the daily window + grace
-      - eval_time: 28h20m
-        alertname: HyperBackupStale
-        exp_alerts: []                          # over 28h but inside the 30 min "for"
-      - eval_time: 29h
         alertname: HyperBackupStale
         exp_alerts:
           - exp_labels: {severity: warning, site: pdx, host: nas, repo: nas_hq_set2}
             exp_annotations:
-              summary: "No NAS Hyper Backup (nas_hq_set2) has completed for 1d 5h 0m 0s"
-              description: "Expected daily around 09:35. Check Hyper Backup on the NAS (task log) and the rsync link to pi-pcb. If Panama City Beach is offline (power or internet), the backup cannot run: this is a consequence of that outage."
+              summary: "No NAS Hyper Backup (nas_hq_set2) has completed for 1d 3h 0m 0s"
+              description: "Both tasks run daily (nas_hq 06:00, nas_hq_set2 09:30). Open Hyper Backup on the NAS and read the task log: 'Failed to connect' / 'No response' means pi-pcb or the tailnet is down (likely if Panama City Beach lost power or internet). Once pi-pcb answers, press Back Up Now on the task."
 
   # Fresh backups never alert.
   - interval: 1m
@@ -236,4 +236,119 @@ tests:
           - exp_labels: {severity: warning, site: pdx, host: nas, repo: nas_hq_set2}
             exp_annotations:
               summary: "No NAS Hyper Backup (nas_hq_set2) has completed for 1d 6h 0m 0s"
-              description: "Expected daily around 09:35. Check Hyper Backup on the NAS (task log) and the rsync link to pi-pcb. If Panama City Beach is offline (power or internet), the backup cannot run: this is a consequence of that outage."
+              description: "Both tasks run daily (nas_hq 06:00, nas_hq_set2 09:30). Open Hyper Backup on the NAS and read the task log: 'Failed to connect' / 'No response' means pi-pcb or the tailnet is down (likely if Panama City Beach lost power or internet). Once pi-pcb answers, press Back Up Now on the task."
+
+  # nas_hq (the plain-folder task: Backups, Media, MemoryVault) is judged exactly like the versioned one.
+  - interval: 1m
+    input_series:
+      - series: 'rl_hyperbackup_last_commit_timestamp_seconds{repo="nas_hq", host="pi-pcb"}'
+        values: '0x3000'
+    alert_rule_test:
+      - eval_time: 27h
+        alertname: HyperBackupStale
+        exp_alerts:
+          - exp_labels: {severity: warning, site: pdx, host: nas, repo: nas_hq}
+            exp_annotations:
+              summary: "No NAS Hyper Backup (nas_hq) has completed for 1d 3h 0m 0s"
+              description: "Both tasks run daily (nas_hq 06:00, nas_hq_set2 09:30). Open Hyper Backup on the NAS and read the task log: 'Failed to connect' / 'No response' means pi-pcb or the tailnet is down (likely if Panama City Beach lost power or internet). Once pi-pcb answers, press Back Up Now on the task."
+
+  # rl-backup: nightly config backup per remote node. Stale after 27h (+30m grace).
+  - interval: 1m
+    input_series:
+      - series: 'rl_backup_last_success_timestamp_seconds{backup="config", host="pi-pcb"}'
+        values: '0x3000'                        # never advances = stuck at epoch
+    alert_rule_test:
+      - eval_time: 26h
+        alertname: NodeBackupStale
+        exp_alerts: []
+      - eval_time: 28h
+        alertname: NodeBackupStale
+        exp_alerts:
+          - exp_labels: {severity: warning, backup: config, host: pi-pcb}
+            exp_annotations:
+              summary: "pi-pcb: no successful config backup for 1d 4h 0m 0s"
+              description: "Nightly rl-backup to the NAS Backups share. On the node: journalctl -u rl-backup -n 50 (NAS reachable? SMB password changed? share full?)."
+
+  # Fresh backups never alert; a node that is up but exports no backup series does (after 2h).
+  - interval: 1m
+    input_series:
+      - series: 'rl_backup_last_success_timestamp_seconds{backup="config", host="vps-sjc"}'
+        values: '0+60x6000'
+      - series: 'rl_backup_last_attempt_timestamp_seconds{backup="config", host="vps-sjc"}'
+        values: '0+60x6000'
+      - series: 'up{job="node", host="vps-sjc"}'
+        values: '1x6000'
+      - series: 'up{job="node", host="pi-pdx"}'
+        values: '1x6000'
+    alert_rule_test:
+      - eval_time: 40h
+        alertname: NodeBackupStale
+        exp_alerts: []
+      - eval_time: 3h
+        alertname: NodeBackupMissing
+        exp_alerts:
+          - exp_labels: {severity: warning, job: node, host: pi-pdx}
+            exp_annotations:
+              summary: "pi-pdx is up but reports no backup metrics (rl-backup not installed or never ran)"
+
+  # A failed attempt is reported after 10 minutes, without waiting for the 27h staleness threshold.
+  - interval: 1m
+    input_series:
+      - series: 'rl_backup_last_attempt_ok{backup="config", host="vps-sjc"}'
+        values: '1x30 0x3000'                   # fine for 30 min, then the attempt fails
+    alert_rule_test:
+      - eval_time: 25m
+        alertname: NodeBackupFailed
+        exp_alerts: []
+      - eval_time: 50m
+        alertname: NodeBackupFailed
+        exp_alerts:
+          - exp_labels: {severity: warning, backup: config, host: vps-sjc}
+            exp_annotations:
+              summary: "vps-sjc: the last config backup attempt failed"
+              description: "On the node: journalctl -u rl-backup -u rl-backup-image -n 50 (NAS reachable? SMB password changed? share full? age key file present?)."
+
+  # Backup files written by other systems: each artifact carries its own max age (here 28h, e.g. Home Assistant).
+  - interval: 1m
+    input_series:
+      - series: 'rl_backup_artifact_last_write_timestamp_seconds{artifact="ha-native-nas", host="pve0"}'
+        values: '0x3000'
+      - series: 'rl_backup_artifact_max_age_seconds{artifact="ha-native-nas", host="pve0"}'
+        values: '100800x3000'
+      - series: 'rl_backup_artifact_last_write_timestamp_seconds{artifact="freepbx-pbx2-nas", host="pve0"}'
+        values: '0+60x3000'                     # fresh: advances with time
+      - series: 'rl_backup_artifact_max_age_seconds{artifact="freepbx-pbx2-nas", host="pve0"}'
+        values: '100800x3000'
+    alert_rule_test:
+      - eval_time: 28h20m
+        alertname: BackupArtifactStale
+        exp_alerts: []                          # over 28h but inside the 30 min "for"
+      - eval_time: 29h
+        alertname: BackupArtifactStale
+        exp_alerts:
+          - exp_labels: {severity: warning, artifact: ha-native-nas, host: pve0}
+            exp_annotations:
+              summary: "ha-native-nas: newest backup file is 1d 5h 0m 0s old"
+              description: "This backup is written by another system (Home Assistant, FreePBX, ChannelsDVR, a node's rl-backup or the Paperless exporter). Check that system's own backup schedule and log, and that the destination share is reachable and not full."
+
+  # An artifact whose folder is empty / unreadable, and a collector that stopped running.
+  - interval: 1m
+    input_series:
+      - series: 'rl_backup_artifact_found{artifact="channelsdvr-nas", host="pve0"}'
+        values: '0x3000'
+      - series: 'rl_backup_artifact_run_timestamp_seconds{host="pve0"}'
+        values: '0x3000'
+    alert_rule_test:
+      - eval_time: 2h
+        alertname: BackupArtifactMissing
+        exp_alerts:
+          - exp_labels: {severity: warning, artifact: channelsdvr-nas, host: pve0}
+            exp_annotations:
+              summary: "channelsdvr-nas: no backup files found at all"
+              description: "The folder is empty, renamed, or the share is not readable from pve0."
+      - eval_time: 1h
+        alertname: BackupArtifactCollectorStale
+        exp_alerts:
+          - exp_labels: {severity: warning, host: pve0}
+            exp_annotations:
+              summary: "Backup-file freshness check on pve0 stopped reporting (those alerts are blind)"

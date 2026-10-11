@@ -1,6 +1,8 @@
 # How alerts reach you.
 #   critical  -> Pushover EMERGENCY (repeats until you acknowledge in the app)   [wakes you]
 #   warning   -> ONE Pushover message each morning (08:00-09:00), normal priority [next day]
+#               exception: backup problems (alert names Backup*, HyperBackup*, NodeBackup*, NodeImageBackup*) are pushed the same
+#               day, normal priority, between 07:00 and 22:00 (never overnight) and repeated every 6 h until fixed
 #   Watchdog  -> external dead-man's switch (healthchecks.io) every 2 minutes
 # Secrets are files under /opt/monitoring/secrets (never in git).
 global:
@@ -46,6 +48,18 @@ route:
       repeat_interval: 12h
       active_time_intervals: [daytime]
 
+    # Backup problems: a failed or overdue backup should be known the same day, but not at 03:00.
+    # Pushed (normal priority) while the daytime window is open, repeated every 6 h while it persists. Outside the window the notice
+    # waits and goes out when it opens at 07:00 if still firing (the 08:00 summary lists it as well). Everything named like a backup
+    # job lands here: BackupMissing/NeverRan/JobFailed/Artifact*, HyperBackup*, NodeBackup*, NodeImageBackup*. Name new backup alerts the same way.
+    - matchers: [severity="warning", alertname=~"(Backup|HyperBackup|NodeBackup|NodeImageBackup).*"]
+      receiver: backup-notice
+      group_by: [alertname]
+      group_wait: 2m
+      group_interval: 15m
+      repeat_interval: 6h
+      active_time_intervals: [daytime]
+
     - matchers: [severity="warning"]
       receiver: "null"
 
@@ -80,6 +94,18 @@ receivers:
         html: true
         url: https://grafana.rainbowlink.org/d/rl-status
         url_title: Open the Status board
+        send_resolved: true
+
+  - name: backup-notice
+    pushover_configs:
+      - user_key_file: /run/secrets/pushover_user
+        token_file: /run/secrets/pushover_token
+        priority: '0'
+        title: '{{ template "rl.title" . }}'
+        message: '{{ template "rl.message" . }}'
+        html: true
+        url: https://grafana.rainbowlink.org/d/rl-backups
+        url_title: Open the Backups dashboard
         send_resolved: true
 
   - name: deadmans-switch
