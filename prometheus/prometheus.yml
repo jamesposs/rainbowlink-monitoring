@@ -31,7 +31,11 @@ scrape_configs:
       - {source_labels: [agent], regex: none, action: drop}          # appliances (nas, gateway, ha)
       - {source_labels: [ts_ip], target_label: __address__, replacement: "$1:9100"}
     metric_relabel_configs:               # keep storage small: drop series no alert/dashboard uses
-      - {source_labels: [__name__, state], regex: "node_systemd_unit_state;(active|activating|deactivating|inactive)", action: drop}
+      # Units whose "is it running" state matters (a crash-looping service is never "failed" for long): keep ALL states for them.
+      # Add a unit by extending the list. rl_keep_unit is a temporary marker, dropped again below.
+      - {source_labels: [__name__, name], regex: "node_systemd_unit_state;(freeradius)[.]service", target_label: rl_keep_unit, replacement: "1"}
+      - {source_labels: [__name__, state, rl_keep_unit], regex: "node_systemd_unit_state;(active|activating|deactivating|inactive);", action: drop}
+      - {regex: rl_keep_unit, action: labeldrop}
       - {source_labels: [__name__], regex: "node_systemd_(socket_.*|service_restart_total|timer_.*|unit_start_time_seconds|system_running|version|units)", action: drop}
       - {source_labels: [__name__, kind], regex: "node_cpu_seconds_total;lxc", action: drop}   # LXC shows the hypervisor's CPU
       - {source_labels: [__name__, device], regex: "node_network_.*;(veth.*|br-.*|docker0|lo|tailscale0)", action: drop}

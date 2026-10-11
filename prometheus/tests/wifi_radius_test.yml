@@ -1,0 +1,80 @@
+# Unit tests for WifiRadiusDown (rules/30-services.yml) and the "Wi-Fi sign-in (RADIUS)" status rule (rules/70-service-status.yml).
+rule_files:
+  - ../rules/30-services.yml
+  - ../rules/70-service-status.yml
+evaluation_interval: 1m
+
+tests:
+  # freeradius up 11 min, crash-looping (active=0) for 21 min, then fixed. Pending for 5 m, fires at 16 m, clears once active again.
+  - interval: 1m
+    input_series:
+      - series: 'node_systemd_unit_state{name="freeradius.service", state="active", host="authentik", site="pdx"}'
+        values: '1x10 0x20 1x10'
+    alert_rule_test:
+      - eval_time: 8m
+        alertname: WifiRadiusDown
+        exp_alerts: []
+      - eval_time: 14m
+        alertname: WifiRadiusDown
+        exp_alerts: []
+      - eval_time: 20m
+        alertname: WifiRadiusDown
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              service: Wi-Fi sign-in (RADIUS)
+              name: freeradius.service
+              state: active
+              host: authentik
+              site: pdx
+            exp_annotations:
+              summary: "Wi-Fi sign-in is down: FreeRADIUS on authentik is not running"
+              description: "Nobody can join 'Rainbowlink Identity'. ssh authentik, then systemctl status freeradius and journalctl -u freeradius. Last time the cause was a certbot renewal: /etc/freeradius/3.0/certs/rainbowlink/eap-chain.pem not matching the new key (rebuild-freeradius-eap-chain.sh)."
+      - eval_time: 38m
+        alertname: WifiRadiusDown
+        exp_alerts: []
+    promql_expr_test:
+      - expr: rl_service_status{service="Wi-Fi sign-in (RADIUS)"}
+        eval_time: 5m
+        exp_samples:
+          - labels: 'rl_service_status{service="Wi-Fi sign-in (RADIUS)", group="Applications"}'
+            value: 0
+      - expr: rl_service_status{service="Wi-Fi sign-in (RADIUS)"}
+        eval_time: 20m
+        exp_samples:
+          - labels: 'rl_service_status{service="Wi-Fi sign-in (RADIUS)", group="Applications"}'
+            value: 2
+      - expr: rl_service_status{service="Wi-Fi sign-in (RADIUS)"}
+        eval_time: 38m
+        exp_samples:
+          - labels: 'rl_service_status{service="Wi-Fi sign-in (RADIUS)", group="Applications"}'
+            value: 0
+
+  # The unit stops being reported while the host is still scraped (unit removed/renamed): the second branch fires.
+  - interval: 1m
+    input_series:
+      - series: 'up{job="node", host="authentik", site="pdx"}'
+        values: '1x30'
+    alert_rule_test:
+      - eval_time: 20m
+        alertname: WifiRadiusDown
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              service: Wi-Fi sign-in (RADIUS)
+              job: node
+              host: authentik
+              site: pdx
+            exp_annotations:
+              summary: "Wi-Fi sign-in is down: FreeRADIUS on authentik is not running"
+              description: "Nobody can join 'Rainbowlink Identity'. ssh authentik, then systemctl status freeradius and journalctl -u freeradius. Last time the cause was a certbot renewal: /etc/freeradius/3.0/certs/rainbowlink/eap-chain.pem not matching the new key (rebuild-freeradius-eap-chain.sh)."
+
+  # Host down (node scrape fails): this alert must stay quiet; HostDown/ExporterDown own that case.
+  - interval: 1m
+    input_series:
+      - series: 'up{job="node", host="authentik", site="pdx"}'
+        values: '0x30'
+    alert_rule_test:
+      - eval_time: 20m
+        alertname: WifiRadiusDown
+        exp_alerts: []

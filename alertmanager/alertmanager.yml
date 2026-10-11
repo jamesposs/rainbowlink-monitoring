@@ -48,6 +48,16 @@ route:
       repeat_interval: 12h
       active_time_intervals: [daytime]
 
+    # Wi-Fi sign-in (FreeRADIUS on authentik) is down: nobody can join "Rainbowlink Identity". Daytime push, normal priority, with a recovery notice;
+    # outside 07:00-22:00 it waits for the 08:00 summary (or goes out at 07:00 if still down).
+    - matchers: [alertname="WifiRadiusDown", severity="warning"]
+      receiver: site-notice
+      group_by: [alertname]
+      group_wait: 1m
+      group_interval: 10m
+      repeat_interval: 12h
+      active_time_intervals: [daytime]
+
     # Backup problems: a failed or overdue backup should be known the same day, but not at 03:00.
     # Pushed (normal priority) while the daytime window is open, repeated every 6 h while it persists. Outside the window the notice
     # waits and goes out when it opens at 07:00 if still firing (the 08:00 summary lists it as well). Everything named like a backup

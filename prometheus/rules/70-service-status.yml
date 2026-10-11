@@ -123,6 +123,12 @@ groups:
           or vector(0)
 
       - record: rl_service_status
+        labels: {service: Wi-Fi sign-in (RADIUS), group: Applications}
+        expr: |
+          (vector(2) and on() (max_over_time(node_systemd_unit_state{name="freeradius.service", state="active"}[3m]) == 0))
+          or vector(0)
+
+      - record: rl_service_status
         labels: {service: Home Assistant, group: Applications}
         expr: |
           (vector(2) and on() (
