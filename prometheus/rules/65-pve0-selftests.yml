@@ -1,0 +1,30 @@
+# pve0 disk self-test results and sda latency (added 2026-10-13). The failure precursors (pending/uncorrectable sectors,
+# growth of reallocated sectors, NVMe wear, temperature) are in 60-disk-health.yml. All warnings go to the next-day digest.
+# Self-test metrics come from /usr/local/sbin/rl-smart-selftest-metrics.py on pve0 (timer every 15 min); smartd runs the
+# tests (short daily 02:00, long on the 1st at 03:00) and emails root -> james@poss.me for real-time alerts.
+groups:
+  - name: pve0_selftests
+    rules:
+      - alert: SmartSelfTestFailed
+        expr: rl_smart_selftest_last_passed == 0
+        for: 10m
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.instance }}: the latest {{ $labels.test }} SMART self-test of {{ $labels.disk }} FAILED"
+          description: "Run `smartctl -a {{ $labels.disk }}` on the host. A failed self-test usually means the drive can no longer read part of its surface; back up and plan a replacement."
+      - alert: SmartSelfTestOverdue
+        expr: rl_smart_selftest_last_age_hours{test="short"} > 96 or rl_smart_selftest_last_age_hours{test="long"} > 24 * 45
+        for: 1h
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.instance }}: no {{ $labels.test }} SMART self-test of {{ $labels.disk }} for {{ $value | humanize }} power-on hours"
+          description: "smartd should run a short test daily (02:00) and a long test monthly (1st, 03:00). Check `systemctl status smartmontools` and /etc/smartd.conf."
+      - alert: PveHddLatencyHigh
+        expr: |
+          (rate(node_disk_read_time_seconds_total{instance="pve0",device="sda"}[10m]) + rate(node_disk_write_time_seconds_total{instance="pve0",device="sda"}[10m]))
+            / (rate(node_disk_reads_completed_total{instance="pve0",device="sda"}[10m]) + rate(node_disk_writes_completed_total{instance="pve0",device="sda"}[10m])) > 0.25
+        for: 30m
+        labels: {severity: warning}
+        annotations:
+          summary: "pve0 sda (hdd pool) averages {{ $value | humanizeDuration }} per I/O"
+          description: "Normal for this SMR drive is ~0.08-0.1 s; above 0.25 s for 30 min means it is struggling more than usual (long self-test running? one guest hammering it?). Guests on the hdd pool will feel it."
