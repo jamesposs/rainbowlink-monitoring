@@ -145,6 +145,14 @@ scrape_configs:
       - {source_labels: [host], target_label: instance}
       - {target_label: __address__, replacement: "pve-exporter:9221"}
 
+  # --- media automation: exportarr for Radarr / Sonarr / Prowlarr (host arr, tailnet address) ------------
+  - job_name: arr
+    scrape_interval: 60s
+    static_configs:
+      - {targets: ["100.64.0.31:9707"], labels: {host: arr, app: radarr, site: pdx}}
+      - {targets: ["100.64.0.31:9708"], labels: {host: arr, app: sonarr, site: pdx}}
+      - {targets: ["100.64.0.31:9709"], labels: {host: arr, app: prowlarr, site: pdx}}
+
   # --- Home Assistant (its built-in Prometheus endpoint) --------------------
   - job_name: homeassistant
     scrape_interval: 60s
