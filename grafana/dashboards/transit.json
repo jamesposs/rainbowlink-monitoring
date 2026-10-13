@@ -59,9 +59,9 @@
    "targetBlank": false
   },
   {
-   "title": "Backups",
+   "title": "Media automation",
    "type": "link",
-   "url": "/d/rl-backups",
+   "url": "/d/rl-media",
    "icon": "dashboard",
    "targetBlank": false
   }
@@ -94,7 +94,7 @@
      "instant": true,
      "range": false,
      "format": "time_series",
-     "legendFormat": "{{name}} · {{line}} to {{destination}}"
+     "legendFormat": "{{name}} \u00b7 {{line}} to {{destination}}"
     }
    ],
    "fieldConfig": {

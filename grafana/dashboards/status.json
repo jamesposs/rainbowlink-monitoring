@@ -52,16 +52,16 @@
    "targetBlank": false
   },
   {
-   "title": "Transit",
+   "title": "Media automation",
    "type": "link",
-   "url": "/d/rl-transit",
+   "url": "/d/rl-media",
    "icon": "dashboard",
    "targetBlank": false
   },
   {
-   "title": "Backups",
+   "title": "Transit",
    "type": "link",
-   "url": "/d/rl-backups",
+   "url": "/d/rl-transit",
    "icon": "dashboard",
    "targetBlank": false
   }
@@ -561,7 +561,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace(label_join(ALERTS{alertstate=\"firing\", alertname!=\"Watchdog\"}, \"detail\", \" · \", \"service\", \"name\", \"storage\", \"zone\", \"server\", \"ext\", \"trunk\", \"tunnel\", \"to\", \"repo\", \"id\", \"vmid\"), \"detail\", \"$1 · $2\", \"detail\", \"^(.*?)(?: · ){2,}(.*)$\"), \"detail\", \"$1 · $2\", \"detail\", \"^(.*?)(?: · ){2,}(.*)$\"), \"detail\", \"$1\", \"detail\", \"^(?: · )*(.*?)(?: · )*$\")",
+     "expr": "label_replace(label_replace(label_replace(label_join(ALERTS{alertstate=\"firing\", alertname!=\"Watchdog\"}, \"detail\", \" \u00b7 \", \"service\", \"name\", \"storage\", \"zone\", \"server\", \"ext\", \"trunk\", \"tunnel\", \"to\", \"repo\", \"id\", \"vmid\"), \"detail\", \"$1 \u00b7 $2\", \"detail\", \"^(.*?)(?: \u00b7 ){2,}(.*)$\"), \"detail\", \"$1 \u00b7 $2\", \"detail\", \"^(.*?)(?: \u00b7 ){2,}(.*)$\"), \"detail\", \"$1\", \"detail\", \"^(?: \u00b7 )*(.*?)(?: \u00b7 )*$\")",
      "refId": "A",
      "instant": true,
      "range": false,
