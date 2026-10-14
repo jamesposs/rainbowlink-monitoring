@@ -1,7 +1,6 @@
 # Public services probed from OUTSIDE the house (blackbox on vps-sjc).
 # "Is the internet able to reach it?" -- the answer the internal checks can't give.
 - {targets: ['https://login.rainbowlink.org/-/health/live/'], labels: {module: http_2xx, host: authentik, site: pdx, service: login.rainbowlink.org}}
-- {targets: ['https://paperless.rainbowlink.org/'],           labels: {module: http_2xx, host: paperless, site: pdx, service: paperless.rainbowlink.org}}
 - {targets: ['https://hs.rainbowlink.org/health'],            labels: {module: http_2xx, host: vps-sjc, site: sjc, service: Headscale (hs.rainbowlink.org)}}
 # Headplane is checked in two parts that each test one thing. (A plain "follow redirects" check of /admin/ ends on
 # Authentik's login page, so it mostly tested Authentik.)
