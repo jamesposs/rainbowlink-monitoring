@@ -49,13 +49,13 @@ groups:
           summary: "Resolver {{ $labels.host }} is not giving tailnet clients tailnet addresses"
           description: "A tailnet-only host (vps-sjc) asked {{ $labels.instance }} for ha.rainbowlink.org and did not get 100.64.0.27. Check the Split Horizon app (enabled, config present) on that Technitium node. Home clients are unaffected."
 
-      # Both home resolvers failing means nothing on the LAN resolves names.
+      # Both home resolvers (dns1 on Proxmox, pi-pdx on its own Pi) failing means nothing on the LAN resolves names.
       - alert: DnsOutage
         expr: sum(probe_success{job="dns", critical_group="dns"}) == 0
         for: 2m
         labels: {severity: critical, site: pdx}
         annotations:
-          summary: "DNS OUTAGE: neither dns1 nor dns2 is answering"
+          summary: "DNS OUTAGE: neither dns1 nor pi-pdx is answering"
           description: "Nothing on the home network can resolve names."
 
       - alert: CertExpiresSoon

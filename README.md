@@ -36,7 +36,7 @@ things worth investigating.
 overnight is still reported. It is sent even when nothing happened ("All quiet"): **no 08:00 message = check the monitor.** Alerts that are only a consequence of a site/host being
 down are folded into that outage. Preview it any time with `python3 scripts/daily-summary.py --dry-run`.
 
-Critical today: **home DNS outage** (dns1+dns2 both failing) · **pve0 down** · **PBX not answering SIP** ·
+Critical today: **home DNS outage** (dns1 + pi-pdx both failing) · **pve0 down** · **PBX not answering SIP** ·
 **both carrier trunks unregistered** · **Boston/PBX site unreachable** · **NAS RAID crashed**.
 Internet loss cannot page you (the internet is what is broken): the **dead-man's switch** does that.
 

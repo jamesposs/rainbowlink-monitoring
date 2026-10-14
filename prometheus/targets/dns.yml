@@ -3,9 +3,6 @@
 # forwarding/upstream). Add a resolver = add a line.
 - {targets: ['172.20.2.221'], labels: {module: dns_internal,  host: dns1, site: pdx, service: dns, critical_group: dns}}
 - {targets: ['172.20.2.221'], labels: {module: dns_recursive, host: dns1, site: pdx, service: dns-recursion}}
-- {targets: ['172.20.2.222'], labels: {module: dns_internal,  host: dns2, site: pdx, service: dns, critical_group: dns}}
-- {targets: ['172.20.2.222'], labels: {module: dns_recursive, host: dns2, site: pdx, service: dns-recursion}}
 - {targets: ['100.64.0.11'],  labels: {module: dns_internal_tailnet, host: pi-pcb, site: pcb, service: dns}}
-- {targets: ['100.64.0.1'],   labels: {module: dns_internal_tailnet, host: vps-sjc, site: sjc, service: dns}}
-- {targets: ['172.20.1.37'],  labels: {module: dns_internal,  host: pi-pdx, site: pdx, service: dns}}
+- {targets: ['172.20.1.37'],  labels: {module: dns_internal,  host: pi-pdx, site: pdx, service: dns, critical_group: dns}}
 - {targets: ['172.20.1.37'],  labels: {module: dns_recursive, host: pi-pdx, site: pdx, service: dns-recursion}}
