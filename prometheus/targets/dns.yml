@@ -6,3 +6,4 @@
 - {targets: ['100.64.0.11'],  labels: {module: dns_internal_tailnet, host: pi-pcb, site: pcb, service: dns}}
 - {targets: ['172.20.1.37'],  labels: {module: dns_internal,  host: pi-pdx, site: pdx, service: dns, critical_group: dns}}
 - {targets: ['172.20.1.37'],  labels: {module: dns_recursive, host: pi-pdx, site: pdx, service: dns-recursion}}
+- {targets: ['100.64.0.11'],  labels: {module: dns_recursive, host: pi-pcb, site: pcb, service: dns-recursion}}
