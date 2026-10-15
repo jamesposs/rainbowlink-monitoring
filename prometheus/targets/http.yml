@@ -21,3 +21,5 @@
 - {targets: ['http://172.20.1.35:631/'],                      labels: {module: http_2xx, host: printersvc, site: pdx, service: CUPS}}
 - {targets: ['http://172.20.2.230:8088/'],                    labels: {module: http_responds, host: sms, site: pdx, service: SMS gateway}}
 - {targets: ['http://172.20.2.75:8265/'],                    labels: {module: http_2xx, host: tdarr, site: pdx, service: Tdarr}}
+- {targets: ['https://dns2.rainbowlink.org:53443/'],          labels: {module: http_2xx, host: pi-pdx, site: pdx, service: DNS admin UI}}
+- {targets: ['https://dns3.rainbowlink.org:53443/'],          labels: {module: http_2xx, host: pi-pcb, site: pcb, service: DNS admin UI}}
