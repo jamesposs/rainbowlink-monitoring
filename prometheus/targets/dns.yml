@@ -7,3 +7,4 @@
 - {targets: ['172.20.1.37'],  labels: {module: dns_internal,  host: pi-pdx, site: pdx, service: dns, critical_group: dns}}
 - {targets: ['172.20.1.37'],  labels: {module: dns_recursive, host: pi-pdx, site: pdx, service: dns-recursion}}
 - {targets: ['100.64.0.11'],  labels: {module: dns_recursive, host: pi-pcb, site: pcb, service: dns-recursion}}
+- {targets: ['10.77.77.2'],  labels: {module: dns_internal,  host: pi-pcb, site: pcb, service: dns-alt-path}}   # dns3 as the LAN reaches it: through the PDX <> PCB Alternate Path tunnel
