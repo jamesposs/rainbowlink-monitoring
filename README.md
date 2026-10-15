@@ -18,9 +18,14 @@ things worth investigating.
 | Question | Look at |
 |---|---|
 | Is everything OK? What is broken, since when? | Grafana **Overview** (`https://grafana.rainbowlink.org`) |
+| One tile per service: No Issues / Degraded / Outage | **Status** |
+| Map of the sites and the links between them (incl. the PDX <> PCB Alternate Path) | **Site map** |
 | Internet, site-to-site latency/loss, DNS | **Network** |
 | Hosts, Proxmox guests, NAS, backups | **Servers & storage** |
 | Every service check, certificates, PBX, HA, Docker | **Services** |
+| Bus / MAX arrivals from Home Assistant | **Transit** |
+| Backups and what covers what | **Backups** (written by another session; see its own notes) |
+| Request portal, *arr stack, downloader VPN | **Media automation** (same) |
 | Quick terminal view | `sudo ./scripts/status.sh` |
 
 ## What reaches you
@@ -70,19 +75,19 @@ and `grafana/dashboards/backups.json`. **To add a backup: add a CATALOG entry, `
 ## DNS replication
 `scripts/dns-sync-metrics.py` asks every resolver for each zone's SOA serial every 2 minutes (the existing `dns_internal` probe only proves one
 record resolves, not that the zone is current). Zones marked `sync: all` (today: `rainbowlink.org`) must have the same serial everywhere:
-`DnsZoneOutOfSync` after 15 minutes of disagreement, `DnsZoneMissing` if a server stops serving it. All four resolvers serve every zone (Technitium cluster: dns1 is primary, the rest are secondaries via `cluster-catalog.rainbowlink.org`). A NEW primary zone on dns1 must be given that catalog under zone Options, or it stays dns1-only; add it to ZONES here so drift alerts.
+`DnsZoneOutOfSync` after 15 minutes of disagreement, `DnsZoneMissing` if a server stops serving it. All three resolvers serve every zone (Technitium cluster since 2026-10-15: **dns1** primary on Proxmox, **dns2** = pi-pdx at home, **dns3** = pi-pcb off-site; the old dns2 and dns-sjc were retired; secondaries follow `cluster-catalog.rainbowlink.org`). Full DNS design: `docs/dns.md` in the Ansible repo. A NEW primary zone on dns1 must be given that catalog under zone Options, or it stays dns1-only; add it to ZONES here so drift alerts.
 Add a resolver to `SERVERS` (and `targets/dns.yml`); add a zone to `ZONES`; set `all` once it should be everywhere.
 
 ## Split-horizon DNS (tailnet vs home LAN)
 The rule is only the **source address of the query**: from the tailnet (100.64.0.0/10, fd7a:115c:a1e0::/48) -> tailnet addresses; from anywhere else
-(home LAN, guest VLAN) -> LAN addresses. Technitium **Split Horizon app, Address Translation mode**, on all four resolvers. The zone stores the
+(home LAN, guest VLAN) -> LAN addresses. Technitium **Split Horizon app, Address Translation mode**, on all three resolvers. The zone stores the
 home LAN address of every host; for tailnet sources the app rewrites each LAN address to that host's tailnet address (29 pairs). Names with no
-LAN twin (pbx2, dns-pcb, hs, sjc, pcb, ...) are never touched.
+LAN twin (pbx2, dns3, hs, sjc, pcb, ...) are never touched.
 - **Consequence:** a device at home that uses Tailscale DNS (laptop, phone, any server with Tailscale DNS) is a tailnet source and gets tailnet
   addresses; one using the LAN resolvers gets LAN addresses. The short MagicDNS names (`ha`, `ha.ts.rainbowlink.org`) are Tailscale's own and always tailnet.
 - **Monitoring:** the monitor host uses Tailscale DNS, so its blackbox container is pinned to the home resolvers (`dns:` in compose.yml) and keeps
-  testing LAN paths. `dns_internal` (via LAN) expects `ha` = 172.20.1.13; `dns_internal_tailnet` (pi-pcb, vps-sjc, asked over the tailnet) expects 100.64.0.27;
-  `DnsSplitHorizonBroken` probes from vps-sjc. A resolver that lost the app would trip one of these within 10 minutes.
+  testing LAN paths. `dns_internal` (via LAN) expects `ha` = 172.20.1.13; `dns_internal_tailnet` (dns3, asked over the tailnet) expects 100.64.0.27;
+  `DnsSplitHorizonBroken` probes from vps-sjc. `DnsOutage` (critical) = dns1 and dns2 (the two home resolvers) both failing; dns3 is also probed through the Alternate Path (10.77.77.2). A resolver that lost the app would trip one of these within 10 minutes.
 - **Why not APP records:** `rainbowlink.org` is DNSSEC-signed on Technitium and signed zones cannot hold APP records.
 - **Add a host:** give it a normal A record with its LAN IP, then add `LAN-ip: tailnet-ip` under Technitium > Apps > Split Horizon > Config on **each** node
   (config does not replicate; the app install does). `/opt/monitoring/dns/split-horizon.config.json` is the reference copy (no secrets).
@@ -95,11 +100,34 @@ LAN twin (pbx2, dns-pcb, hs, sjc, pcb, ...) are never touched.
 1-day norm; red loss >10%/down; 5-minute averages) over Grafana's bundled US outline, so it needs no tile server or API key (Carto's free
 tiles now require a key). Below it: link detail, traffic per link, and the busiest hosts. Traffic comes from `rl-tailnet-metrics.py`
 (Ansible role, remote-site hosts): Tailscale's per-peer byte counters, summed per site; it covers tailnet traffic only, not internet traffic.
+**Markers show connectivity only** (green reachable; orange some packet loss reaching the site; red unreachable from every other site): what runs at a site is on the Status board.
+The violet bowed path between Portland and Panama City Beach is the **PDX <> PCB Alternate Path** (below).
 On the map: line colour = link health; the blue ribbon under a line = traffic band (quiet < 5 kbit/s, moderate 5-25, busy > 25; change
 `TRAFFIC_BANDS`); at each link's midpoint: latency (white) and traffic (blue). Edit sites/links in `tools/gen_map.py`; add the new node's tailnet IP
 to `monitoring_tailnet_site_of` in the role.
 Grafana Geomap quirks (so you do not rediscover them): route layers take ONE query each and show no tooltip; number fields are named `Value #<refId>`
 when a panel has several queries; a `displayName` override renames every field of the frame; click (not hover) opens marker popups.
+
+## IP phones
+`rl-asterisk-metrics.sh` (Ansible role, on the PBX) exports every FreePBX extension: `rl_asterisk_extension_up{ext,name}` (1 = registered and answering qualify pings), `_info{ext,ip}`, `_rtt_seconds`.
+`PhoneNotRegistered` (warning, in the 08:00 summary) fires after 20 minutes and feeds the **VoIP** Status tile. To stop watching a phone that is meant to be offline, add it to the `ext!~` list on that rule
+(`rules/50-pbx-nas-gateway.yml`). Services dashboard has an "IP phones" table (extension, name, registered, address, round trip).
+
+## Heartbeats from the remote sites
+Each remote site host (`pi-pcb`, `vps-sjc`, `vps-bos`) pings its own healthchecks.io check every 2 minutes (`rl-heartbeat.timer`, Ansible role `monitoring_agent`; URL in root-only `/etc/rl-heartbeat/url`, never in git).
+Checks are period 2 min, grace 5 min, so a dead site alerts about 7 minutes after it goes dark, independent of this monitor. The check names are PCB, SJC, BOS (and `PDX-Check` is this monitor's own dead-man's switch).
+
+## PDX <> PCB Alternate Path
+A WireGuard tunnel UniFi gateway <-> pi-pcb that needs no Tailscale/Headscale/Proxmox (design, setup and gotchas: `docs/alternate-path.md` in the Ansible repo).
+Monitoring: `rl_wg_*` from pi-pcb (handshake age, bytes) and the mesh path `wg` (the monitoring server pings 10.77.77.2 through the tunnel, because the gateway's own tunnel address drops pings);
+alerts `AlternatePathDown` (no handshake for 15 min) and `AlternatePathLossy` in `rules/25-wg-link.yml` (tests in `tests/wg_test.yml`); Status tile "PDX <> PCB Alternate Path"
+(Degraded when down, never Outage); Network dashboard row; and the violet path on the Site map (grey until the tunnel exists).
+
+## Working on this repo (several people and sessions edit it)
+`/opt/monitoring` is the single source of truth and is edited by more than one session. **Never push whole directories from a stale copy**: on 2026-10-09 that deleted another session's
+scrape job, host entries, Status tiles and dashboard links. Pull the current file from the host first, change only your own files, upload only those, and check
+`git -c safe.directory=/opt/monitoring log -3 -- <file>` before overwriting a shared one (`prometheus.yml`, `targets/*.yml`, `rules/70-service-status.yml`, `tools/gen_map.py`).
+`gen_map.py` uses newer Python syntax than the host has: generate `map.json` on a workstation, then upload it. `apply.sh` runs every `tests/*.yml` and stops if any fails; it is slow when `pve0` is busy (run it in the background).
 
 ## Disk health
 * **Servers & storage → Disk health:** NAS drives (SMART over SNMP: health, temperature, age, reallocated/pending/uncorrectable sectors, CRC errors), `pve0` drives (SATA SMART, NVMe wear/spare/media errors), LVM thin-pool data+metadata.
@@ -146,7 +174,7 @@ server's page and tests the SSO server, not your app. Public checks run on vps-s
 ## Update / upgrade
 * Containers are **pinned** in `compose.yml`. To upgrade: read the release notes, change the tag, `sudo ./scripts/apply.sh`. Roll back by restoring the old tag.
 * Hosts' `node_exporter` is the distro package (security updates arrive with normal apt updates).
-* Dashboards: edit the JSON in `grafana/dashboards/` directly (there is no generator any more), then `apply.sh`; Grafana picks it up in 1-2 minutes. UI edits are disabled on purpose.
+* Dashboards: most are edited as JSON in `grafana/dashboards/` directly (the Site map, Status and Transit boards are generated, see below), then `apply.sh`; Grafana picks it up in 1-2 minutes. UI edits are disabled on purpose.
   Exception: the **Site map** (`map.json`) is generated. To add a site or move a marker, edit `SITES` in `tools/gen_map.py`, run `python3 tools/gen_map.py`, then `apply.sh`.
   The **Status** board (`status.json`, from `tools/gen_status.py`) shows one tile per service: No Issues / Degraded / Outage. The tiles are NOT in the generator: each is a recording rule
   `rl_service_status{service, group}` in `prometheus/rules/70-service-status.yml` (0/1/2), which is also the single place defining what Degraded and Outage mean for that service.
@@ -160,7 +188,7 @@ server's page and tests the SSO server, not your app. Public checks run on vps-s
   backs up **nightly to the NAS** and **1st/15th to pi-pcb** (offsite). Check freshness on Servers & storage.
 * **Restore:** `pct restore 128 <backup> --force` on pve0 (or restore the 128 backup from the Proxmox UI), start it. Docker brings the stack back (`restart: unless-stopped`).
 * **Rebuild from nothing:** new Debian LXC + Docker + tailscale (join Headscale) → copy `/opt/monitoring` (git repo) → recreate `secrets/` + `.env` (Pushover keys, healthchecks URL, new PVE token via `pveum user token add monitoring@pve prometheus --privsep 0`, HA token, SNMP community) → `docker compose up -d`. Historical metrics are lost, nothing else.
-* Want a second copy of the config? `git remote add origin <url> && git push` from `/opt/monitoring` (secrets are git-ignored).
+* The repo has a GitHub remote (`origin`, `jamesposs/rainbowlink-monitoring`, via a deploy key in root's ssh config). `apply.sh` only commits locally; publish with `cd /opt/monitoring && sudo git -c safe.directory=/opt/monitoring push origin main`. `secrets/` and `.env` are git-ignored; nothing secret is in history (scan before pushing).
 
 ## Monitoring the monitor
 * `Watchdog` always fires; Alertmanager pings **healthchecks.io** every 2 min. If pings stop (Prometheus, Alertmanager, this LXC, pve0 or the home internet is down) healthchecks.io notifies you through its own Pushover integration. Configure the check as period 2 min, grace 5 min.
