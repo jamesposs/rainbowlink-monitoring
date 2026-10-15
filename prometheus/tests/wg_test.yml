@@ -1,0 +1,31 @@
+# Break-glass WireGuard link alerts.
+rule_files:
+  - ../rules/25-wg-link.yml
+evaluation_interval: 1m
+
+tests:
+  # Not configured (no peer, so no handshake metric): nothing fires. Configured but never connected (-1): fires after 15 minutes.
+  - interval: 1m
+    input_series:
+      - series: 'rl_wg_latest_handshake_age_seconds{iface="wg-pdx", host="pi-pcb"}'
+        values: '-1x40'
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: BreakGlassLinkDown
+        exp_alerts: []
+      - eval_time: 20m
+        alertname: BreakGlassLinkDown
+        exp_alerts:
+          - exp_labels: {severity: warning, site: pcb, host: pi-pcb, iface: wg-pdx}
+            exp_annotations:
+              summary: "The break-glass WireGuard link (PDX gateway to pi-pcb) has no recent handshake"
+              description: "This is the path that works without Tailscale or Proxmox. Check the WireGuard VPN client on the UniFi gateway and the UDP port forward at the Panama City Beach router. (-1 means it has never connected.)"
+  # A healthy tunnel (handshake 60 s old) never fires.
+  - interval: 1m
+    input_series:
+      - series: 'rl_wg_latest_handshake_age_seconds{iface="wg-pdx", host="pi-pcb"}'
+        values: '60x40'
+    alert_rule_test:
+      - eval_time: 30m
+        alertname: BreakGlassLinkDown
+        exp_alerts: []

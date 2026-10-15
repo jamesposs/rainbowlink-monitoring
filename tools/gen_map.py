@@ -29,6 +29,13 @@ SITE_MARKER_PX = 34          # big enough to hold a 3-letter code at 12 px
 SITE_TEXT_COLOR = "#0B1020"  # dark navy: readable on the green, orange and red marker colours
 OV = ', path="overlay"'
 
+# Break-glass WireGuard link PDX <-> PCB (gateway <-> pi-pcb, independent of Tailscale/Proxmox): drawn as a second, bowed path through a
+# waypoint so it does not sit on top of the tailnet line. Violet = up, red = down/lossy, grey = not configured / no data.
+ALT_VIA = {"lat": 40.0, "lon": -100.0}
+ALT_COLOR = "#A78BFA"
+ALT_STATES = {"up": ("Break-glass link up", ALT_COLOR), "down": ("Break-glass link DOWN", "#EF4444"), "none": ("Break-glass link not configured", "#6b7280")}
+ALT_PRE = {"up": "wu", "down": "wd", "none": "wn"}
+
 
 def lab(expr, **labels):
     """Attach constant labels to an unlabelled vector (label_replace with an empty source always matches)."""
@@ -146,6 +153,34 @@ def link_layers():
     return out
 
 
+def alt_targets():
+    """wu*/wd*/wn*: the two segments (PDX-waypoint, waypoint-PCB) of the break-glass path in state up / down / none; MW: its latency label."""
+    a = 'max(rl_wg_latest_handshake_age_seconds{iface="wg-pdx"})'
+    loss = 'max(avg_over_time(rl_mesh_loss_ratio{path="wg"}[5m]))'
+    up = f'(vector(1) and on() (({a} >= 0) and on() ({a} <= 900) and on() ({loss} < 0.3)))'
+    expr = {"up": up, "down": f'((vector(1) and on() {a}) unless on() {up})', "none": f'(vector(1) unless on() {a})'}
+    segs = [(SITES["pdx"], ALT_VIA), (ALT_VIA, SITES["pcb"])]
+    out = []
+    for state, pre in ALT_PRE.items():
+        for n, (p1, p2) in enumerate(segs, 1):
+            parts = [lab(expr[state], link="PDX - PCB (WireGuard)", end=e, lat=p["lat"], lon=p["lon"]) for e, p in (("a", p1), ("b", p2))]
+            out.append(tgt(" or ".join(parts), f"{pre}{n}"))
+    rtt = 'round(max(avg_over_time(rl_mesh_rtt_seconds{path="wg", stat="avg"}[5m])) * 1000)'
+    out.append(tgt(lab(rtt, link="PDX - PCB (WireGuard)", lat=ALT_VIA["lat"], lon=ALT_VIA["lon"]), "MW"))
+    return out
+
+
+def alt_layers():
+    out = []
+    for state, (label, color) in ALT_STATES.items():
+        for n in (1, 2):
+            layer = route_layer(f"{label} ({n}/2)", f"{ALT_PRE[state]}{n}", color)
+            layer["tooltip"] = False
+            layer["config"]["style"]["lineWidth"] = 3
+            out.append(layer)
+    return out
+
+
 def site_query():
     """Connectivity only (this map is about the links, not about what runs at a site):
        0 reachable, 1 some packet loss to it from another site (5-min average over 2%), 10+ unreachable (no other site can reach it)."""
@@ -198,7 +233,7 @@ def states_layer():
 
 
 OVERRIDE_UNITS = ([(f"{CLASS_PREFIX[k]}{i}", u) for k, u in (("good", "ms"), ("degraded", "ms"), ("bad", "percent")) for i in range(1, len(PAIRS) + 1)]
-                  + [(f"t{bid}{i}", "bps") for bid, *_ in TRAFFIC_BANDS for i in range(1, len(PAIRS) + 1)] + [("ML", "ms"), ("MT", "bps"), ("S", "none")])
+                  + [(f"t{bid}{i}", "bps") for bid, *_ in TRAFFIC_BANDS for i in range(1, len(PAIRS) + 1)] + [("ML", "ms"), ("MT", "bps"), ("S", "none"), ("MW", "ms")])
 
 
 def value_names():
@@ -211,7 +246,7 @@ def value_names():
     for bid, *_ in TRAFFIC_BANDS:
         for i in range(1, len(PAIRS) + 1):
             names[f"t{bid}{i}"] = "Traffic (both directions)"
-    names.update({"ML": "Latency", "MT": "Traffic", "S": "Connectivity"})
+    names.update({"ML": "Latency", "MT": "Traffic", "S": "Connectivity", "MW": "Latency (WG)"})
     renames = [{"id": "organize", "filter": {"id": "byRefId", "options": ref}, "options": {"renameByName": {f"Value #{ref}": n, "Value": n}}} for ref, n in names.items()]
     return renames
 
@@ -221,8 +256,10 @@ def geomap():
         states_layer(),
         *ribbon_layers(),
         *link_layers(),
+        *alt_layers(),
         label_layer("Latency labels", "ML", "#F8FAFC", -13, "Latency"),
         label_layer("Traffic labels", "MT", "#93C5FD", 13, "Traffic"),
+        label_layer("WireGuard path label", "MW", ALT_COLOR, 0, "Latency (WG)"),
         {"type": "markers", "name": "Sites", "tooltip": True, "filterData": {"id": "byRefId", "options": "S"},
          "location": {"mode": "coords", "latitude": "lat", "longitude": "lon"},
          "config": {"showLegend": False, "style": {
@@ -243,7 +280,7 @@ def geomap():
     return {
         "id": 1, "type": "geomap", "title": "Site-to-site links", "datasource": DS, "gridPos": {"x": 0, "y": 0, "w": 24, "h": 17},
         "description": "Line colour = health of the link (worst of both directions): green normal, orange loss >2% or latency >2x its norm, red loss >10% / down. Marker colour = site health.",
-        "targets": link_targets() + traffic_targets() + label_targets() + [tgt(site_query(), "S")],
+        "targets": link_targets() + traffic_targets() + label_targets() + alt_targets() + [tgt(site_query(), "S")],
         "transformations": value_names() + [
             {"id": "convertFieldType", "options": {"conversions": [{"targetField": "lat", "destinationType": "number"}, {"targetField": "lon", "destinationType": "number"}], "fields": {}}},
         ],
@@ -360,7 +397,7 @@ def legend():
           "- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm (both 5-minute averages)\n"
           "- <span style='color:#EF4444'>**red**</span> loss above 10%, or the link is down\n\n"
           "**Markers** are the sites, labelled with their code (PDX Portland, SJC San Jose, BOS Boston, PCB Panama City Beach): green = reachable from the other sites, orange = some packet loss reaching it, **red = unreachable** (no other site can reach it). Markers show connectivity only; what runs at a site is on the Status board.\n\n"
-          "The **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet (under 5 kbit/s), medium = moderate (5 to 25 kbit/s), wide = busy (over 25 kbit/s). The numbers at the middle of each link are its latency (white) and traffic (blue).\n\n"
+          "The **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet (under 5 kbit/s), medium = moderate (5 to 25 kbit/s), wide = busy (over 25 kbit/s). The numbers at the middle of each link are its latency (white) and traffic (blue).\n\nThe **violet bowed path** between Portland and Panama City Beach is the break-glass WireGuard tunnel between the home gateway and the Pi (it works without Tailscale or Proxmox): violet = up, red = down or lossy, grey = not configured yet. Its latency is the violet number.\n\n"
           "Hover a line or marker for numbers. Latency is compared with each link's *own* normal, so a long link (Portland to Florida, ~90 ms) is not flagged for being long.\n\n"
           "Underlying data: ping mesh (10 pings a minute from every site), plus the Network dashboard for the full matrix.")
     return {"id": 3, "type": "text", "title": "", "gridPos": {"x": 15, "y": 17, "w": 9, "h": 9}, "options": {"mode": "markdown", "content": md}}

@@ -1,0 +1,21 @@
+# Break-glass WireGuard link, PDX gateway <-> pi-pcb (roles/wg_site_link). Metrics come from pi-pcb: rl_wg_* (handshake age, bytes) and the
+# ping path "wg" in the site mesh (rl_mesh_*{path="wg"}, pi-pcb -> the gateway's tunnel address 10.77.77.1).
+# Nothing fires until the gateway end exists: the handshake metric is only reported once a peer is configured on the Pi.
+groups:
+  - name: wg-break-glass
+    rules:
+      - alert: BreakGlassLinkDown
+        # The gateway sends a keepalive every ~25 s, so a healthy tunnel has a handshake at least every few minutes.
+        expr: rl_wg_latest_handshake_age_seconds{iface="wg-pdx"} > 900 or rl_wg_latest_handshake_age_seconds{iface="wg-pdx"} < 0
+        for: 15m
+        labels: {severity: warning, site: pcb, host: pi-pcb}
+        annotations:
+          summary: "The break-glass WireGuard link (PDX gateway to pi-pcb) has no recent handshake"
+          description: "This is the path that works without Tailscale or Proxmox. Check the WireGuard VPN client on the UniFi gateway and the UDP port forward at the Panama City Beach router. (-1 means it has never connected.)"
+      - alert: BreakGlassLinkLossy
+        expr: rl_mesh_loss_ratio{path="wg"} > 0.3 and on() (rl_wg_latest_handshake_age_seconds{iface="wg-pdx"} >= 0)
+        for: 15m
+        labels: {severity: warning, site: pcb, host: pi-pcb}
+        annotations:
+          summary: "The break-glass WireGuard link is losing {{ $value | humanizePercentage }} of pings"
+          description: "The tunnel handshakes but pings to the gateway's tunnel address are being lost."

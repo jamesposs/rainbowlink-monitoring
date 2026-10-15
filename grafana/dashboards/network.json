@@ -2151,6 +2151,254 @@
      }
     }
    ]
+  },
+  {
+   "id": 24,
+   "type": "row",
+   "title": "Break-glass WireGuard link (PDX gateway <-> pi-pcb)",
+   "collapsed": false,
+   "gridPos": {
+    "x": 0,
+    "y": 51,
+    "w": 24,
+    "h": 1
+   },
+   "panels": []
+  },
+  {
+   "id": 25,
+   "type": "stat",
+   "title": "Handshake",
+   "description": "Time since the last WireGuard handshake with the gateway. Red = no handshake in 15 minutes or never connected. 'not configured' until the gateway end exists.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 52,
+    "w": 5,
+    "h": 5
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"})",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s",
+     "noValue": "not configured",
+     "decimals": 0,
+     "color": {
+      "mode": "thresholds"
+     },
+     "mappings": [
+      {
+       "type": "value",
+       "options": {
+        "-1": {
+         "text": "never connected",
+         "color": "red",
+         "index": 0
+        }
+       }
+      }
+     ],
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       },
+       {
+        "color": "orange",
+        "value": 300
+       },
+       {
+        "color": "red",
+        "value": 900
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   }
+  },
+  {
+   "id": 26,
+   "type": "timeseries",
+   "title": "Latency and loss over the tunnel",
+   "description": "pi-pcb pings the gateway's tunnel address once a minute (10 pings). Compare with the tailnet path on the Site map.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 5,
+    "y": 52,
+    "w": 10,
+    "h": 5
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rl_mesh_rtt_seconds{path=\"wg\", stat=\"avg\"}*1000",
+     "refId": "A",
+     "instant": false,
+     "range": true,
+     "interval": "1m",
+     "legendFormat": "latency (ms)"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rl_mesh_loss_ratio{path=\"wg\"}*100",
+     "refId": "B",
+     "instant": false,
+     "range": true,
+     "interval": "1m",
+     "legendFormat": "loss (%)"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rl_mesh_rtt_seconds{path=\"overlay\", to=\"pdx\", stat=\"avg\"}*1000",
+     "refId": "C",
+     "instant": false,
+     "range": true,
+     "interval": "1m",
+     "legendFormat": "tailnet latency (ms)"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "lineWidth": 2,
+      "fillOpacity": 6,
+      "showPoints": "never"
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "loss (%)"
+      },
+      "properties": [
+       {
+        "id": "custom.axisPlacement",
+        "value": "right"
+       },
+       {
+        "id": "max",
+        "value": 100
+       },
+       {
+        "id": "min",
+        "value": 0
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "id": 27,
+   "type": "timeseries",
+   "title": "Traffic over the tunnel",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 15,
+    "y": 52,
+    "w": 9,
+    "h": 5
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rate(rl_wg_receive_bytes_total{iface=\"wg-pdx\"}[5m])*8",
+     "refId": "A",
+     "instant": false,
+     "range": true,
+     "interval": "1m",
+     "legendFormat": "received"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "rate(rl_wg_transmit_bytes_total{iface=\"wg-pdx\"}[5m])*8",
+     "refId": "B",
+     "instant": false,
+     "range": true,
+     "interval": "1m",
+     "legendFormat": "sent"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "bps",
+     "custom": {
+      "lineWidth": 2,
+      "fillOpacity": 6,
+      "showPoints": "never"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
   }
  ],
  "templating": {
