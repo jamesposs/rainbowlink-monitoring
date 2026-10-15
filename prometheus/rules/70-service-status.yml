@@ -60,10 +60,10 @@ groups:
           or vector(0)
 
       - record: rl_service_status
-        labels: {service: Break-glass link (WireGuard), group: Core network}
-        # The extra PDX-PCB path that works without Tailscale/Proxmox. Never an outage (the tailnet is the main path); Degraded when it is down.
+        labels: {service: PDX <> PCB Alternate Path, group: Core network}
+        # The extra PDX <> PCB path that works without Tailscale/Proxmox. Never an outage (the tailnet is the main path); Degraded when it is down.
         expr: |
-          (vector(1) and on() (ALERTS{alertname=~"BreakGlassLink.*", alertstate="firing"}))
+          (vector(1) and on() (ALERTS{alertname=~"AlternatePath.*", alertstate="firing"}))
           or vector(0)
 
       # ---- Communications ------------------------------------------------------------------------------------------

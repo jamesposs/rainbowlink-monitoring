@@ -506,7 +506,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace(label_replace((vector(1) and on() ((max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) >= 0) and on() (max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) <= 900) and on() (max(avg_over_time(rl_mesh_loss_ratio{path=\"wg\"}[5m])) < 0.3))), \"link\", \"PDX - PCB (WireGuard)\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((vector(1) and on() ((max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) >= 0) and on() (max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) <= 900) and on() (max(avg_over_time(rl_mesh_loss_ratio{path=\"wg\"}[5m])) < 0.3))), \"link\", \"PDX - PCB (WireGuard)\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"40.0\", \"\", \"\"), \"lon\", \"-100.0\", \"\", \"\")",
+     "expr": "label_replace(label_replace(label_replace(label_replace((vector(1) and on() ((max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) >= 0) and on() (max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) <= 900) and on() (max(avg_over_time(rl_mesh_loss_ratio{path=\"wg\"}[5m])) < 0.3))), \"link\", \"PDX <> PCB Alternate Path\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((vector(1) and on() ((max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) >= 0) and on() (max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) <= 900) and on() (max(avg_over_time(rl_mesh_loss_ratio{path=\"wg\"}[5m])) < 0.3))), \"link\", \"PDX <> PCB Alternate Path\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"40.0\", \"\", \"\"), \"lon\", \"-100.0\", \"\", \"\")",
      "refId": "wu1",
      "instant": true,
      "range": false,
@@ -517,7 +517,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace(label_replace((vector(1) and on() ((max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) >= 0) and on() (max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) <= 900) and on() (max(avg_over_time(rl_mesh_loss_ratio{path=\"wg\"}[5m])) < 0.3))), \"link\", \"PDX - PCB (WireGuard)\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"40.0\", \"\", \"\"), \"lon\", \"-100.0\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((vector(1) and on() ((max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) >= 0) and on() (max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) <= 900) and on() (max(avg_over_time(rl_mesh_loss_ratio{path=\"wg\"}[5m])) < 0.3))), \"link\", \"PDX - PCB (WireGuard)\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "expr": "label_replace(label_replace(label_replace(label_replace((vector(1) and on() ((max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) >= 0) and on() (max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) <= 900) and on() (max(avg_over_time(rl_mesh_loss_ratio{path=\"wg\"}[5m])) < 0.3))), \"link\", \"PDX <> PCB Alternate Path\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"40.0\", \"\", \"\"), \"lon\", \"-100.0\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((vector(1) and on() ((max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) >= 0) and on() (max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) <= 900) and on() (max(avg_over_time(rl_mesh_loss_ratio{path=\"wg\"}[5m])) < 0.3))), \"link\", \"PDX <> PCB Alternate Path\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
      "refId": "wu2",
      "instant": true,
      "range": false,
@@ -528,7 +528,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace(label_replace(((vector(1) and on() max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"})) unless on() (vector(1) and on() ((max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) >= 0) and on() (max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) <= 900) and on() (max(avg_over_time(rl_mesh_loss_ratio{path=\"wg\"}[5m])) < 0.3)))), \"link\", \"PDX - PCB (WireGuard)\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((vector(1) and on() max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"})) unless on() (vector(1) and on() ((max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) >= 0) and on() (max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) <= 900) and on() (max(avg_over_time(rl_mesh_loss_ratio{path=\"wg\"}[5m])) < 0.3)))), \"link\", \"PDX - PCB (WireGuard)\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"40.0\", \"\", \"\"), \"lon\", \"-100.0\", \"\", \"\")",
+     "expr": "label_replace(label_replace(label_replace(label_replace(((vector(1) and on() max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"})) unless on() (vector(1) and on() ((max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) >= 0) and on() (max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) <= 900) and on() (max(avg_over_time(rl_mesh_loss_ratio{path=\"wg\"}[5m])) < 0.3)))), \"link\", \"PDX <> PCB Alternate Path\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((vector(1) and on() max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"})) unless on() (vector(1) and on() ((max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) >= 0) and on() (max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) <= 900) and on() (max(avg_over_time(rl_mesh_loss_ratio{path=\"wg\"}[5m])) < 0.3)))), \"link\", \"PDX <> PCB Alternate Path\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"40.0\", \"\", \"\"), \"lon\", \"-100.0\", \"\", \"\")",
      "refId": "wd1",
      "instant": true,
      "range": false,
@@ -539,7 +539,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace(label_replace(((vector(1) and on() max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"})) unless on() (vector(1) and on() ((max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) >= 0) and on() (max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) <= 900) and on() (max(avg_over_time(rl_mesh_loss_ratio{path=\"wg\"}[5m])) < 0.3)))), \"link\", \"PDX - PCB (WireGuard)\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"40.0\", \"\", \"\"), \"lon\", \"-100.0\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((vector(1) and on() max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"})) unless on() (vector(1) and on() ((max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) >= 0) and on() (max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) <= 900) and on() (max(avg_over_time(rl_mesh_loss_ratio{path=\"wg\"}[5m])) < 0.3)))), \"link\", \"PDX - PCB (WireGuard)\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "expr": "label_replace(label_replace(label_replace(label_replace(((vector(1) and on() max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"})) unless on() (vector(1) and on() ((max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) >= 0) and on() (max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) <= 900) and on() (max(avg_over_time(rl_mesh_loss_ratio{path=\"wg\"}[5m])) < 0.3)))), \"link\", \"PDX <> PCB Alternate Path\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"40.0\", \"\", \"\"), \"lon\", \"-100.0\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(((vector(1) and on() max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"})) unless on() (vector(1) and on() ((max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) >= 0) and on() (max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"}) <= 900) and on() (max(avg_over_time(rl_mesh_loss_ratio{path=\"wg\"}[5m])) < 0.3)))), \"link\", \"PDX <> PCB Alternate Path\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
      "refId": "wd2",
      "instant": true,
      "range": false,
@@ -550,7 +550,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace(label_replace((vector(1) unless on() max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"})), \"link\", \"PDX - PCB (WireGuard)\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((vector(1) unless on() max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"})), \"link\", \"PDX - PCB (WireGuard)\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"40.0\", \"\", \"\"), \"lon\", \"-100.0\", \"\", \"\")",
+     "expr": "label_replace(label_replace(label_replace(label_replace((vector(1) unless on() max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"})), \"link\", \"PDX <> PCB Alternate Path\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"45.52\", \"\", \"\"), \"lon\", \"-122.68\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((vector(1) unless on() max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"})), \"link\", \"PDX <> PCB Alternate Path\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"40.0\", \"\", \"\"), \"lon\", \"-100.0\", \"\", \"\")",
      "refId": "wn1",
      "instant": true,
      "range": false,
@@ -561,7 +561,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace(label_replace((vector(1) unless on() max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"})), \"link\", \"PDX - PCB (WireGuard)\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"40.0\", \"\", \"\"), \"lon\", \"-100.0\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((vector(1) unless on() max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"})), \"link\", \"PDX - PCB (WireGuard)\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
+     "expr": "label_replace(label_replace(label_replace(label_replace((vector(1) unless on() max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"})), \"link\", \"PDX <> PCB Alternate Path\", \"\", \"\"), \"end\", \"a\", \"\", \"\"), \"lat\", \"40.0\", \"\", \"\"), \"lon\", \"-100.0\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace((vector(1) unless on() max(rl_wg_latest_handshake_age_seconds{iface=\"wg-pdx\"})), \"link\", \"PDX <> PCB Alternate Path\", \"\", \"\"), \"end\", \"b\", \"\", \"\"), \"lat\", \"30.18\", \"\", \"\"), \"lon\", \"-85.8\", \"\", \"\")",
      "refId": "wn2",
      "instant": true,
      "range": false,
@@ -572,7 +572,7 @@
       "type": "prometheus",
       "uid": "prometheus"
      },
-     "expr": "label_replace(label_replace(label_replace(round(max(avg_over_time(rl_mesh_rtt_seconds{path=\"wg\", stat=\"avg\"}[5m])) * 1000), \"link\", \"PDX - PCB (WireGuard)\", \"\", \"\"), \"lat\", \"40.0\", \"\", \"\"), \"lon\", \"-100.0\", \"\", \"\")",
+     "expr": "label_replace(label_replace(label_replace(round(max(avg_over_time(rl_mesh_rtt_seconds{path=\"wg\", stat=\"avg\"}[5m])) * 1000), \"link\", \"PDX <> PCB Alternate Path\", \"\", \"\"), \"lat\", \"40.0\", \"\", \"\"), \"lon\", \"-100.0\", \"\", \"\")",
      "refId": "MW",
      "instant": true,
      "range": false,
@@ -3225,7 +3225,7 @@
      },
      {
       "type": "route",
-      "name": "Break-glass link up (1/2)",
+      "name": "Alternate path up (1/2)",
       "tooltip": false,
       "filterData": {
        "id": "byRefId",
@@ -3260,7 +3260,7 @@
      },
      {
       "type": "route",
-      "name": "Break-glass link up (2/2)",
+      "name": "Alternate path up (2/2)",
       "tooltip": false,
       "filterData": {
        "id": "byRefId",
@@ -3295,7 +3295,7 @@
      },
      {
       "type": "route",
-      "name": "Break-glass link DOWN (1/2)",
+      "name": "Alternate path DOWN (1/2)",
       "tooltip": false,
       "filterData": {
        "id": "byRefId",
@@ -3330,7 +3330,7 @@
      },
      {
       "type": "route",
-      "name": "Break-glass link DOWN (2/2)",
+      "name": "Alternate path DOWN (2/2)",
       "tooltip": false,
       "filterData": {
        "id": "byRefId",
@@ -3365,7 +3365,7 @@
      },
      {
       "type": "route",
-      "name": "Break-glass link not configured (1/2)",
+      "name": "Alternate path not configured (1/2)",
       "tooltip": false,
       "filterData": {
        "id": "byRefId",
@@ -3400,7 +3400,7 @@
      },
      {
       "type": "route",
-      "name": "Break-glass link not configured (2/2)",
+      "name": "Alternate path not configured (2/2)",
       "tooltip": false,
       "filterData": {
        "id": "byRefId",
@@ -3922,7 +3922,7 @@
    },
    "options": {
     "mode": "markdown",
-    "content": "### How to read the map\n**Lines** are the tailnet links between sites, coloured by health (worst of the two directions):\n\n- <span style='color:#22C55E'>**green**</span> normal\n- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm (both 5-minute averages)\n- <span style='color:#EF4444'>**red**</span> loss above 10%, or the link is down\n\n**Markers** are the sites, labelled with their code (PDX Portland, SJC San Jose, BOS Boston, PCB Panama City Beach): green = reachable from the other sites, orange = some packet loss reaching it, **red = unreachable** (no other site can reach it). Markers show connectivity only; what runs at a site is on the Status board.\n\nThe **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet (under 5 kbit/s), medium = moderate (5 to 25 kbit/s), wide = busy (over 25 kbit/s). The numbers at the middle of each link are its latency (white) and traffic (blue).\n\nThe **violet bowed path** between Portland and Panama City Beach is the break-glass WireGuard tunnel between the home gateway and the Pi (it works without Tailscale or Proxmox): violet = up, red = down or lossy, grey = not configured yet. Its latency is the violet number.\n\nHover a line or marker for numbers. Latency is compared with each link's *own* normal, so a long link (Portland to Florida, ~90 ms) is not flagged for being long.\n\nUnderlying data: ping mesh (10 pings a minute from every site), plus the Network dashboard for the full matrix."
+    "content": "### How to read the map\n**Lines** are the tailnet links between sites, coloured by health (worst of the two directions):\n\n- <span style='color:#22C55E'>**green**</span> normal\n- <span style='color:#FFA726'>**orange**</span> loss above 2%, or latency more than twice its own 1-day norm (both 5-minute averages)\n- <span style='color:#EF4444'>**red**</span> loss above 10%, or the link is down\n\n**Markers** are the sites, labelled with their code (PDX Portland, SJC San Jose, BOS Boston, PCB Panama City Beach): green = reachable from the other sites, orange = some packet loss reaching it, **red = unreachable** (no other site can reach it). Markers show connectivity only; what runs at a site is on the Status board.\n\nThe **wide translucent blue band** under each line is how much traffic the link is carrying right now (both directions, 5-minute average): thin = quiet (under 5 kbit/s), medium = moderate (5 to 25 kbit/s), wide = busy (over 25 kbit/s). The numbers at the middle of each link are its latency (white) and traffic (blue).\n\nThe **violet bowed path** between Portland and Panama City Beach is the **PDX <> PCB Alternate Path**, a WireGuard tunnel between the home gateway and the Pi (it works without Tailscale or Proxmox): violet = up, red = down or lossy, grey = not configured yet. Its latency is the violet number.\n\nHover a line or marker for numbers. Latency is compared with each link's *own* normal, so a long link (Portland to Florida, ~90 ms) is not flagged for being long.\n\nUnderlying data: ping mesh (10 pings a minute from every site), plus the Network dashboard for the full matrix."
    }
   },
   {

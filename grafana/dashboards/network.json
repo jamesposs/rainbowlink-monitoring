@@ -2155,7 +2155,7 @@
   {
    "id": 24,
    "type": "row",
-   "title": "Break-glass WireGuard link (PDX gateway <-> pi-pcb)",
+   "title": "PDX <> PCB Alternate Path (WireGuard: UniFi gateway <-> pi-pcb)",
    "collapsed": false,
    "gridPos": {
     "x": 0,
@@ -2249,7 +2249,7 @@
    "id": 26,
    "type": "timeseries",
    "title": "Latency and loss over the tunnel",
-   "description": "pi-pcb pings the gateway's tunnel address once a minute (10 pings). Compare with the tailnet path on the Site map.",
+   "description": "The monitoring server pings pi-pcb's tunnel address (10.77.77.2) through the gateway once a minute (10 pings). The dashed comparison is the tailnet path.",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"
